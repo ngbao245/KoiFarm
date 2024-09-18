@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34322.80
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "koi-farm-api", "koi-farm-api\koi-farm-api.csproj", "{8794E659-BCB8-41D1-95AB-1232A9A25A38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{71CD25EF-8EAA-440E-BF34-1A619D475125}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8794E659-BCB8-41D1-95AB-1232A9A25A38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8794E659-BCB8-41D1-95AB-1232A9A25A38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8794E659-BCB8-41D1-95AB-1232A9A25A38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8794E659-BCB8-41D1-95AB-1232A9A25A38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71CD25EF-8EAA-440E-BF34-1A619D475125}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71CD25EF-8EAA-440E-BF34-1A619D475125}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71CD25EF-8EAA-440E-BF34-1A619D475125}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71CD25EF-8EAA-440E-BF34-1A619D475125}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {81093E32-3800-4CEC-B037-1BF84D5F1579}
+	EndGlobalSection
+EndGlobal
