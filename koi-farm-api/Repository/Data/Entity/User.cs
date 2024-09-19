@@ -1,12 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Repository.Data.Entity
 {
-    public class User
+    [Table("User")]
+    public class User : Entity
     {
+        [Required]
+        [MaxLength(100)]
+        public string Name { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        public string Password { get; set; }
+
+        [MaxLength(200)]
+        public string? Address { get; set; }
+
+        [Phone]
+        public string? Phone { get; set; }
+
+        public string? RoleId { get; set; }
+
+        [ForeignKey(nameof(RoleId))]
+        public Role? Role { get; set; }
     }
 }

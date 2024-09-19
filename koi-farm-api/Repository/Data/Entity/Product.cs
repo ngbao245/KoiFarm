@@ -1,12 +1,20 @@
-﻿using System;
+﻿using Repository.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace Repository.Data.Entity
 {
-    public class Product
+    [Table("Product")]
+    public class Product : Entity    
     {
+        [Required]
+        [MaxLength(100)]
+        public string Name { get; set; }
+
+        // Navigation property for related Product_Item entities
+        public ICollection<ProductItem> ProductItems { get; set; }
+
     }
 }
