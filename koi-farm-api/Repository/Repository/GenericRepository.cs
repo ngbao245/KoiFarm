@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repository.Data;
+using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,13 +47,32 @@ namespace Repository.Repository
         }
 
         // Deletes an entity
+        //public void Delete(T entity)
+        //{
+        //    if (_context.Entry(entity).State == EntityState.Detached)
+        //    {
+        //        _dbSet.Attach(entity);
+        //    }
+        //    _dbSet.Remove(entity);
+        //    _context.SaveChanges();
+        //}
+
+        //Soft deletion
         public void Delete(T entity)
         {
             if (_context.Entry(entity).State == EntityState.Detached)
             {
                 _dbSet.Attach(entity);
             }
-            _dbSet.Remove(entity);
+
+            // Perform the soft delete
+            if (entity is ISoftDelete softDeleteEntity)
+            {
+                softDeleteEntity.IsDeleted = true;
+                softDeleteEntity.DeletedAt = DateTimeOffset.UtcNow;
+                _dbSet.Update(entity);
+            }
+
             _context.SaveChanges();
         }
 

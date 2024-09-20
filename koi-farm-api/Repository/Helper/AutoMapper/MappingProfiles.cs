@@ -16,6 +16,9 @@ namespace Repository.Helper.AutoMapper
             // Mapping between User and response models
             CreateMap<User, ResponseUserModel>().ReverseMap();
 
+            CreateMap<User, ResponseCreateUserModel>().ReverseMap();
+
+
             // You can also map specific fields in case the properties differ
             CreateMap<UserRefreshToken, ResponseTokenModel>()
                 .ForMember(dest => dest.Token, opt => opt.MapFrom(src => src.JwtId))
