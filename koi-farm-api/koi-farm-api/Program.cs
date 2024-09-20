@@ -81,9 +81,11 @@ builder.Services.AddScoped<UnitOfWork>();
 builder.Services.AddScoped<GenerateToken>();
 
 // Register services
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<GenerateToken>();
+
+//builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 // JWT Authentication
 builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>

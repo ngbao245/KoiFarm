@@ -14,12 +14,12 @@ namespace Repository.Helper
     public class GenerateToken
     {
         private readonly IConfiguration _configuration;
-        private readonly IGenericRepository<UserRefreshToken> _userRefreshTokenRepository;
+        private readonly UnitOfWork _unitOfWork;
 
-        public GenerateToken(IConfiguration configuration, IGenericRepository<UserRefreshToken> repositoryBase)
+        public GenerateToken(IConfiguration configuration, UnitOfWork unitOfWork)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            _userRefreshTokenRepository = repositoryBase ?? throw new ArgumentNullException(nameof(repositoryBase));
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public ResponseTokenModel GenerateTokenModel(User userEntity)
@@ -40,14 +40,13 @@ namespace Repository.Helper
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-            new Claim("UserID", userEntity.Id),
-            new Claim(ClaimTypes.Role, userEntity.Role?.Name ?? "User"),
-            new Claim(JwtRegisteredClaimNames.Jti, jwtId) // Include the JwtId in the claims
-        }),
+                    new Claim("UserID", userEntity.Id),
+                    new Claim(ClaimTypes.Role, userEntity.Role?.Name ?? "User"),
+                    new Claim(JwtRegisteredClaimNames.Jti, jwtId)
+                }),
                 IssuedAt = DateTime.Now,
                 Expires = DateTime.Now.AddDays(Convert.ToInt32(_configuration["JWT:TokenExpirationInDays"] ?? "1")),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes),
-                    SecurityAlgorithms.HmacSha256Signature),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes), SecurityAlgorithms.HmacSha256Signature),
             };
 
             // Create the JWT token
@@ -62,7 +61,7 @@ namespace Repository.Helper
             {
                 User_Id = userEntity.Id,
                 RefreshToken = refreshToken,
-                JwtId = jwtId,  // Use the manually generated JwtId
+                JwtId = jwtId,
                 isUsed = false,
                 CreateTime = DateTime.Now,
                 ExpireTime = DateTime.Now.AddMonths(Convert.ToInt32(_configuration["JWT:RefreshTokenExpirationInMonths"] ?? "6")),
@@ -70,7 +69,8 @@ namespace Repository.Helper
 
             try
             {
-                _userRefreshTokenRepository.Create(tokenEntity);
+                _unitOfWork.UserRefreshTokenRepository.Create(tokenEntity);
+                _unitOfWork.SaveChange(); // Save changes using UnitOfWork
             }
             catch (Exception ex)
             {
@@ -83,9 +83,6 @@ namespace Repository.Helper
                 RefreshToken = refreshToken,
             };
         }
-
-
-
 
         public string GenerateRefreshToken()
         {
