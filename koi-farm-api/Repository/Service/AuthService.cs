@@ -63,6 +63,8 @@ namespace Repository.Service
                 };
             }
 
+            
+
             var user = new User
             {
                 Name = signUpModel.Name,
@@ -70,7 +72,7 @@ namespace Repository.Service
                 Password = signUpModel.Password,  // No hashing
                 Phone = signUpModel.Phone,
                 Address = signUpModel.Address,
-                RoleId = signUpModel.RoleId
+                RoleId = "0"
             };
 
             _userRepository.Create(user);

@@ -16,8 +16,6 @@ namespace Repository.Model.Auth
 
         public string? Phone { get; set; }
 
-        public string? RoleId { get; set; }
-
         public string? Address { get; set; }
     }
 }
