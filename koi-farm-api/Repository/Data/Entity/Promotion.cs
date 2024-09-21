@@ -13,6 +13,6 @@ namespace Repository.Data.Entity
         public string Code { get; set; }
         public int Amount { get; set; }
         public string Type { get; set; }
-        public ICollection<Order> orders { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }

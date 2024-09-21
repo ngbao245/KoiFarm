@@ -22,9 +22,23 @@ namespace Repository.Data
         {
         }
 
-        public DbSet<User> UserEntities { get; set; } 
-        public DbSet<Role> RoleEntities { get; set; } 
+        public DbSet<User> UserEntities { get; set; }
+        public DbSet<Role> RoleEntities { get; set; }
         public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
+        public DbSet<Blog> BlogEntities { get; set; }
+        public DbSet<Cart> CartEntities { get; set; }
+        public DbSet<CartItem> CartItemEntities { get; set; }
+        public DbSet<Certificate> CertificateEntities { get; set; }
+        public DbSet<Order> OrderEntities { get; set; }
+        public DbSet<OrderItem> OrderItemEntities { get; set; }
+        public DbSet<Payment> PaymentEntities { get; set; }
+        public DbSet<Product> ProductEntities { get; set; }
+        public DbSet<ProductCertificate> ProductCertificateEntities { get; set; }
+        public DbSet<ProductItem> ProductItemEntities { get; set; }
+        public DbSet<Promotion> PromotionEntities { get; set; }
+        public DbSet<Review> ReviewEntities { get; set; }
+
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

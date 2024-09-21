@@ -27,5 +27,12 @@ namespace Repository.Data.Entity
 
         [ForeignKey(nameof(RoleId))]
         public Role? Role { get; set; }
+
+        public ICollection<Review> Reviews { get; set; }
+        public ICollection<Cart> Carts { get; set; }
+        public ICollection<Order> Orders { get; set; }
+        public ICollection<Blog> Blogs { get; set; }
+
+
     }
 }

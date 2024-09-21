@@ -48,6 +48,8 @@ namespace Repository.Data.Entity
         public ICollection<CartItem> cartItems { get; set; }
         public ICollection<OrderItem> orderItems { get; set; }
 
+        public ICollection<Review> Reviews { get; set; }
+
 
     }
 }

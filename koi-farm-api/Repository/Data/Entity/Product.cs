@@ -12,6 +12,8 @@ namespace Repository.Data.Entity
         [Required]
         [MaxLength(100)]
         public string Name { get; set; }
+        public string Quantity { get; set; }
+
 
         // Navigation property for related Product_Item entities
         public ICollection<ProductItem> ProductItems { get; set; }
