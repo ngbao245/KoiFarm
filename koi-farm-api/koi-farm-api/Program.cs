@@ -26,14 +26,14 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "KoiFarm", Version = "v1" });
 
-    // Define the security scheme
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    // Define the security scheme, without requiring the "Bearer " prefix
+    c.AddSecurityDefinition("JWT", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Description = "JWT Authorization header. Enter the token directly without the 'Bearer ' prefix.",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
+        Scheme = "JWT"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -44,17 +44,12 @@ builder.Services.AddSwaggerGen(c =>
                 Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
+                    Id = "JWT"
                 }
             },
             new string[] {}
         }
     });
-
-    // Set the comments path for the Swagger JSON and UI.
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    c.IncludeXmlComments(xmlPath);
 });
 
 // Add Cors
@@ -80,10 +75,6 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<UnitOfWork>();
 builder.Services.AddScoped<GenerateToken>();
 
-// Register services
-
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<GenerateToken>();
 
 //builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
@@ -120,7 +111,15 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
         },
         OnMessageReceived = context =>
         {
-            Console.WriteLine("Token received: " + context.Token);
+            // Check if the token is already prefixed with "Bearer", if not, treat it as a raw token.
+            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Trim();
+
+            if (!string.IsNullOrEmpty(token) && !token.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+            {
+                // If it's just the token, assign it directly to the context
+                context.Token = token;
+            }
+
             return Task.CompletedTask;
         },
         OnChallenge = context =>
