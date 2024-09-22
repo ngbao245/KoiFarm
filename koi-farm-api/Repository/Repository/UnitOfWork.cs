@@ -17,6 +17,7 @@ namespace Repository.Repository
         private GenericRepository<Product> _product;
         private GenericRepository<Role> _role;
         private GenericRepository<User> _user;
+        private GenericRepository<Blog> _blog;
         private GenericRepository<UserRefreshToken> _userrefreshtoken;
 
 
@@ -25,6 +26,18 @@ namespace Repository.Repository
         public UnitOfWork(KoiFarmDbContext context)
         {
             _context = context;
+        }
+
+        public GenericRepository<Blog> BlogRepository
+        {
+            get
+            {
+                if (_blog == null)
+                {
+                    _blog = new GenericRepository<Blog>(_context);
+                }
+                return _blog;
+            }
         }
 
         public GenericRepository<Product> ProductRepository
