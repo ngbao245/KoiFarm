@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Repository.Data.Entity;
 using Repository.Model.Auth;
+using Repository.Model.Product;
 using Repository.Model.User;
 
 namespace Repository.Helper.AutoMapper
@@ -17,6 +18,9 @@ namespace Repository.Helper.AutoMapper
             CreateMap<User, ResponseUserModel>().ReverseMap();
 
             CreateMap<User, ResponseCreateUserModel>().ReverseMap();
+
+            CreateMap<Product, ResponseCreateProductModel>().ReverseMap();
+            CreateMap<Product, ResponseProductModel>().ReverseMap();
 
 
             // You can also map specific fields in case the properties differ
