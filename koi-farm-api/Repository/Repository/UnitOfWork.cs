@@ -15,9 +15,12 @@ namespace Repository.Repository
     {
         private KoiFarmDbContext _context;
         private GenericRepository<Product> _product;
+        private GenericRepository<ProductItem> _productitem;
         private GenericRepository<Role> _role;
         private GenericRepository<User> _user;
         private GenericRepository<UserRefreshToken> _userrefreshtoken;
+        private GenericRepository<Cart> _cart;
+        private GenericRepository<CartItem> _cartItem;
 
 
         private bool disposed = false;
@@ -36,6 +39,18 @@ namespace Repository.Repository
                     _product = new GenericRepository<Product>(_context);
                 }
                 return _product;
+            }
+        }
+
+        public GenericRepository<ProductItem> ProductItemRepository
+        {
+            get
+            {
+                if (_productitem == null)
+                {
+                    _productitem = new GenericRepository<ProductItem>(_context);
+                }
+                return _productitem;
             }
         }
 
@@ -72,6 +87,30 @@ namespace Repository.Repository
                     _userrefreshtoken = new GenericRepository<UserRefreshToken>(_context);
                 }
                 return _userrefreshtoken;
+            }
+        }
+
+        public GenericRepository<Cart> CartRepository
+        {
+            get
+            {
+                if (_cart == null)
+                {
+                    _cart = new GenericRepository<Cart>(_context);
+                }
+                return _cart;
+            }
+        }
+
+        public GenericRepository<CartItem> CartItemRepository
+        {
+            get
+            {
+                if (_cartItem == null)
+                {
+                    _cartItem = new GenericRepository<CartItem>(_context);
+                }
+                return _cartItem;
             }
         }
 
