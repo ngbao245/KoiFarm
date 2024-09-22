@@ -22,7 +22,7 @@ namespace koi_farm_api.Controllers
         }
 
         [HttpGet("get-all-users")]
-        //[Authorize]
+        [Authorize]
         public IActionResult GetAllUsers()
         {
             var users = _unitOfWork.UserRepository.GetAll();
