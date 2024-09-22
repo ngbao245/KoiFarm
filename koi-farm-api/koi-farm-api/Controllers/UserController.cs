@@ -78,7 +78,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("get-user/{id}")]
         public IActionResult GetUser(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -148,7 +148,7 @@ namespace koi_farm_api.Controllers
         }
 
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete-user/{id}")]
         public IActionResult DeleteUser(string id)
         {
             if (string.IsNullOrEmpty(id))
