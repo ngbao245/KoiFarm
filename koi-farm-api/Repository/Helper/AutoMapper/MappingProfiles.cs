@@ -17,9 +17,9 @@ namespace Repository.Helper.AutoMapper
             // Mapping between User and response models
             CreateMap<User, ResponseUserModel>().ReverseMap();
 
-            CreateMap<User, ResponseCreateUserModel>().ReverseMap();
+            CreateMap<User, RequestCreateUserModel>().ReverseMap();
 
-            CreateMap<Product, ResponseCreateProductModel>().ReverseMap();
+            CreateMap<Product, RequestCreateProductModel>().ReverseMap();
             CreateMap<Product, ResponseProductModel>().ReverseMap();
 
 
