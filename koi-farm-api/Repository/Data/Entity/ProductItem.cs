@@ -51,6 +51,6 @@ namespace Repository.Data.Entity
 
         public ICollection<Review> Reviews { get; set; }
 
-
+            
     }
 }
