@@ -10,7 +10,6 @@ using Repository.Helper;
 using Repository.Repository;
 using Repository.Helper.AutoMapper;
 using Repository.Data;
-using Repository.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,7 +70,6 @@ builder.Services.AddDbContext<KoiFarmDbContext>(options =>
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
 // Register AuthService, UnitOfWork, and GenerateToken for Dependency Injection
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<UnitOfWork>();
 builder.Services.AddScoped<GenerateToken>();
 
