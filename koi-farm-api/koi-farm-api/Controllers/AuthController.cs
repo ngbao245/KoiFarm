@@ -1,6 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure;
+using Microsoft.AspNetCore.Mvc;
+using Repository.Data.Entity;
+using Repository.Helper;
+using Repository.Model;
 using Repository.Model.Auth;
-using Repository.Service;
+using Repository.Model.User;
+using Repository.Repository;
+using System;
 
 namespace Repository.Controllers
 {
@@ -8,11 +14,16 @@ namespace Repository.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _authService;
+        private readonly UnitOfWork _unitOfWork;
+        private readonly GenerateToken _generateToken;
 
-        public AuthController(IAuthService authService)
+        public AuthController(
+            UnitOfWork unitOfWork,
+            GenerateToken generateToken,
+            IConfiguration configuration)
         {
-            _authService = authService;
+            _unitOfWork = unitOfWork;
+            _generateToken = generateToken;
         }
 
         [HttpPost("signin")]
@@ -23,12 +34,32 @@ namespace Repository.Controllers
 
             try
             {
-                var tokenResponse = _authService.SignIn(signInModel);
-                return Ok(tokenResponse);
+                var user = _unitOfWork.UserRepository.GetSingle(u => u.Email == signInModel.Email);
+                if (user == null || user.Password != signInModel.Password)
+                    return Unauthorized("Invalid credentials.");
+
+                var token = _generateToken.GenerateTokenModel(user);
+                return Ok(new ResponseModel
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = new ResponseTokenModel
+                    {
+                        Token = token.Token,
+                        RefreshToken = token.RefreshToken,
+                        User = new ResponseUserModel
+                        {
+                            Name = user.Name,
+                            Email = user.Email,
+                            Address = user.Address,
+                            Phone = user.Phone,
+                            RoleId = user.RoleId
+                        }
+                    }
+                });
             }
-            catch (UnauthorizedAccessException)
+            catch (Exception ex)
             {
-                return Unauthorized("Invalid credentials.");
+                return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
 
@@ -40,12 +71,31 @@ namespace Repository.Controllers
 
             try
             {
-                var tokenResponse = _authService.SignUp(signUpModel);
-                return Ok(tokenResponse);
+                var existingUser = _unitOfWork.UserRepository.GetSingle(u => u.Email == signUpModel.Email);
+                if (existingUser != null)
+                    return Conflict("User with this email already exists.");
+
+                var user = new User
+                {
+                    Name = signUpModel.Name,
+                    Email = signUpModel.Email,
+                    Password = signUpModel.Password,
+                    Phone = signUpModel.Phone,
+                    Address = signUpModel.Address,
+                    RoleId = "0"
+                };
+
+                _unitOfWork.UserRepository.Create(user);
+
+                return Created("User created", new ResponseModel
+                {
+                    StatusCode = 201,
+                    Data = user
+                });
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                return Conflict(ex.Message);
+                return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
 
@@ -57,12 +107,21 @@ namespace Repository.Controllers
 
             try
             {
-                var tokenResponse = _authService.RefreshToken(refreshToken);
-                return Ok(tokenResponse);
+                var storedToken = _unitOfWork.UserRefreshTokenRepository.GetSingle(t => t.RefreshToken == refreshToken && !t.isUsed);
+                if (storedToken == null || storedToken.ExpireTime < DateTime.Now)
+                    return Unauthorized("Invalid or expired refresh token.");
+
+                storedToken.isUsed = true;
+                _unitOfWork.UserRefreshTokenRepository.Update(storedToken);
+
+                var user = _unitOfWork.UserRepository.GetById(storedToken.User_Id);
+                var newToken = _generateToken.GenerateTokenModel(user);
+
+                return Ok(newToken);
             }
-            catch (UnauthorizedAccessException)
+            catch (Exception ex)
             {
-                return Unauthorized("Invalid or expired refresh token.");
+                return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
     }
