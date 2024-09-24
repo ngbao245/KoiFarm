@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Model.User
 {
-    public class ResponseCreateUserModel
+    public class RequestCreateUserModel
     {
         public string Name { get; set; }
         public string Email { get; set; }

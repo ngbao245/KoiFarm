@@ -113,7 +113,7 @@ namespace koi_farm_api.Controllers
         }
 
         [HttpPost("create-user-staff")]
-        public IActionResult CreateUserStaff([FromBody] ResponseCreateUserModel responseCreateUser)
+        public IActionResult CreateUserStaff([FromBody] RequestCreateUserModel responseCreateUser)
         {
             if (responseCreateUser == null || string.IsNullOrEmpty(responseCreateUser.Email) || string.IsNullOrEmpty(responseCreateUser.Password))
             {

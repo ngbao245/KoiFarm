@@ -47,7 +47,7 @@ namespace koi_farm_api.Controllers
 
         [HttpPost("create-product")]
 
-        public IActionResult CreateProduct(ResponseCreateProductModel productModel)
+        public IActionResult CreateProduct(RequestCreateProductModel productModel)
         {
             if (productModel == null || string.IsNullOrEmpty(productModel.Name) || string.IsNullOrEmpty(productModel.Quantity))
             {
@@ -90,7 +90,7 @@ namespace koi_farm_api.Controllers
 
         [HttpPut("update-product/{id}")]
 
-        public IActionResult UpdateProduct(string id, [FromBody] ResponseCreateProductModel productModel)
+        public IActionResult UpdateProduct(string id, [FromBody] RequestCreateProductModel productModel)
         {
             if (string.IsNullOrEmpty(id) || productModel == null)
             {
