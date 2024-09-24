@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.Model.Blog
+namespace Repository.Model.Review
 {
-    public class ResponseBlogModel
+    public class ResponseReviewModel
     {
         public string Id { get; set; }
-        public string Title { get; set; }
-
+        public int Rating { get; set; }
         public string Description { get; set; }
-        public string ImageUrl { get; set; }
+
+        public string ProductItemId { get; set; }
         public string UserId { get; set; }
     }
 }
