@@ -149,7 +149,6 @@ namespace koi_farm_api.Controllers
             _mapper.Map(blogModel, blog);
 
             _unitOfWork.BlogRepository.Update(blog);
-            _unitOfWork.SaveChange();
 
             return Ok(new ResponseModel
             {

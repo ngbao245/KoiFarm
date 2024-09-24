@@ -22,6 +22,7 @@ namespace Repository.Repository
         private GenericRepository<UserRefreshToken> _userrefreshtoken;
         private GenericRepository<Cart> _cart;
         private GenericRepository<CartItem> _cartItem;
+        private GenericRepository<Review> _review;
 
 
         private bool disposed = false;
@@ -29,6 +30,18 @@ namespace Repository.Repository
         public UnitOfWork(KoiFarmDbContext context)
         {
             _context = context;
+        }
+
+        public GenericRepository<Review> ReviewRepository
+        {
+            get
+            {
+                if (_review == null)
+                {
+                    _review = new GenericRepository<Review>(_context);
+                }
+                return _review;
+            }
         }
 
         public GenericRepository<Blog> BlogRepository
