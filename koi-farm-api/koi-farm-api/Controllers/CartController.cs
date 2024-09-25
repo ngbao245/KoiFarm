@@ -45,6 +45,15 @@ namespace koi_farm_api.Controllers
 
             var productItem = _unitOfWork.ProductItemRepository.GetById(requestModel.ProductItemId);
 
+            if (productItem == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "ProductItem not found."
+                });
+            }
+
             if (requestModel.Quantity > productItem.Quantity)
             {
                 return BadRequest(new ResponseModel
@@ -57,6 +66,8 @@ namespace koi_farm_api.Controllers
             var cartItem = cart.Items.FirstOrDefault(ci => ci.ProductItemId == requestModel.ProductItemId);
             if (cartItem != null)
             {
+                //nho check quantity cua productItem
+
                 cartItem.Quantity += requestModel.Quantity;
                 _unitOfWork.CartItemRepository.Update(cartItem);
             }
@@ -97,6 +108,7 @@ namespace koi_farm_api.Controllers
 
         // Remove from Cart Endpoint
         [HttpDelete("remove-from-cart/{cartId}")]
+        [Authorize]
         public IActionResult RemoveFromCart(string cartId)
         {
             var cart = _unitOfWork.CartRepository.GetById(cartId);
