@@ -28,7 +28,7 @@ namespace koi_farm_api.Controllers
         [HttpPost("add-to-cart")]
         public IActionResult AddToCart([FromBody] CartRequestModel requestModel)
         {
-            var userId = _httpContextAccessor.HttpContext?.User.FindFirst("UserID")?.Value;
+            var userId = User.FindFirst("UserID")?.Value;
 
             var cart = _unitOfWork.CartRepository.GetSingle(c => c.UserId == userId, c => c.Items);
 
@@ -44,7 +44,15 @@ namespace koi_farm_api.Controllers
             }
 
             var productItem = _unitOfWork.ProductItemRepository.GetById(requestModel.ProductItemId);
-
+            if (productItem == null)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    MessageError = "There is no such Product Item."
+                }
+                    );
+            }
             if (requestModel.Quantity > productItem.Quantity)
             {
                 return BadRequest(new ResponseModel
@@ -58,6 +66,13 @@ namespace koi_farm_api.Controllers
             if (cartItem != null)
             {
                 cartItem.Quantity += requestModel.Quantity;
+                if(cartItem.Quantity > productItem.Quantity) {
+                    return BadRequest(new ResponseModel
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        MessageError = "Exceeds Quantity of Product Item"
+                    });
+                }
                 _unitOfWork.CartItemRepository.Update(cartItem);
             }
             else
