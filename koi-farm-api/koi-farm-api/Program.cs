@@ -20,6 +20,8 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 
 builder.Services.AddDirectoryBrowser();
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {

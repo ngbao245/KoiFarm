@@ -51,7 +51,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("get-review/{id}")]
         public IActionResult GetReview(string id)
         {
             var review = _unitOfWork.ReviewRepository.GetById(id);
@@ -73,7 +73,7 @@ namespace koi_farm_api.Controllers
         }
 
         [HttpGet("get-reviews-by-product-item/{productItemId}")]
-        public IActionResult GetReviewsByProduct(string productItemId)
+        public IActionResult GetReviewsByProductItem(string productItemId)
         {
             var productItem = _unitOfWork.ProductItemRepository.GetById(productItemId);
             if (productItem == null)

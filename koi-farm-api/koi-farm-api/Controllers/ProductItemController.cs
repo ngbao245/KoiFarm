@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Repository.Data.Entity;
 using Repository.Model;
 using Repository.Model.ProductItem;
+using Repository.Model.Review;
 using Repository.Repository;
 
 namespace koi_farm_api.Controllers
@@ -73,6 +74,39 @@ namespace koi_farm_api.Controllers
             {
                 StatusCode = 200,
                 Data = responseProductItem
+            });
+        }
+
+        [HttpGet("get-product-item-by-product/{productId}")]
+        public IActionResult GetReviewsByProductItem(string productId)
+        {
+            var product = _unitOfWork.ProductRepository.GetById(productId);
+            if (product == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "Product not found."
+                });
+            }
+
+            var productItems = _unitOfWork.ProductItemRepository.GetAll().Where(r => r.ProductId == productId);
+
+            if (!productItems.Any())
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "No product Items found for this product."
+                });
+            }
+
+            var responseProductItems = _mapper.Map<List<ResponseProductItemModel>>(productItems);
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = responseProductItems
             });
         }
 

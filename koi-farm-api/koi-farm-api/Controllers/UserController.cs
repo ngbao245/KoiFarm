@@ -22,7 +22,7 @@ namespace koi_farm_api.Controllers
         }
 
         [HttpGet("get-all-users")]
-        [Authorize]
+        //[Authorize]
         public IActionResult GetAllUsers()
         {
             var users = _unitOfWork.UserRepository.GetAll();
@@ -45,7 +45,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
-        [HttpGet("users-by-{role}")]
+        [HttpGet("get-users-by-role/{role}")]
         //[Authorize]
         public IActionResult GetUsersByRole(string role)
         {
@@ -143,6 +143,86 @@ namespace koi_farm_api.Controllers
             return Ok(new ResponseModel
             {
                 StatusCode = 201,
+                Data = user
+            });
+        }
+
+        [HttpPut("update-user/{id}")]
+        public IActionResult UpdateUser(string id, [FromBody] RequestCreateUserModel updateUserModel)
+        {
+            if (string.IsNullOrEmpty(id) || updateUserModel == null)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "UserId and user data cannot be null or empty."
+                });
+            }
+
+            var user = _unitOfWork.UserRepository.GetById(id);
+
+            if (user == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = $"User with Id: {id} not found."
+                });
+            }
+
+            _mapper.Map(updateUserModel, user);
+
+            _unitOfWork.UserRepository.Update(user);
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = user
+            });
+        }
+
+        [HttpPut("update-my-user")]
+        [Authorize]
+        public IActionResult UpdateMyUser([FromBody] RequestCreateUserModel updateUserModel)
+        {
+            if (updateUserModel == null)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "User data cannot be null or empty."
+                });
+            }
+
+            var userId = User.FindFirst("UserID")?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new ResponseModel
+                {
+                    StatusCode = 401,
+                    MessageError = "Unauthorized: UserId not found."
+                });
+            }
+
+            var user = _unitOfWork.UserRepository.GetById(userId);
+
+            if (user == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = $"User with Id: {userId} not found."
+                });
+            }
+
+            _mapper.Map(updateUserModel, user);
+
+            _unitOfWork.UserRepository.Update(user);
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
                 Data = user
             });
         }

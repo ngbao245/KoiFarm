@@ -44,15 +44,16 @@ namespace koi_farm_api.Controllers
             }
 
             var productItem = _unitOfWork.ProductItemRepository.GetById(requestModel.ProductItemId);
+
             if (productItem == null)
             {
-                return BadRequest(new ResponseModel
+                return NotFound(new ResponseModel
                 {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    MessageError = "There is no such Product Item."
-                }
-                    );
+                    StatusCode = 404,
+                    MessageError = "ProductItem not found."
+                });
             }
+
             if (requestModel.Quantity > productItem.Quantity)
             {
                 return BadRequest(new ResponseModel
@@ -65,6 +66,8 @@ namespace koi_farm_api.Controllers
             var cartItem = cart.Items.FirstOrDefault(ci => ci.ProductItemId == requestModel.ProductItemId);
             if (cartItem != null)
             {
+                //nho check quantity cua productItem
+
                 cartItem.Quantity += requestModel.Quantity;
                 if(cartItem.Quantity > productItem.Quantity) {
                     return BadRequest(new ResponseModel
@@ -112,6 +115,7 @@ namespace koi_farm_api.Controllers
 
         // Remove from Cart Endpoint
         [HttpDelete("remove-from-cart/{cartId}")]
+        [Authorize]
         public IActionResult RemoveFromCart(string cartId)
         {
             var cart = _unitOfWork.CartRepository.GetById(cartId);
