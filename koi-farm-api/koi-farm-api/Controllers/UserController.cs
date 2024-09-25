@@ -45,7 +45,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
-        [HttpGet("users-by-{role}")]
+        [HttpGet("get-users-by-role/{role}")]
         //[Authorize]
         public IActionResult GetUsersByRole(string role)
         {
