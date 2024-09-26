@@ -25,6 +25,7 @@ namespace Repository.Repository
         private GenericRepository<Review> _review;
         private GenericRepository<Order> _order;
         private GenericRepository<OrderItem> _orderItem;
+        private GenericRepository<Promotion> _promotion;
 
 
 
@@ -33,6 +34,18 @@ namespace Repository.Repository
         public UnitOfWork(KoiFarmDbContext context)
         {
             _context = context;
+        }
+
+        public GenericRepository<Promotion> PromotionRepository
+        {
+            get
+            {
+                if (_promotion == null)
+                {
+                    _promotion = new GenericRepository<Promotion>(_context);
+                }
+                return _promotion;
+            }
         }
 
         public GenericRepository<Review> ReviewRepository

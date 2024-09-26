@@ -4,6 +4,7 @@ using Repository.Model.Auth;
 using Repository.Model.Blog;
 using Repository.Model.Product;
 using Repository.Model.ProductItem;
+using Repository.Model.Promotion;
 using Repository.Model.Review;
 using Repository.Model.User;
 
@@ -33,6 +34,9 @@ namespace Repository.Helper.AutoMapper
 
             CreateMap<Review, RequestCreateReviewModel>().ReverseMap();
             CreateMap<Review, ResponseReviewModel>().ReverseMap();
+
+            CreateMap<Promotion, RequestCreatePromotionModel>().ReverseMap();
+            CreateMap<Promotion, ResponsePromotionModel>().ReverseMap();
 
 
             // You can also map specific fields in case the properties differ
