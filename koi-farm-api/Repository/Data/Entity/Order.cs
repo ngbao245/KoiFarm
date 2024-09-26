@@ -16,7 +16,7 @@ namespace Repository.Data.Entity
         [ForeignKey(nameof(UserId))]
         public User User { get; set; }
 
-        public string PromotionId { get; set; }
+        public string? PromotionId { get; set; }
         [ForeignKey(nameof(PromotionId))]
         public Promotion Promotion { get; set; }
 

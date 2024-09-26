@@ -66,10 +66,9 @@ namespace koi_farm_api.Controllers
             var cartItem = cart.Items.FirstOrDefault(ci => ci.ProductItemId == requestModel.ProductItemId);
             if (cartItem != null)
             {
-                //nho check quantity cua productItem
-
                 cartItem.Quantity += requestModel.Quantity;
-                if(cartItem.Quantity > productItem.Quantity) {
+                if (cartItem.Quantity > productItem.Quantity)
+                {
                     return BadRequest(new ResponseModel
                     {
                         StatusCode = StatusCodes.Status400BadRequest,
@@ -90,7 +89,7 @@ namespace koi_farm_api.Controllers
                 _unitOfWork.CartItemRepository.Create(cartItem);
             }
 
-            cart.Total = cart.Items.Sum(item => item.Quantity * productItem.Price);
+            cart.Total = cart.Items.Sum(item => item.Quantity * _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price);
             _unitOfWork.SaveChange();
 
             var response = new CartResponseModel
@@ -101,8 +100,8 @@ namespace koi_farm_api.Controllers
                 {
                     ProductItemId = item.ProductItemId,
                     Quantity = item.Quantity,
-                    ProductName = productItem.Name,
-                    Price = productItem.Price
+                    ProductName = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Name,
+                    Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
                 }).ToList()
             };
 
@@ -118,7 +117,9 @@ namespace koi_farm_api.Controllers
         [Authorize]
         public IActionResult RemoveFromCart(string cartId)
         {
-            var cart = _unitOfWork.CartRepository.GetById(cartId);
+            var userId = User.FindFirst("UserID")?.Value;
+            var cart = _unitOfWork.CartRepository.GetSingle(c => c.Id == cartId && c.UserId == userId);
+
             if (cart == null)
             {
                 return BadRequest(new ResponseModel
@@ -142,13 +143,25 @@ namespace koi_farm_api.Controllers
         [HttpPut("update-cart-item/{cartId}/{productItemId}")]
         public IActionResult UpdateCartItem(string cartId, string productItemId, [FromBody] int quantity)
         {
-            var cart = _unitOfWork.CartRepository.GetSingle(c => c.Id == cartId, c => c.Items);
+            var userId = User.FindFirst("UserID")?.Value;
+            var cart = _unitOfWork.CartRepository.GetSingle(c => c.Id == cartId && c.UserId == userId, c => c.Items);
+
             if (cart == null)
             {
                 return BadRequest(new ResponseModel
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
                     MessageError = "Cart not found."
+                });
+            }
+
+            var productItem = _unitOfWork.ProductItemRepository.GetById(productItemId);
+            if (productItem == null)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    MessageError = "ProductItem not found."
                 });
             }
 
@@ -159,6 +172,15 @@ namespace koi_farm_api.Controllers
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
                     MessageError = "Cart item not found."
+                });
+            }
+
+            if (quantity > productItem.Quantity)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    MessageError = "Requested quantity exceeds available stock."
                 });
             }
 

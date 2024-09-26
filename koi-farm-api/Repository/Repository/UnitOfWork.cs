@@ -23,6 +23,9 @@ namespace Repository.Repository
         private GenericRepository<Cart> _cart;
         private GenericRepository<CartItem> _cartItem;
         private GenericRepository<Review> _review;
+        private GenericRepository<Order> _order;
+        private GenericRepository<OrderItem> _orderItem;
+
 
 
         private bool disposed = false;
@@ -137,6 +140,30 @@ namespace Repository.Repository
                     _cartItem = new GenericRepository<CartItem>(_context);
                 }
                 return _cartItem;
+            }
+        }
+
+        public GenericRepository<Order> OrderRepository
+        {
+            get
+            {
+                if (_order == null)
+                {
+                    _order = new GenericRepository<Order>(_context);
+                }
+                return _order;
+            }
+        }
+
+        public GenericRepository<OrderItem> OrderItemRepository
+        {
+            get
+            {
+                if (_orderItem == null)
+                {
+                    _orderItem = new GenericRepository<OrderItem>(_context);
+                }
+                return _orderItem;
             }
         }
 

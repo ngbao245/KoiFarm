@@ -11,7 +11,7 @@ namespace Repository.Data.Entity
     public class OrderItem : Entity
     {
         public string OrderID { get; set; }
-
+        public int Quantity { get; set; }
         [ForeignKey(nameof(OrderID))]
         public Order order { get; set; }
 

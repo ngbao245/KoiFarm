@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.Model.Cart
+namespace Repository.Model.Order
 {
-    public class CartRequestModel
+    public class OrderItemResponseModel
     {
-        public string UserId { get; set; }
-        public int Quantity { get; set; }
         public string ProductItemId { get; set; }
+        public int Quantity { get; set; }
+        public decimal Price { get; set; }
     }
-
 }
