@@ -18,7 +18,7 @@ namespace Repository.Data.Entity
 
         public string? PromotionId { get; set; }
         [ForeignKey(nameof(PromotionId))]
-        public Promotion Promotion { get; set; }
+        public Promotion? Promotion { get; set; }
 
         public ICollection<OrderItem> Items { get; set; }
         // Mới làm entity tới chỗ này thôi

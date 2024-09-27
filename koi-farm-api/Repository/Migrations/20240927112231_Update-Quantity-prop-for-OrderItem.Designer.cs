@@ -12,7 +12,7 @@ using Repository.Data;
 namespace Repository.Migrations
 {
     [DbContext(typeof(KoiFarmDbContext))]
-    [Migration("20240926034302_Update-Quantity-prop-for-OrderItem")]
+    [Migration("20240927112231_Update-Quantity-prop-for-OrderItem")]
     partial class UpdateQuantitypropforOrderItem
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -245,6 +245,9 @@ namespace Repository.Migrations
                     b.Property<string>("ProductItemId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

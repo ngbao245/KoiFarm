@@ -16,12 +16,12 @@ namespace koi_farm_api.Controllers
     public class CartController : ControllerBase
     {
         private readonly UnitOfWork _unitOfWork;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CartController(UnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
+
+        public CartController(UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _httpContextAccessor = httpContextAccessor;
+
         }
 
         // Add to Cart Endpoint
