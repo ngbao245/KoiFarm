@@ -46,6 +46,27 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [HttpGet("get-promotion/{id}")]
+        public IActionResult GetPromotion(string id)
+        {
+            var promotion = _unitOfWork.PromotionRepository.GetById(id);
+
+            if (promotion == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "Promotion not found."
+                });
+            }
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = promotion
+            });
+        }
+
         [HttpPost("create-promotion")]
 
         public IActionResult CreatePromotion(RequestCreatePromotionModel promotionModel)
