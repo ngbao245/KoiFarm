@@ -12,8 +12,8 @@ using Repository.Data;
 namespace Repository.Migrations
 {
     [DbContext(typeof(KoiFarmDbContext))]
-    [Migration("20240927112231_Update-Quantity-prop-for-OrderItem")]
-    partial class UpdateQuantitypropforOrderItem
+    [Migration("20240928003553_Add-migration-orderItem-quantity")]
+    partial class AddmigrationorderItemquantity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -195,7 +195,6 @@ namespace Repository.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("PromotionId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Status")
@@ -721,9 +720,7 @@ namespace Repository.Migrations
                 {
                     b.HasOne("Repository.Data.Entity.Promotion", "Promotion")
                         .WithMany("Orders")
-                        .HasForeignKey("PromotionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PromotionId");
 
                     b.HasOne("Repository.Data.Entity.User", "User")
                         .WithMany("Orders")
