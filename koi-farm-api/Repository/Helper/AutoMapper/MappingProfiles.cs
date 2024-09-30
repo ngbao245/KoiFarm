@@ -2,6 +2,8 @@
 using Repository.Data.Entity;
 using Repository.Model.Auth;
 using Repository.Model.Blog;
+using Repository.Model.Order;
+using Repository.Model.Payment;
 using Repository.Model.Product;
 using Repository.Model.ProductItem;
 using Repository.Model.Promotion;
@@ -37,6 +39,14 @@ namespace Repository.Helper.AutoMapper
 
             CreateMap<Promotion, RequestCreatePromotionModel>().ReverseMap();
             CreateMap<Promotion, ResponsePromotionModel>().ReverseMap();
+
+            CreateMap<Payment, ResponsePaymentModel>()
+                .ForMember(dest => dest.Order, opt => opt.MapFrom(src => src.Order))
+                .ReverseMap();
+
+            CreateMap<Order, OrderResponseModel>()
+            //.ForMember(dest => dest.Items, opt => opt.Ignore())
+            .ReverseMap();
 
 
             // You can also map specific fields in case the properties differ

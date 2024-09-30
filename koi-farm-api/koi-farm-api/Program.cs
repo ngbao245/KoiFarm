@@ -10,6 +10,7 @@ using Repository.Helper;
 using Repository.Repository;
 using Repository.Helper.AutoMapper;
 using Repository.Data;
+using Repository.PaymentService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -130,6 +131,8 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
         }
     };
 });
+
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 var app = builder.Build();
 
