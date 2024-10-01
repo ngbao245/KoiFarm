@@ -34,9 +34,9 @@ INSERT INTO [dbo].[Role]
 			,[IsDeleted]
 			,[DeletedAt])
 VALUES
-			('0', 'User', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),  
-			('1', 'Admin', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
-			('2', 'Manager', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL)
+			('0', 'Customer', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),  
+			('1', 'Manager', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
+			('2', 'Staff', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL)
 GO
 
 
@@ -55,7 +55,7 @@ INSERT INTO [dbo].[User]
            ,[IsDeleted]
            ,[DeletedAt])
 VALUES
-           ('aa5fd505e603484ba3abd30223d0c29f' ,'manager', 'manager@email.com', '123456', NULL, '0934140524', '1', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL)
+           ('aa5fd505e603484ba3abd30223d0c29f' ,'manager', 'manager@gmail.com', '123456', NULL, '0934140524', '1', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL)
 GO
 
 -- Insert products into Product table
