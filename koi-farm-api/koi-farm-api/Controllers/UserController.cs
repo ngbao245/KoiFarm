@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Data.Entity;
 using Repository.Model;
+using Repository.Model.ProductItem;
 using Repository.Model.User;
 using Repository.Repository;
 
@@ -47,7 +48,7 @@ namespace koi_farm_api.Controllers
 
         [HttpGet("get-users-by-role/{role}")]
         //[Authorize]
-        public IActionResult GetUsersByRole(string role)
+        public IActionResult GetUsersByRole(string role, int pageIndex = 1, int pageSize = 10)
         {
             if (string.IsNullOrEmpty(role))
             {
@@ -69,12 +70,29 @@ namespace koi_farm_api.Controllers
                 });
             }
 
-            var responseUsers = _mapper.Map<List<ResponseUserModel>>(users);
+            var totalItems = users.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var pagedUsers = users
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var responseUsers = _mapper.Map<List<ResponseUserModel>>(pagedUsers);
+
+            var responseSearchModel = new ResponseSearchModel<ResponseUserModel>
+            {
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                TotalPages = totalPages,
+                TotalItems = totalItems,
+                Entities = responseUsers
+            };
 
             return Ok(new ResponseModel
             {
                 StatusCode = 200,
-                Data = responseUsers
+                Data = responseSearchModel
             });
         }
 

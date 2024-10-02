@@ -1,4 +1,4 @@
-﻿namespace koi_farm_api.Model
+﻿namespace Repository.Model
 {
     public class ResponseSearchModel<T>
     {
@@ -6,6 +6,6 @@
         public int? PageIndex { get; set; }
         public int? PageSize { get; set; }
         public int? TotalPages { get; set; }
-        public int? TotalProducts { get; set; }
+        public int? TotalItems { get; set; }
     }
 }

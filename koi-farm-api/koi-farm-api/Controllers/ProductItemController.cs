@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Repository.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Data.Entity;
@@ -23,7 +24,7 @@ namespace koi_farm_api.Controllers
         }
 
         [HttpGet("get-all-product-items")]
-        public IActionResult GetAllProductItems()
+        public IActionResult GetAllProductItems(int pageIndex = 1, int pageSize = 10)
         {
             var productItems = _unitOfWork.ProductItemRepository.GetAll();
 
@@ -36,12 +37,30 @@ namespace koi_farm_api.Controllers
                 });
             }
 
-            var responseProductItems = _mapper.Map<List<ResponseProductItemModel>>(productItems);
+            var totalItems = productItems.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var pagedProductItems = productItems
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+
+            var responseProductItems = _mapper.Map<List<ResponseProductItemModel>>(pagedProductItems);
+
+            var responseSearchModel = new ResponseSearchModel<ResponseProductItemModel>
+            {
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                TotalPages = totalPages,
+                TotalItems = totalItems,
+                Entities = responseProductItems
+            };
 
             return Ok(new ResponseModel
             {
                 StatusCode = 200,
-                Data = responseProductItems
+                Data = responseSearchModel
             });
         }
 
