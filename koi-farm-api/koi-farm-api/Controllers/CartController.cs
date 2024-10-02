@@ -17,11 +17,9 @@ namespace koi_farm_api.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
 
-
         public CartController(UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-
         }
 
         // Add to Cart Endpoint
@@ -202,6 +200,87 @@ namespace koi_farm_api.Controllers
             {
                 StatusCode = StatusCodes.Status200OK,
                 Data = "Cart item updated successfully."
+            });
+        }
+
+        // Get Cart by UserID
+        [HttpGet("get-cart")]
+        [Authorize]
+        public IActionResult GetCartByUserId()
+        {
+            var userId = User.FindFirst("UserID")?.Value;
+
+            if (userId == null)
+            {
+                return Unauthorized(new ResponseModel
+                {
+                    StatusCode = StatusCodes.Status401Unauthorized,
+                    MessageError = "User not authorized."
+                });
+            }
+
+            var cart = _unitOfWork.CartRepository.GetSingle(c => c.UserId == userId, c => c.Items);
+            if (cart == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    MessageError = "Cart not found."
+                });
+            }
+
+            var response = new CartResponseModel
+            {
+                CartId = cart.Id,
+                Total = cart.Total,
+                Items = cart.Items.Select(item => new CartItemModel
+                {
+                    ProductItemId = item.ProductItemId,
+                    Quantity = item.Quantity,
+                    ProductName = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Name,
+                    Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                }).ToList()
+            };
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = response
+            });
+        }
+
+        // Get all carts
+        [HttpGet("get-all-carts")]
+        public IActionResult GetAllCarts()
+        {
+            var carts = _unitOfWork.CartRepository.GetAll().ToList();
+
+            if (!carts.Any())
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    MessageError = "No carts found."
+                });
+            }
+
+            var response = carts.Select(cart => new CartResponseModel
+            {
+                CartId = cart.Id,
+                Total = cart.Total,
+                Items = cart.Items.Select(item => new CartItemModel
+                {
+                    ProductItemId = item.ProductItemId,
+                    Quantity = item.Quantity,
+                    ProductName = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Name,
+                    Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                }).ToList()
+            }).ToList();
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = response
             });
         }
     }
