@@ -24,7 +24,7 @@ namespace koi_farm_api.Controllers
         }
 
         [HttpGet("get-all-product-items")]
-        public IActionResult GetAllProductItems(int pageIndex = 1, int pageSize = 10)
+        public IActionResult GetAllProductItems(int pageIndex = 1, int pageSize = 10, string? searchQuery = null)
         {
             var productItems = _unitOfWork.ProductItemRepository.GetAll();
 
@@ -35,6 +35,14 @@ namespace koi_farm_api.Controllers
                     StatusCode = 404,
                     MessageError = "No product items found."
                 });
+            }
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                productItems = productItems
+                    .Where(item => item.Name != null &&
+                        item.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
             }
 
             var totalItems = productItems.Count();
