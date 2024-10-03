@@ -12,8 +12,8 @@ using Repository.Data;
 namespace Repository.Migrations
 {
     [DbContext(typeof(KoiFarmDbContext))]
-    [Migration("20240928003553_Add-migration-orderItem-quantity")]
-    partial class AddmigrationorderItemquantity
+    [Migration("20241003144150_Update-Product-Entity")]
+    partial class UpdateProductEntity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
