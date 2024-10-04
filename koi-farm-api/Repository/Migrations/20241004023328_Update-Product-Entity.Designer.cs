@@ -12,7 +12,7 @@ using Repository.Data;
 namespace Repository.Migrations
 {
     [DbContext(typeof(KoiFarmDbContext))]
-    [Migration("20241003144150_Update-Product-Entity")]
+    [Migration("20241004023328_Update-Product-Entity")]
     partial class UpdateProductEntity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -312,6 +312,12 @@ namespace Repository.Migrations
 
                     b.Property<DateTimeOffset?>("DeletedTime")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
