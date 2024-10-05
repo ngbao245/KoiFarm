@@ -77,6 +77,14 @@ namespace koi_farm_api.Controllers
                 order.Total += orderItem.Quantity * productItem.Price;
 
                 productItem.Quantity -= orderItem.Quantity;
+                if (orderItem.Quantity > productItem.Quantity)
+                {
+                    return BadRequest(new ResponseModel
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        MessageError = "Exceeds Quantity of Product Item"
+                    });
+                }
                 _unitOfWork.ProductItemRepository.Update(productItem);
             }
 

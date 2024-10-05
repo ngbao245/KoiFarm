@@ -184,8 +184,11 @@ namespace koi_farm_api.Controllers
                 });
             }
 
+            productExists.Quantity += productItemModel.Quantity;
+
             var productItem = _mapper.Map<ProductItem>(productItemModel);
             _unitOfWork.ProductItemRepository.Create(productItem);
+            _unitOfWork.ProductRepository.Update(productExists);
 
             return Ok(new ResponseModel
             {
@@ -225,7 +228,7 @@ namespace koi_farm_api.Controllers
                 });
             }
 
-            var productExists = _unitOfWork.ProductRepository.GetById(productItemModel.ProductId);
+            var productExists = _unitOfWork.ProductRepository.GetById(existingProductItem.ProductId);
             if (productExists == null)
             {
                 return BadRequest(new ResponseModel
@@ -235,9 +238,16 @@ namespace koi_farm_api.Controllers
                 });
             }
 
+            if (existingProductItem.Quantity != productItemModel.Quantity)
+            {
+                var quantity = productItemModel.Quantity - existingProductItem.Quantity;
+                productExists.Quantity = productExists.Quantity + quantity;
+            }
+
             _mapper.Map(productItemModel, existingProductItem);
 
             _unitOfWork.ProductItemRepository.Update(existingProductItem);
+            _unitOfWork.ProductRepository.Update(productExists);
 
             return Ok(new ResponseModel
             {
@@ -268,7 +278,20 @@ namespace koi_farm_api.Controllers
                 });
             }
 
+            var productExists = _unitOfWork.ProductRepository.GetById(productItem.ProductId);
+            if (productExists == null)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Invalid ProductId. Product does not exist."
+                });
+            }
+
+            productExists.Quantity -= productItem.Quantity;
+
             _unitOfWork.ProductItemRepository.Delete(productItem);
+            _unitOfWork.ProductRepository.Update(productExists);
 
             return Ok(new ResponseModel
             {
