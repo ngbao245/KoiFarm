@@ -49,21 +49,12 @@ namespace koi_farm_api.Controllers
 
         public IActionResult CreateProduct(RequestCreateProductModel productModel)
         {
-            if (productModel == null || string.IsNullOrEmpty(productModel.Name) || string.IsNullOrEmpty(productModel.Quantity))
+            if (productModel == null || string.IsNullOrEmpty(productModel.Name))
             {
                 return BadRequest(new ResponseModel
                 {
                     StatusCode = 400,
                     MessageError = "Invalid product data. Name and Quantity are required."
-                });
-            }
-
-            if (!int.TryParse(productModel.Quantity, out _))
-            {
-                return BadRequest(new ResponseModel
-                {
-                    StatusCode = 400,
-                    MessageError = "Invalid product data. Quantity must be a valid number."
                 });
             }
 
@@ -98,15 +89,6 @@ namespace koi_farm_api.Controllers
                 {
                     StatusCode = 400,
                     MessageError = "Invalid product data. ID and product data are required."
-                });
-            }
-
-            if (!int.TryParse(productModel.Quantity, out _))
-            {
-                return BadRequest(new ResponseModel
-                {
-                    StatusCode = 400,
-                    MessageError = "Invalid product data. Quantity must be a valid number."
                 });
             }
 

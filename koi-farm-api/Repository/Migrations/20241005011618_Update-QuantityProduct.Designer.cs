@@ -12,8 +12,8 @@ using Repository.Data;
 namespace Repository.Migrations
 {
     [DbContext(typeof(KoiFarmDbContext))]
-    [Migration("20241004023328_Update-Product-Entity")]
-    partial class UpdateProductEntity
+    [Migration("20241005011618_Update-QuantityProduct")]
+    partial class UpdateQuantityProduct
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -330,9 +330,8 @@ namespace Repository.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Quantity")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
