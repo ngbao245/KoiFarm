@@ -120,11 +120,14 @@ namespace koi_farm_api.Controllers
                 _unitOfWork.OrderRepository.Update(order);
             }
 
-            return Ok(new ResponseModel
+            if (response.Success)
             {
-                StatusCode = 200,
-                Data = response
-            });
+                return Redirect($"http://localhost:3000/payment-success?orderId={orderId}&paymentId={response.PaymentId}&status=success");
+            }
+            else
+            {
+                return Redirect($"http://localhost:3000/payment-failed?orderId={orderId}&status=failed");
+            }
         }
 
         [HttpGet("get-all-payments")]
