@@ -37,6 +37,23 @@ public class VnPayLibrary
         var checkSignature =
             vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
 
+        var vnpTransactionStatus = vnPay.GetResponseData("vnp_TransactionStatus");
+
+        if (vnpTransactionStatus != "00")
+        {
+            return new PaymentResponseModel()
+            {
+                Success = false,
+                PaymentMethod = "VnPay",
+                OrderDescription = orderInfo,
+                OrderId = orderId.ToString(),
+                PaymentId = vnPayTranId.ToString(),
+                TransactionId = vnPayTranId.ToString(),
+                Token = vnpSecureHash,
+                VnPayResponseCode = vnpResponseCode
+            };
+        }
+
         if (!checkSignature)
             return new PaymentResponseModel()
             {
