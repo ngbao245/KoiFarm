@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Repository.Data.Entity;
 using Repository.Model;
 using Repository.Model.Product;
+using Repository.Model.ProductItem;
 using Repository.Repository;
 
 namespace koi_farm_api.Controllers
@@ -42,6 +43,38 @@ namespace koi_farm_api.Controllers
             {
                 StatusCode = 200,
                 Data = responseProducts
+            });
+        }
+
+        [HttpGet("get-product/{id}")]
+        public IActionResult GetProductById(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Product ID is required."
+                });
+            }
+
+            var product = _unitOfWork.ProductRepository.GetById(id);
+
+            if (product == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "Product not found."
+                });
+            }
+
+            var responseProduct = _mapper.Map<ResponseProductModel>(product);
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = responseProduct
             });
         }
 
