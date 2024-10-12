@@ -240,5 +240,80 @@ namespace koi_farm_api.Controllers
                 }
             });
         }
+
+        [HttpGet("get-all-orders")]
+        public IActionResult GetAllOrders()
+        {
+            var orders = _unitOfWork.OrderRepository.Get(includeProperties: o => o.Items).ToList();
+            if (!orders.Any())
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "No orders found."
+                });
+            }
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = orders.Select(order => new OrderResponseModel
+                {
+                    OrderId = order.Id,
+                    Total = order.Total,
+                    Status = order.Status,
+                    UserId = order.UserId,
+                    Items = order.Items.Select(item => new OrderItemResponseModel
+                    {
+                        ProductItemId = item.ProductItemId,
+                        Quantity = item.Quantity,
+                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                    }).ToList()
+                }).ToList()
+            });
+        }
+
+        [HttpGet("get-by-status/{status}")]
+        public IActionResult GetOrdersByStatus(string status)
+        {
+            var validStatuses = new[] { "Pending", "Delivering", "Completed", "Cancelled" };
+            if (!validStatuses.Contains(status))
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Invalid order status."
+                });
+            }
+
+            var orders = _unitOfWork.OrderRepository.Get(o => o.Status == status, o => o.Items).ToList();
+            if (!orders.Any())
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = $"No orders found with status '{status}'."
+                });
+            }
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = orders.Select(order => new OrderResponseModel
+                {
+                    OrderId = order.Id,
+                    Total = order.Total,
+                    Status = order.Status,
+                    UserId = order.UserId,
+                    Items = order.Items.Select(item => new OrderItemResponseModel
+                    {
+                        ProductItemId = item.ProductItemId,
+                        Quantity = item.Quantity,
+                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                    }).ToList()
+                }).ToList()
+            });
+        }
+
     }
 }
