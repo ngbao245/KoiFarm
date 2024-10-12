@@ -62,23 +62,28 @@ namespace Repository.Data
             return strConn;
         }
 
-        //Global query filter for soft deletion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Apply the global soft delete filter
+            base.OnModelCreating(modelBuilder);
+
+
+            // Configure the foreign key for the staff who processed the order
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Staff)
+                .WithMany()
+                .HasForeignKey(o => o.StaffId)
+                .OnDelete(DeleteBehavior.Restrict);  // Avoid cascade delete
+
+            // Apply global soft delete filter
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
-                // Check if the entity implements ISoftDelete
                 if (typeof(ISoftDelete).IsAssignableFrom(entityType.ClrType))
                 {
-                    // Apply a global query filter
                     var method = typeof(ModelBuilder).GetMethod("Entity", new Type[] { }).MakeGenericMethod(entityType.ClrType);
                     dynamic entityBuilder = method.Invoke(modelBuilder, null);
                     entityBuilder.HasQueryFilter(CreateSoftDeleteFilter(entityType.ClrType));
                 }
             }
-
-            base.OnModelCreating(modelBuilder);
         }
 
         private static LambdaExpression CreateSoftDeleteFilter(Type entityType)

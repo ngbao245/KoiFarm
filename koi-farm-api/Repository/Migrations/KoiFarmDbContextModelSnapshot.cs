@@ -177,6 +177,10 @@ namespace Repository.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Address")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<DateTimeOffset>("CreatedTime")
                         .HasColumnType("datetimeoffset");
 
@@ -189,10 +193,16 @@ namespace Repository.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool?>("IsDelivered")
+                        .HasColumnType("bit");
+
                     b.Property<DateTimeOffset>("LastUpdatedTime")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("PromotionId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("StaffId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Status")
@@ -209,6 +219,8 @@ namespace Repository.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("PromotionId");
+
+                    b.HasIndex("StaffId");
 
                     b.HasIndex("UserId");
 
@@ -725,6 +737,11 @@ namespace Repository.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("PromotionId");
 
+                    b.HasOne("Repository.Data.Entity.User", "Staff")
+                        .WithMany()
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Repository.Data.Entity.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
@@ -732,6 +749,8 @@ namespace Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("Promotion");
+
+                    b.Navigation("Staff");
 
                     b.Navigation("User");
                 });

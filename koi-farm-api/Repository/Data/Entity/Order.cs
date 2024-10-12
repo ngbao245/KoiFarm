@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -12,16 +13,27 @@ namespace Repository.Data.Entity
     {
         public decimal Total { get; set; }
         public string Status { get; set; }
+
+        // Foreign key for the user who placed the order
         public string UserId { get; set; }
-        [ForeignKey(nameof(UserId))]
+        [ForeignKey("UserId")]
         public User User { get; set; }
+
+        // Foreign key for the staff who processed the order
+        public string? StaffId { get; set; }
+        [ForeignKey("StaffId")]
+        public User? Staff { get; set; }    
 
         public string? PromotionId { get; set; }
         [ForeignKey(nameof(PromotionId))]
         public Promotion? Promotion { get; set; }
 
-        public ICollection<OrderItem> Items { get; set; }
-        // Mới làm entity tới chỗ này thôi
+        [MaxLength(200)]
+        public string? Address { get; set; }
 
+        public bool? IsDelivered { get; set; }
+
+        public ICollection<OrderItem> Items { get; set; }
     }
+
 }

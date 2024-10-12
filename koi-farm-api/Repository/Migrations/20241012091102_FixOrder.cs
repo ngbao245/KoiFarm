@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Repository.Migrations
 {
-    public partial class UpdateQuantityProduct : Migration
+    public partial class FixOrder : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -238,7 +238,10 @@ namespace Repository.Migrations
                     Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StaffId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     PromotionId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    IsDelivered = table.Column<bool>(type: "bit", nullable: true),
                     CreatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastUpdatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     DeletedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -253,6 +256,12 @@ namespace Repository.Migrations
                         column: x => x.PromotionId,
                         principalTable: "Promotion",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Order_User_StaffId",
+                        column: x => x.StaffId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Order_User_UserId",
                         column: x => x.UserId,
@@ -433,6 +442,11 @@ namespace Repository.Migrations
                 name: "IX_Order_PromotionId",
                 table: "Order",
                 column: "PromotionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Order_StaffId",
+                table: "Order",
+                column: "StaffId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_UserId",

@@ -194,5 +194,51 @@ namespace koi_farm_api.Controllers
                 }).ToList()
             });
         }
+
+
+        [HttpPut("update-status/{orderId}")]
+        public IActionResult UpdateOrderStatus(string orderId, [FromBody] RequestUpdateStatusModel model)
+        {
+            var order = _unitOfWork.OrderRepository.GetSingle(o => o.Id == orderId, o => o.Items);
+            if (order == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "Order not found."
+                });
+            }
+
+            var validStatuses = new[] { "Pending", "Delivering", "Completed", "Cancelled"};
+            if (!validStatuses.Contains(model.Status))
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Invalid order status."
+                });
+            }
+
+            order.Status = model.Status;
+            _unitOfWork.OrderRepository.Update(order);
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = new OrderResponseModel
+                {
+                    OrderId = order.Id,
+                    Total = order.Total,
+                    Status = order.Status,
+                    UserId = order.UserId,
+                    Items = order.Items.Select(item => new OrderItemResponseModel
+                    {
+                        ProductItemId = item.ProductItemId,
+                        Quantity = item.Quantity,
+                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                    }).ToList()
+                }
+            });
+        }
     }
 }

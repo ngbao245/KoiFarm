@@ -100,7 +100,8 @@ namespace koi_farm_api.Controllers
 
             if (response.Success)
             {
-                order.Status = "Paid";
+
+                //order.Status = "Paid";
 
                 var payment = new Payment
                 {
