@@ -142,6 +142,7 @@ namespace koi_farm_api.Controllers
                     Total = order.Total,
                     Status = order.Status,
                     UserId = order.UserId,
+                    StaffId = order.StaffId,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -185,6 +186,7 @@ namespace koi_farm_api.Controllers
                     Total = order.Total,
                     Status = order.Status,
                     UserId = order.UserId,
+                    StaffId = order.StaffId,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -263,6 +265,7 @@ namespace koi_farm_api.Controllers
                     Total = order.Total,
                     Status = order.Status,
                     UserId = order.UserId,
+                    StaffId = order.StaffId,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -305,6 +308,7 @@ namespace koi_farm_api.Controllers
                     Total = order.Total,
                     Status = order.Status,
                     UserId = order.UserId,
+                    StaffId = order.StaffId,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -359,6 +363,7 @@ namespace koi_farm_api.Controllers
                     Total = order.Total,
                     Status = order.Status,
                     UserId = order.UserId,
+                    StaffId = order.StaffId,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -366,6 +371,71 @@ namespace koi_farm_api.Controllers
                         Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
                     }).ToList()
                 }).ToList()
+            });
+        }
+
+        [HttpPut("order/assign-staff/{orderId}")]
+        public IActionResult AssignStaffToOrder(string orderId, [FromBody] RequestAssginStaffModel model)
+        {
+            var order = _unitOfWork.OrderRepository.GetSingle(o => o.Id == orderId, o => o.Items);
+            if (order == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "Order not found."
+                });
+            }
+
+            if (order.Status != "Pending")
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Order must be status Pending."
+                });
+            }
+
+            var staff = _unitOfWork.UserRepository.GetById(model.StaffId);
+            if (staff == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = $"Staff with ID {model.StaffId} not found."
+                });
+            }
+
+            if (staff.RoleId != "2")
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = $"{model.StaffId} is not a staff."
+                });
+            }
+
+            order.StaffId = model.StaffId;
+
+            _unitOfWork.OrderRepository.Update(order);
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = new OrderResponseModel
+                {
+                    OrderId = order.Id,
+                    Total = order.Total,
+                    Status = order.Status,
+                    UserId = order.UserId,
+                    StaffId = order.StaffId,
+                    Items = order.Items.Select(item => new OrderItemResponseModel
+                    {
+                        ProductItemId = item.ProductItemId,
+                        Quantity = item.Quantity,
+                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                    }).ToList()
+                }
             });
         }
 
