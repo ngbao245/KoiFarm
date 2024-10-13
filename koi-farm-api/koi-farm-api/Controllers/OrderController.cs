@@ -196,7 +196,7 @@ namespace koi_farm_api.Controllers
         }
 
 
-        [HttpPut("update-status/{orderId}")]
+        [HttpPut("update-order-status/{orderId}")]
         public IActionResult UpdateOrderStatus(string orderId, [FromBody] RequestUpdateStatusModel model)
         {
             var order = _unitOfWork.OrderRepository.GetSingle(o => o.Id == orderId, o => o.Items);
@@ -273,7 +273,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
-        [HttpGet("get-by-status/{status}")]
+        [HttpGet("get-orders-by-status/{status}")]
         public IActionResult GetOrdersByStatus(string status)
         {
             var validStatuses = new[] { "Pending", "Delivering", "Completed", "Cancelled" };
@@ -314,6 +314,61 @@ namespace koi_farm_api.Controllers
                 }).ToList()
             });
         }
+
+        [HttpGet("user/get-orders-by-status/{status}")]
+        public IActionResult GetOrdersByStatusOfUser(string status)
+        {
+            var validStatuses = new[] { "Pending", "Delivering", "Completed", "Cancelled" };
+
+            if (!validStatuses.Contains(status))
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Invalid order status."
+                });
+            }
+
+            var userId = GetUserIdFromClaims();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new ResponseModel
+                {
+                    StatusCode = 401,
+                    MessageError = "Unauthorized. User ID not found in claims."
+                });
+            }
+
+            var orders = _unitOfWork.OrderRepository.Get(o => o.Status == status && o.UserId == userId, o => o.Items).ToList();
+
+            if (!orders.Any())
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = $"No orders found with status '{status}' for the current user."
+                });
+            }
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = orders.Select(order => new OrderResponseModel
+                {
+                    OrderId = order.Id,
+                    Total = order.Total,
+                    Status = order.Status,
+                    UserId = order.UserId,
+                    Items = order.Items.Select(item => new OrderItemResponseModel
+                    {
+                        ProductItemId = item.ProductItemId,
+                        Quantity = item.Quantity,
+                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                    }).ToList()
+                }).ToList()
+            });
+        }
+
 
     }
 }
