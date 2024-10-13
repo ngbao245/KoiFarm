@@ -13,6 +13,7 @@ namespace Repository.Model.Order
         public string Status { get; set; }
         public string UserId { get; set; }
         public string StaffId { get; set; }
+        public string Address { get; set; }
         public List<OrderItemResponseModel> Items { get; set; }
     }
 }

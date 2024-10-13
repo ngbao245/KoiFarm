@@ -90,6 +90,9 @@ namespace koi_farm_api.Controllers
                 _unitOfWork.ProductItemRepository.Update(productItem);
             }
 
+            string address = _unitOfWork.UserRepository.GetById(GetUserIdFromClaims()).Address;
+            order.Address = address;
+
             _unitOfWork.OrderRepository.Create(order);
 
             foreach (var cartItem in cart.Items.ToList())
@@ -109,6 +112,8 @@ namespace koi_farm_api.Controllers
                     Total = order.Total,
                     Status = order.Status,
                     UserId = order.UserId,
+                    StaffId = order.StaffId,
+                    Address = order.Address,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -143,6 +148,7 @@ namespace koi_farm_api.Controllers
                     Status = order.Status,
                     UserId = order.UserId,
                     StaffId = order.StaffId,
+                    Address = order.Address,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -187,6 +193,7 @@ namespace koi_farm_api.Controllers
                     Status = order.Status,
                     UserId = order.UserId,
                     StaffId = order.StaffId,
+                    Address = order.Address,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -233,6 +240,8 @@ namespace koi_farm_api.Controllers
                     Total = order.Total,
                     Status = order.Status,
                     UserId = order.UserId,
+                    StaffId = order.StaffId,
+                    Address = order.Address,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -266,6 +275,7 @@ namespace koi_farm_api.Controllers
                     Status = order.Status,
                     UserId = order.UserId,
                     StaffId = order.StaffId,
+                    Address = order.Address,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -309,6 +319,7 @@ namespace koi_farm_api.Controllers
                     Status = order.Status,
                     UserId = order.UserId,
                     StaffId = order.StaffId,
+                    Address = order.Address,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -364,6 +375,7 @@ namespace koi_farm_api.Controllers
                     Status = order.Status,
                     UserId = order.UserId,
                     StaffId = order.StaffId,
+                    Address = order.Address,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -429,6 +441,7 @@ namespace koi_farm_api.Controllers
                     Status = order.Status,
                     UserId = order.UserId,
                     StaffId = order.StaffId,
+                    Address = order.Address,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,

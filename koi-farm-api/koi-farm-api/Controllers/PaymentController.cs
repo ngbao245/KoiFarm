@@ -173,6 +173,23 @@ namespace koi_farm_api.Controllers
             //        }
             //    }
             //}
+            foreach (var responsePayment in responsePayments)
+            {
+                var order = _unitOfWork.OrderRepository.GetSingle(o => o.Id == responsePayment.OrderId, o => o.Items);
+
+                responsePayment.Order.OrderId = order.Id;
+                responsePayment.Order.Address = order.Address;
+                responsePayment.Order.StaffId = order.StaffId;
+
+                responsePayment.Order.Items = order.Items.Select(item => new OrderItemResponseModel
+                {
+                    ProductItemId = item.ProductItemId,
+                    Quantity = item.Quantity,
+                    Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                }).ToList();
+
+            }
+
 
             return Ok(new ResponseModel
             {
