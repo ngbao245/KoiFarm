@@ -147,32 +147,60 @@ namespace koi_farm_api.Controllers
 
             var responsePayments = _mapper.Map<List<ResponsePaymentModel>>(payments);
 
-            //foreach (var item in responsePayments)
-            //{
-            //    // Check if the order exists
-            //    if (item.Order != null)
-            //    {
-            //        // Find the corresponding order in the original payments list
-            //        var originalPayment = payments.FirstOrDefault(p => p.Order != null && p.Order.Id == item.OrderId);
+            
+            foreach (var responsePayment in responsePayments)
+            {
+                var order = _unitOfWork.OrderRepository.GetSingle(o => o.Id == responsePayment.OrderId, o => o.Items);
 
-            //        // If originalPayment is found and its Order is valid
-            //        if (originalPayment != null && originalPayment.Order?.Items != null)
-            //        {
-            //            // Map each OrderItem to OrderItemResponseModel
-            //            item.Order.Items = originalPayment.Order.Items.Select(orderItem => new OrderItemResponseModel
-            //            {
-            //                ProductItemId = orderItem.ProductItemId,
-            //                Quantity = orderItem.Quantity,
-            //                Price = _unitOfWork.ProductItemRepository.GetById(orderItem.ProductItemId)?.Price ?? 0 // Fallback to 0 if product item is not found
-            //            }).ToList();
-            //        }
-            //        else
-            //        {
-            //            // If there are no items, initialize it to an empty list
-            //            item.Order.Items = new List<OrderItemResponseModel>();
-            //        }
-            //    }
-            //}
+                responsePayment.Order.OrderId = order.Id;
+                responsePayment.Order.Address = order.Address;
+                responsePayment.Order.StaffId = order.StaffId;
+
+                responsePayment.Order.Items = order.Items.Select(item => new OrderItemResponseModel
+                {
+                    ProductItemId = item.ProductItemId,
+                    Quantity = item.Quantity,
+                    Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                }).ToList();
+
+            }
+
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = responsePayments
+            });
+        }
+
+        [HttpGet("get-user-payments")]
+        public IActionResult GetUserPayments()
+        {
+            var userId = User.FindFirst("UserID")?.Value; ;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new ResponseModel
+                {
+                    StatusCode = 401,
+                    MessageError = "Unauthorized. User ID not found in claims."
+                });
+            }
+
+            var payments = _unitOfWork.PaymentRepository.Get(includeProperties: p => p.Order).Where(p => p.Order.UserId == userId).ToList();
+
+            if (!payments.Any())
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "No payments found."
+                });
+            }
+
+
+            var responsePayments = _mapper.Map<List<ResponsePaymentModel>>(payments);
+
+
             foreach (var responsePayment in responsePayments)
             {
                 var order = _unitOfWork.OrderRepository.GetSingle(o => o.Id == responsePayment.OrderId, o => o.Items);
