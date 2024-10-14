@@ -13,6 +13,7 @@ namespace Repository.Model.Payment
         public decimal Amount { get; set; }
         public string Status { get; set; }
         public string Method { get; set; }
+        public DateTimeOffset CreatedTime { get; set; }
 
         public string OrderId { get; set; }
         public OrderResponseModel Order { get; set; }
