@@ -114,6 +114,7 @@ namespace koi_farm_api.Controllers
                     UserId = order.UserId,
                     StaffId = order.StaffId,
                     Address = order.Address,
+                    CreatedTime = order.CreatedTime,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -149,6 +150,7 @@ namespace koi_farm_api.Controllers
                     UserId = order.UserId,
                     StaffId = order.StaffId,
                     Address = order.Address,
+                    CreatedTime = order.CreatedTime,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -194,6 +196,7 @@ namespace koi_farm_api.Controllers
                     UserId = order.UserId,
                     StaffId = order.StaffId,
                     Address = order.Address,
+                    CreatedTime = order.CreatedTime,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -242,6 +245,7 @@ namespace koi_farm_api.Controllers
                     UserId = order.UserId,
                     StaffId = order.StaffId,
                     Address = order.Address,
+                    CreatedTime = order.CreatedTime,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -276,6 +280,7 @@ namespace koi_farm_api.Controllers
                     UserId = order.UserId,
                     StaffId = order.StaffId,
                     Address = order.Address,
+                    CreatedTime = order.CreatedTime,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -320,6 +325,7 @@ namespace koi_farm_api.Controllers
                     UserId = order.UserId,
                     StaffId = order.StaffId,
                     Address = order.Address,
+                    CreatedTime = order.CreatedTime,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -376,6 +382,7 @@ namespace koi_farm_api.Controllers
                     UserId = order.UserId,
                     StaffId = order.StaffId,
                     Address = order.Address,
+                    CreatedTime = order.CreatedTime,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -442,6 +449,7 @@ namespace koi_farm_api.Controllers
                     UserId = order.UserId,
                     StaffId = order.StaffId,
                     Address = order.Address,
+                    CreatedTime = order.CreatedTime,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -452,6 +460,53 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [HttpGet("staff/get-assigned-orders")]
+        public IActionResult GetOrdersAssignedToStaff()
+        {
+            var staffId = GetUserIdFromClaims();
 
+            if (string.IsNullOrEmpty(staffId))
+            {
+                return Unauthorized(new ResponseModel
+                {
+                    StatusCode = 401,
+                    MessageError = "Unauthorized. Staff ID not found in claims."
+                });
+            }
+
+            var orders = _unitOfWork.OrderRepository.Get(o => o.StaffId == staffId, o => o.Items).ToList();
+
+            if (!orders.Any())
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "No orders found for the assigned staff."
+                });
+            }
+
+            var responseOrders = orders.Select(order => new OrderResponseModel
+            {
+                OrderId = order.Id,
+                Total = order.Total,
+                Status = order.Status,
+                UserId = order.UserId,
+                StaffId = order.StaffId,
+                Address = order.Address,
+                CreatedTime = order.CreatedTime,
+                Items = order.Items.Select(item => new OrderItemResponseModel
+                {
+                    ProductItemId = item.ProductItemId,
+                    Quantity = item.Quantity,
+                    Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                }).ToList()
+            }).ToList();
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = responseOrders
+            });
+        }
     }
 }
