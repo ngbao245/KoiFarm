@@ -278,5 +278,40 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [HttpGet("get-my-user")]
+        [Authorize]
+        public IActionResult GetMyUser()
+        {
+            var userId = User.FindFirst("UserID")?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new ResponseModel
+                {
+                    StatusCode = 401,
+                    MessageError = "Unauthorized: UserId not found in claims."
+                });
+            }
+
+            var user = _unitOfWork.UserRepository.GetById(userId);
+
+            if (user == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = $"User with Id: {userId} not found."
+                });
+            }
+
+            var responseUser = _mapper.Map<ResponseUserModel>(user);
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = responseUser
+            });
+        }
+
     }
 }
