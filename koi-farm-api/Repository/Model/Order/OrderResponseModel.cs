@@ -14,6 +14,7 @@ namespace Repository.Model.Order
         public string UserId { get; set; }
         public string StaffId { get; set; }
         public string Address { get; set; }
+        public bool? IsDelivered{ get; set; }
         public DateTimeOffset CreatedTime { get; set; }
         public List<OrderItemResponseModel> Items { get; set; }
     }

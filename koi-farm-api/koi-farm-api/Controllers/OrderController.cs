@@ -115,6 +115,7 @@ namespace koi_farm_api.Controllers
                     StaffId = order.StaffId,
                     Address = order.Address,
                     CreatedTime = order.CreatedTime,
+                    IsDelivered = order.IsDelivered,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -151,6 +152,7 @@ namespace koi_farm_api.Controllers
                     StaffId = order.StaffId,
                     Address = order.Address,
                     CreatedTime = order.CreatedTime,
+                    IsDelivered = order.IsDelivered,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -197,6 +199,7 @@ namespace koi_farm_api.Controllers
                     StaffId = order.StaffId,
                     Address = order.Address,
                     CreatedTime = order.CreatedTime,
+                    IsDelivered = order.IsDelivered,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -246,6 +249,7 @@ namespace koi_farm_api.Controllers
                     StaffId = order.StaffId,
                     Address = order.Address,
                     CreatedTime = order.CreatedTime,
+                    IsDelivered = order.IsDelivered,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -281,6 +285,7 @@ namespace koi_farm_api.Controllers
                     StaffId = order.StaffId,
                     Address = order.Address,
                     CreatedTime = order.CreatedTime,
+                    IsDelivered = order.IsDelivered,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -326,6 +331,7 @@ namespace koi_farm_api.Controllers
                     StaffId = order.StaffId,
                     Address = order.Address,
                     CreatedTime = order.CreatedTime,
+                    IsDelivered = order.IsDelivered,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -383,6 +389,7 @@ namespace koi_farm_api.Controllers
                     StaffId = order.StaffId,
                     Address = order.Address,
                     CreatedTime = order.CreatedTime,
+                    IsDelivered = order.IsDelivered,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -450,6 +457,7 @@ namespace koi_farm_api.Controllers
                     StaffId = order.StaffId,
                     Address = order.Address,
                     CreatedTime = order.CreatedTime,
+                    IsDelivered = order.IsDelivered,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -494,6 +502,7 @@ namespace koi_farm_api.Controllers
                 StaffId = order.StaffId,
                 Address = order.Address,
                 CreatedTime = order.CreatedTime,
+                IsDelivered = order.IsDelivered,
                 Items = order.Items.Select(item => new OrderItemResponseModel
                 {
                     ProductItemId = item.ProductItemId,
@@ -506,6 +515,63 @@ namespace koi_farm_api.Controllers
             {
                 StatusCode = 200,
                 Data = responseOrders
+            });
+        }
+
+        [HttpPut("is-delivered")]
+        public IActionResult UpdateIsDelivered (string orderId, [FromBody] RequestIsDeliveredModel model)
+        {
+            var order = _unitOfWork.OrderRepository.GetSingle(o => o.Id == orderId, o => o.Items);
+            if (order == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "Order not found."
+                });
+            }
+
+            if (order.Status != "Completed")
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Order is not in status Completed."
+                });
+            }
+
+            if (order.IsDelivered == true)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Order is already completed."
+                });
+            }
+
+            order.IsDelivered = model.IsDelivered;
+            _unitOfWork.OrderRepository.Update(order);
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                MessageError = null,
+                Data = new OrderResponseModel
+                {
+                    OrderId = order.Id,
+                    Total = order.Total,
+                    Status = order.Status,
+                    UserId = order.UserId,
+                    StaffId = order.StaffId,
+                    Address = order.Address,
+                    IsDelivered = order.IsDelivered,
+                    Items = order.Items.Select(item => new OrderItemResponseModel
+                    {
+                        ProductItemId = item.ProductItemId,
+                        Quantity = item.Quantity,
+                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                    }).ToList()
+                }
             });
         }
     }
