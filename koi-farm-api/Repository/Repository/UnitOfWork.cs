@@ -27,6 +27,7 @@ namespace Repository.Repository
         private GenericRepository<OrderItem> _orderItem;
         private GenericRepository<Promotion> _promotion;
         private GenericRepository<Payment> _payment;
+        private GenericRepository<Consignment> _consignment;
 
 
 
@@ -35,6 +36,18 @@ namespace Repository.Repository
         public UnitOfWork(KoiFarmDbContext context)
         {
             _context = context;
+        }
+
+        public GenericRepository<Consignment> ConsignmentRepository
+        {
+            get
+            {
+                if (_consignment == null)
+                {
+                    _consignment = new GenericRepository<Consignment>(_context);
+                }
+                return _consignment;
+            }
         }
 
         public GenericRepository<Payment> PaymentRepository
