@@ -1,10 +1,7 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Data.Entity
 {
@@ -22,7 +19,7 @@ namespace Repository.Data.Entity
         // Foreign key for the staff who processed the order
         public string? StaffId { get; set; }
         [ForeignKey("StaffId")]
-        public User? Staff { get; set; }    
+        public User? Staff { get; set; }
 
         public string? PromotionId { get; set; }
         [ForeignKey(nameof(PromotionId))]
@@ -30,10 +27,13 @@ namespace Repository.Data.Entity
 
         [MaxLength(200)]
         public string? Address { get; set; }
-
         public bool? IsDelivered { get; set; }
+
+        // Link to consignment if the order is generated from one
+        public string? ConsignmentId { get; set; }
+        [ForeignKey(nameof(ConsignmentId))]
+        public Consignment? Consignment { get; set; }
 
         public ICollection<OrderItem> Items { get; set; }
     }
-
 }

@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Data.Entity
 {
     [Table("Consignment")]
     public class Consignment : Entity
     {
-        public string UserId {  get; set; }
+        public string UserId { get; set; }
 
         [ForeignKey(nameof(UserId))]
         public User User { get; set; }
 
-        public ICollection<ConsignmentItems> Items { get; set; }
+        public ICollection<ConsignmentItems> Items { get; set; } = new List<ConsignmentItems>();
+
+        // You don't need an OrderId here; consignments don't need to map directly to orders
+        // Instead, OrderItems will now link to ConsignmentItems
+        public string Status { get; set; } = "Pending";
     }
 }

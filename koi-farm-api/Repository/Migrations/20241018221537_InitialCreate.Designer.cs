@@ -12,8 +12,8 @@ using Repository.Data;
 namespace Repository.Migrations
 {
     [DbContext(typeof(KoiFarmDbContext))]
-    [Migration("20241012091102_FixOrder")]
-    partial class FixOrder
+    [Migration("20241018221537_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -174,6 +174,110 @@ namespace Repository.Migrations
                     b.ToTable("Certificate");
                 });
 
+            modelBuilder.Entity("Repository.Data.Entity.Consignment", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTimeOffset>("CreatedTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("LastUpdatedTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("OrderId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Consignment");
+                });
+
+            modelBuilder.Entity("Repository.Data.Entity.ConsignmentItems", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Category")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Checkedout")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ConsignmentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTimeOffset>("CreatedTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("LastUpdatedTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderItemId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Origin")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Sex")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Size")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Species")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConsignmentId");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.ToTable("ConsignmentItem");
+                });
+
             modelBuilder.Entity("Repository.Data.Entity.Order", b =>
                 {
                     b.Property<string>("Id")
@@ -182,6 +286,9 @@ namespace Repository.Migrations
                     b.Property<string>("Address")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ConsignmentId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTimeOffset>("CreatedTime")
                         .HasColumnType("datetimeoffset");
@@ -220,6 +327,8 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ConsignmentId");
+
                     b.HasIndex("PromotionId");
 
                     b.HasIndex("StaffId");
@@ -232,6 +341,9 @@ namespace Repository.Migrations
             modelBuilder.Entity("Repository.Data.Entity.OrderItem", b =>
                 {
                     b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConsignmentItemId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTimeOffset>("CreatedTime")
@@ -261,6 +373,8 @@ namespace Repository.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ConsignmentItemId");
 
                     b.HasIndex("OrderID");
 
@@ -733,8 +847,46 @@ namespace Repository.Migrations
                     b.Navigation("ProductItem");
                 });
 
+            modelBuilder.Entity("Repository.Data.Entity.Consignment", b =>
+                {
+                    b.HasOne("Repository.Data.Entity.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId");
+
+                    b.HasOne("Repository.Data.Entity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Repository.Data.Entity.ConsignmentItems", b =>
+                {
+                    b.HasOne("Repository.Data.Entity.Consignment", "Consignment")
+                        .WithMany("Items")
+                        .HasForeignKey("ConsignmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Repository.Data.Entity.OrderItem", "OrderItem")
+                        .WithMany()
+                        .HasForeignKey("OrderItemId");
+
+                    b.Navigation("Consignment");
+
+                    b.Navigation("OrderItem");
+                });
+
             modelBuilder.Entity("Repository.Data.Entity.Order", b =>
                 {
+                    b.HasOne("Repository.Data.Entity.Consignment", "Consignment")
+                        .WithMany()
+                        .HasForeignKey("ConsignmentId");
+
                     b.HasOne("Repository.Data.Entity.Promotion", "Promotion")
                         .WithMany("Orders")
                         .HasForeignKey("PromotionId");
@@ -750,6 +902,8 @@ namespace Repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Consignment");
+
                     b.Navigation("Promotion");
 
                     b.Navigation("Staff");
@@ -759,7 +913,11 @@ namespace Repository.Migrations
 
             modelBuilder.Entity("Repository.Data.Entity.OrderItem", b =>
                 {
-                    b.HasOne("Repository.Data.Entity.Order", "order")
+                    b.HasOne("Repository.Data.Entity.ConsignmentItems", "ConsignmentItem")
+                        .WithMany()
+                        .HasForeignKey("ConsignmentItemId");
+
+                    b.HasOne("Repository.Data.Entity.Order", "Order")
                         .WithMany("Items")
                         .HasForeignKey("OrderID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -771,9 +929,11 @@ namespace Repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ProductItem");
+                    b.Navigation("ConsignmentItem");
 
-                    b.Navigation("order");
+                    b.Navigation("Order");
+
+                    b.Navigation("ProductItem");
                 });
 
             modelBuilder.Entity("Repository.Data.Entity.Payment", b =>
@@ -864,6 +1024,11 @@ namespace Repository.Migrations
             modelBuilder.Entity("Repository.Data.Entity.Certificate", b =>
                 {
                     b.Navigation("CertificateProduct");
+                });
+
+            modelBuilder.Entity("Repository.Data.Entity.Consignment", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("Repository.Data.Entity.Order", b =>

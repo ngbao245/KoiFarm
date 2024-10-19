@@ -24,14 +24,14 @@ namespace koi_farm_api.Controllers
             return User.FindFirst("UserID")?.Value;
         }
 
-        //Create Order Endpoint
+        // Create Order Endpoint
         [HttpPost("create")]
         public IActionResult CreateOrder([FromBody] CreateOrderRequestModel model)
         {
             var cart = _unitOfWork.CartRepository.GetSingle(c => c.Id == model.CartId, c => c.Items);
             if (cart == null || !cart.Items.Any())
             {
-                return NotFound(new ResponseModel
+                return BadRequest(new ResponseModel
                 {
                     StatusCode = 400,
                     MessageError = "There is no Cart found or the cart is empty."
@@ -76,17 +76,7 @@ namespace koi_farm_api.Controllers
                 order.Items.Add(orderItem);
                 order.Total += orderItem.Quantity * productItem.Price;
 
-                if (orderItem.Quantity > productItem.Quantity)
-                {
-                    return BadRequest(new ResponseModel
-                    {
-                        StatusCode = StatusCodes.Status400BadRequest,
-                        MessageError = "Exceeds Quantity of Product Item"
-                    });
-                }
-
                 productItem.Quantity -= orderItem.Quantity;
-                
                 _unitOfWork.ProductItemRepository.Update(productItem);
             }
 
@@ -126,7 +116,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
-        //Get Order by ID Endpoint
+        // Get Order by ID Endpoint
         [HttpGet("{orderId}")]
         public IActionResult GetOrderById(string orderId)
         {
@@ -163,7 +153,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
-        //Get All Orders for a User Endpoint
+        // Get All Orders for a User Endpoint
         [HttpGet("user")]
         public IActionResult GetAllOrdersForUser()
         {
@@ -210,7 +200,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
-
+        // Update Order Status Endpoint
         [HttpPut("update-order-status/{orderId}")]
         public IActionResult UpdateOrderStatus(string orderId, [FromBody] RequestUpdateStatusModel model)
         {
@@ -224,7 +214,7 @@ namespace koi_farm_api.Controllers
                 });
             }
 
-            var validStatuses = new[] { "Pending", "Delivering", "Completed", "Cancelled"};
+            var validStatuses = new[] { "Pending", "Delivering", "Completed", "Cancelled" };
             if (!validStatuses.Contains(model.Status))
             {
                 return BadRequest(new ResponseModel
@@ -260,42 +250,44 @@ namespace koi_farm_api.Controllers
             });
         }
 
-        [HttpGet("get-all-orders")]
-        public IActionResult GetAllOrders()
-        {
-            var orders = _unitOfWork.OrderRepository.Get(includeProperties: o => o.Items).ToList();
-            if (!orders.Any())
-            {
-                return NotFound(new ResponseModel
-                {
-                    StatusCode = 404,
-                    MessageError = "No orders found."
-                });
-            }
+        //// Get All Orders Endpoint
+        //[HttpGet("get-all-orders")]
+        //public IActionResult GetAllOrders()
+        //{
+        //    var orders = _unitOfWork.OrderRepository.Get(includeProperties: "Items").ToList();
+        //    if (!orders.Any())
+        //    {
+        //        return NotFound(new ResponseModel
+        //        {
+        //            StatusCode = 404,
+        //            MessageError = "No orders found."
+        //        });
+        //    }
 
-            return Ok(new ResponseModel
-            {
-                StatusCode = 200,
-                Data = orders.Select(order => new OrderResponseModel
-                {
-                    OrderId = order.Id,
-                    Total = order.Total,
-                    Status = order.Status,
-                    UserId = order.UserId,
-                    StaffId = order.StaffId,
-                    Address = order.Address,
-                    CreatedTime = order.CreatedTime,
-                    IsDelivered = order.IsDelivered,
-                    Items = order.Items.Select(item => new OrderItemResponseModel
-                    {
-                        ProductItemId = item.ProductItemId,
-                        Quantity = item.Quantity,
-                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
-                    }).ToList()
-                }).ToList()
-            });
-        }
+        //    return Ok(new ResponseModel
+        //    {
+        //        StatusCode = 200,
+        //        Data = orders.Select(order => new OrderResponseModel
+        //        {
+        //            OrderId = order.Id,
+        //            Total = order.Total,
+        //            Status = order.Status,
+        //            UserId = order.UserId,
+        //            StaffId = order.StaffId,
+        //            Address = order.Address,
+        //            CreatedTime = order.CreatedTime,
+        //            IsDelivered = order.IsDelivered,
+        //            Items = order.Items.Select(item => new OrderItemResponseModel
+        //            {
+        //                ProductItemId = item.ProductItemId,
+        //                Quantity = item.Quantity,
+        //                Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+        //            }).ToList()
+        //        }).ToList()
+        //    });
+        //}
 
+        // Get Orders by Status Endpoint
         [HttpGet("get-orders-by-status/{status}")]
         public IActionResult GetOrdersByStatus(string status)
         {
@@ -342,6 +334,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        // Get Orders by Status for Current User Endpoint
         [HttpGet("user/get-orders-by-status/{status}")]
         public IActionResult GetOrdersByStatusOfUser(string status)
         {
@@ -400,6 +393,57 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        // Cancel Order Endpoint
+        [HttpPut("cancel-order/{orderId}")]
+        public IActionResult CancelOrder(string orderId)
+        {
+            var order = _unitOfWork.OrderRepository.GetSingle(o => o.Id == orderId, o => o.Items);
+            if (order == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "Order not found."
+                });
+            }
+
+            if (order.Status != "Pending")
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Order can't be canceled."
+                });
+            }
+
+            foreach (var orderItem in order.Items)
+            {
+                var productItem = _unitOfWork.ProductItemRepository.GetById(orderItem.ProductItemId);
+                if (productItem != null)
+                {
+                    productItem.Quantity += orderItem.Quantity;
+                    _unitOfWork.ProductItemRepository.Update(productItem);
+
+                    var product = _unitOfWork.ProductRepository.GetById(productItem.ProductId);
+                    if (product != null)
+                    {
+                        product.Quantity += orderItem.Quantity;
+                        _unitOfWork.ProductRepository.Update(product);
+                    }
+                }
+            }
+
+            order.Status = "Cancelled";
+            _unitOfWork.OrderRepository.Update(order);
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                MessageError = "Order successfully canceled. Quantities have been updated accordingly."
+            });
+        }
+
+        // Assign Staff to Order Endpoint
         [HttpPut("order/assign-staff/{orderId}")]
         public IActionResult AssignStaffToOrder(string orderId, [FromBody] RequestAssginStaffModel model)
         {
@@ -418,7 +462,7 @@ namespace koi_farm_api.Controllers
                 return BadRequest(new ResponseModel
                 {
                     StatusCode = 400,
-                    MessageError = "Order must be status Pending."
+                    MessageError = "Order must be in Pending status."
                 });
             }
 
@@ -434,15 +478,14 @@ namespace koi_farm_api.Controllers
 
             if (staff.RoleId != "2")
             {
-                return NotFound(new ResponseModel
+                return BadRequest(new ResponseModel
                 {
-                    StatusCode = 404,
-                    MessageError = $"{model.StaffId} is not a staff."
+                    StatusCode = 400,
+                    MessageError = $"{model.StaffId} is not a staff member."
                 });
             }
 
             order.StaffId = model.StaffId;
-
             _unitOfWork.OrderRepository.Update(order);
 
             return Ok(new ResponseModel
@@ -468,6 +511,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        // Get Orders Assigned to Staff Endpoint
         [HttpGet("staff/get-assigned-orders")]
         public IActionResult GetOrdersAssignedToStaff()
         {
@@ -518,8 +562,9 @@ namespace koi_farm_api.Controllers
             });
         }
 
-        [HttpPut("is-delivered")]
-        public IActionResult UpdateIsDelivered (string orderId, [FromBody] RequestIsDeliveredModel model)
+        // Update IsDelivered Flag for Order
+        [HttpPut("is-delivered/{orderId}")]
+        public IActionResult UpdateIsDelivered(string orderId, [FromBody] RequestIsDeliveredModel model)
         {
             var order = _unitOfWork.OrderRepository.GetSingle(o => o.Id == orderId, o => o.Items);
             if (order == null)
@@ -536,16 +581,16 @@ namespace koi_farm_api.Controllers
                 return BadRequest(new ResponseModel
                 {
                     StatusCode = 400,
-                    MessageError = "Order is not in status Completed."
+                    MessageError = "Order is not in Completed status."
                 });
             }
 
-            if (order.IsDelivered == true)
+            if ((bool)order.IsDelivered)
             {
                 return BadRequest(new ResponseModel
                 {
                     StatusCode = 400,
-                    MessageError = "Order is already completed."
+                    MessageError = "Order is already marked as delivered."
                 });
             }
 

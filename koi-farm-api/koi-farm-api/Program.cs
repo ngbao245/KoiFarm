@@ -76,7 +76,6 @@ builder.Services.AddAutoMapper(typeof(MappingProfiles));
 builder.Services.AddScoped<UnitOfWork>();
 builder.Services.AddScoped<GenerateToken>();
 
-
 //builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 // JWT Authentication
@@ -136,19 +135,30 @@ builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Apply pending migrations automatically on startup
+using (var scope = app.Services.CreateScope())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var dbContext = scope.ServiceProvider.GetRequiredService<KoiFarmDbContext>();
+    dbContext.Database.Migrate();
 }
 
-app.UseHttpsRedirection();
+// Configure the HTTP request pipeline.
+// Enable Swagger for both Development and Production environments
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "KoiFarm API V1");
+        c.RoutePrefix = string.Empty;  // Swagger will be served at root URL (http://localhost:8001/)
+    });
+}
+
+//app.UseHttpsRedirection();
 app.UseCors("corspolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 
 app.MapControllers();
 
