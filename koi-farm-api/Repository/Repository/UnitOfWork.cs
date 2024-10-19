@@ -39,17 +39,6 @@ namespace Repository.Repository
             _context = context;
         }
 
-        public GenericRepository<Consignment> ConsignmentRepository
-        {
-            get
-            {
-                if (_consignment == null)
-                {
-                    _consignment = new GenericRepository<Consignment>(_context);
-                }
-                return _consignment;
-            }
-        }
 
         public GenericRepository<Payment> PaymentRepository
         {
