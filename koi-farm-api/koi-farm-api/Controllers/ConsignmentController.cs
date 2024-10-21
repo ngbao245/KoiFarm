@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Repository.Data.Entity;
 using Repository.Model;
 using Repository.Model.Consignment;
+using Repository.Model.Order;
 using Repository.Repository;
 using System.Linq;
 
@@ -393,5 +394,98 @@ namespace koi_farm_api.Controllers
                 Data = response
             });
         }
+
+        [HttpPost("checkout/{consignmentItemId}")]
+        public IActionResult CheckoutConsignmentItem(string consignmentItemId)
+        {
+            var userId = GetUserIdFromClaims();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new ResponseModel
+                {
+                    StatusCode = 401,
+                    MessageError = "Unauthorized. User ID not found in claims."
+                });
+            }
+
+            var consignmentItem = _unitOfWork.ConsignmentItemRepository.GetSingle(
+                ci => ci.Id == consignmentItemId && ci.Consignment.UserId == userId && !ci.Checkedout
+            );
+
+            if (consignmentItem == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "Consignment item not found or not available for checkout."
+                });
+            }
+
+            if (consignmentItem.Status != "Approved")
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Consignment item is not approved for checkout."
+                });
+            }
+
+            // Calculate the total price based on the number of days
+            var totalDays = (DateTimeOffset.Now - consignmentItem.CreatedTime).Days;
+            if (totalDays < 1) totalDays = 1; // Minimum charge for at least 1 day
+            var totalPrice = 25000 * totalDays;
+
+            // Create a new order
+            var order = new Order
+            {
+                UserId = userId,
+                Total = totalPrice,
+                Status = "Pending",
+                Address = GetUserAddress(userId),
+                Items = new List<OrderItem>
+                {
+                    new OrderItem
+                    {
+                        ConsignmentItemId = consignmentItem.Id,
+                        Quantity = 1
+                    }
+                }
+            };
+
+            // Mark the consignment item as checked out
+            consignmentItem.Checkedout = true;
+
+            // Save changes
+            _unitOfWork.OrderRepository.Create(order);
+            _unitOfWork.ConsignmentItemRepository.Update(consignmentItem);
+            _unitOfWork.SaveChange();
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 201,
+                Data = new OrderResponseModel
+                {
+                    OrderId = order.Id,
+                    Total = order.Total,
+                    Status = order.Status,
+                    UserId = order.UserId,
+                    Address = order.Address,
+                    CreatedTime = order.CreatedTime,
+                    Items = order.Items.Select(item => new OrderItemResponseModel
+                    {
+                        ProductItemId = item.ConsignmentItemId,
+                        Quantity = item.Quantity,
+                        Price = totalPrice
+                    }).ToList()
+                }
+            });
+        }
+
+        private string GetUserAddress(string userId)
+        {
+            var user = _unitOfWork.UserRepository.GetById(userId);
+            return user?.Address ?? string.Empty;
+        }
+
     }
 }
