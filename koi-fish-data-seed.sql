@@ -17,6 +17,13 @@ BEGIN
 END
 GO
 
+-- Check and Delete if any data exists in the Blog table
+IF EXISTS (SELECT 1 FROM [dbo].[Blog])
+BEGIN
+    DELETE FROM [dbo].[Blog];
+END
+GO
+
 -- Check and Delete if any data exists in the Role table
 IF EXISTS (SELECT 1 FROM [dbo].[ProductItem])
 BEGIN
@@ -63,6 +70,36 @@ INSERT INTO [dbo].[User]
            ,[DeletedAt])
 VALUES
            ('aa5fd505e603484ba3abd30223d0c29f' ,'manager', 'manager@gmail.com', '123456', NULL, '0934140524', '1', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL)
+GO
+
+-- Insert blogs into Blog table
+INSERT INTO [KoiFarm].[dbo].[Blog] 
+    ([Id], 
+	[Title], 
+	[ImageUrl], 
+	[Description], 
+	[UserId], 
+	[CreatedTime], 
+	[LastUpdatedTime], 
+	[DeletedTime], 
+	[IsDeleted], 
+	[DeletedAt])
+VALUES
+    (1, N'Kinh nghiệm nuôi cá Koi trong hồ ngoài trời', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSz2vIkk5DKxeUrIZYz9CxUTVdqkVmSdwDInQ&s', 
+	N'Nuôi cá Koi trong hồ ngoài trời không chỉ là một sở thích mà còn là nghệ thuật đòi hỏi sự chăm sóc cẩn thận. Để có một hồ cá Koi đẹp và cá khỏe mạnh, bạn cần chú ý đến chất lượng nước, ánh sáng, và thức ăn. Nước trong hồ cần được giữ sạch, không chứa hóa chất độc hại và có mức pH ổn định từ 7.0 đến 8.5. Ánh sáng tự nhiên là yếu tố quan trọng để cá Koi phát triển màu sắc rực rỡ, tuy nhiên không nên để ánh sáng mặt trời chiếu trực tiếp vào hồ quá lâu, vì nó có thể gây tảo phát triển mạnh. Thức ăn cho cá Koi nên chứa đầy đủ dưỡng chất để hỗ trợ sự phát triển của chúng. Bạn có thể cho cá ăn từ 1-2 lần mỗi ngày, tránh cho ăn quá nhiều để không làm ô nhiễm nước. Ngoài ra, việc tạo không gian bơi rộng rãi, thoáng mát giúp cá Koi có điều kiện sinh trưởng tốt nhất.', 
+	'aa5fd505e603484ba3abd30223d0c29f', GETDATE(), GETDATE(), NULL, 0, NULL),
+    (2, N'Bí quyết chọn cá Koi đẹp và khỏe', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSD3aVI1ftuyN1T6vqv90G5vCEZyK-ACDGvxQ&s', 
+	N'Khi chọn cá Koi, bạn cần lưu ý đến màu sắc, hình dáng và sự linh hoạt của chúng. Một con cá Koi đẹp thường có màu sắc rực rỡ, phân bố đều trên toàn thân, không bị đốm hay phai màu. Màu trắng nên sáng, không vàng, và màu đỏ nên đậm, đều. Hình dáng của cá cũng rất quan trọng, cơ thể nên thon dài, cân đối và không có dấu hiệu dị tật. Khi mua cá, bạn nên chọn những con bơi lội linh hoạt, không có dấu hiệu lờ đờ hoặc bệnh tật. Quan sát kỹ vây, mắt và miệng của cá để đảm bảo chúng không có vết thương hoặc dấu hiệu của bệnh. Cá Koi khỏe mạnh thường có vây trong suốt, không bị rách, và da không có vết nứt hay nhiễm trùng.', 
+	'aa5fd505e603484ba3abd30223d0c29f', GETDATE(), GETDATE(), NULL, 0, NULL),
+    (3, N'Các loại thức ăn tốt nhất cho cá Koi', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiRrJ2YYAcDB2skplKiWW3k8VjRTiFR9eYhA&s', 
+	N'Thức ăn cho cá Koi đóng vai trò quan trọng trong việc phát triển màu sắc và sức khỏe của chúng. Thức ăn chứa hàm lượng protein cao giúp cá tăng trưởng nhanh chóng, đồng thời cung cấp đầy đủ vitamin và khoáng chất để giữ cho cá luôn khỏe mạnh. Một số loại thức ăn tốt cho cá Koi bao gồm thức ăn dạng viên nổi, chứa nhiều tảo Spirulina, giúp tăng cường màu sắc của cá. Bạn cũng có thể bổ sung thức ăn tự nhiên như rau xanh, trái cây và tôm nhỏ để tạo sự đa dạng trong chế độ dinh dưỡng của cá. Lưu ý, không nên cho cá ăn quá nhiều vì điều này có thể dẫn đến ô nhiễm nước, làm cá dễ mắc bệnh.', 
+	'aa5fd505e603484ba3abd30223d0c29f', GETDATE(), GETDATE(), NULL, 0, NULL),
+    (4, N'Cách chăm sóc cá Koi trong mùa đông', 'https://i.ytimg.com/vi/0ezGC5uIwLg/maxresdefault.jpg', 
+	N'Nhiệt độ nước có ảnh hưởng lớn đến sức khỏe của cá Koi. Nhiệt độ lý tưởng cho cá Koi dao động từ 15°C đến 25°C. Khi nhiệt độ quá lạnh hoặc quá nóng, cá Koi có thể dễ bị căng thẳng và mắc các bệnh như nấm, ký sinh trùng. Trong mùa đông, nếu nhiệt độ giảm xuống dưới 10°C, cá Koi sẽ giảm hoạt động và dễ mắc bệnh hơn. Để giữ nhiệt độ ổn định, bạn có thể sử dụng hệ thống sưởi hồ vào mùa đông và che chắn hồ vào mùa hè để giảm bớt tác động của ánh sáng mặt trời. Đồng thời, việc kiểm tra nhiệt độ thường xuyên là rất cần thiết để đảm bảo môi trường sống tốt nhất cho cá Koi.', 
+	'aa5fd505e603484ba3abd30223d0c29f', GETDATE(), GETDATE(), NULL, 0, NULL),
+    (5, N'Làm thế nào để xây dựng hồ cá Koi hoàn hảo', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC-00p63FEvh32z-kQ4HENh5OL6T6jreA_vA&s', 
+	N'Xây dựng một hồ cá Koi hoàn hảo cần sự chuẩn bị kỹ lưỡng từ khâu thiết kế đến chọn vật liệu. Đầu tiên, bạn cần xác định kích thước và hình dáng hồ phù hợp với không gian sân vườn. Hồ cá Koi nên có độ sâu từ 1,2m trở lên để cá có không gian bơi thoải mái và tránh hiện tượng nước quá nóng vào mùa hè. Vật liệu xây dựng hồ nên được lựa chọn kỹ càng, ưu tiên sử dụng đá tự nhiên hoặc xi măng chịu nhiệt. Hệ thống lọc nước là yếu tố không thể thiếu, giúp giữ cho nước luôn sạch sẽ, loại bỏ các tạp chất và vi khuẩn gây hại cho cá. Ngoài ra, việc trang trí xung quanh hồ bằng cây cỏ và đèn chiếu sáng cũng giúp hồ cá Koi trở nên sinh động, hài hòa với thiên nhiên.', 
+	'aa5fd505e603484ba3abd30223d0c29f', GETDATE(), GETDATE(), NULL, 0, NULL);
 GO
 
 -- Insert products into Product table
