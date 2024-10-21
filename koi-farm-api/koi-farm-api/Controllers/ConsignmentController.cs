@@ -30,7 +30,7 @@ namespace koi_farm_api.Controllers
             return userIdClaim.Value;
         }
 
-        // Create Consignment Endpoint
+        // Create Consignment Item Endpoint
         [HttpPost("create")]
         public IActionResult CreateConsignmentItem([FromBody] CreateConsignmentItemRequestModel model)
         {
@@ -50,8 +50,7 @@ namespace koi_farm_api.Controllers
             {
                 consignment = new Consignment
                 {
-                    UserId = userId,
-                    Items = new List<ConsignmentItems>()
+                    UserId = userId
                 };
                 _unitOfWork.ConsignmentRepository.Create(consignment);
             }
@@ -66,13 +65,12 @@ namespace koi_farm_api.Controllers
                 Age = model.Age,
                 Size = model.Size,
                 Species = model.Species,
-                Status = "Pending" // Set initial status as "Pending"
+                Status = "Pending",
+                ConsignmentId = consignment.Id // Link to the user's consignment
             };
 
-            // Add the item to the consignment
             consignment.Items.Add(consignmentItem);
             _unitOfWork.ConsignmentRepository.Update(consignment);
-            _unitOfWork.SaveChange();
 
             return Ok(new ResponseModel
             {
@@ -83,77 +81,55 @@ namespace koi_farm_api.Controllers
                     UserId = consignment.UserId,
                     Items = consignment.Items.Select(item => new ConsignmentItemResponseModel
                     {
+                        ItemsId = item.Id,
                         Name = item.Name,
                         Category = item.Category,
-                        Origin = item.Origin,
-                        Sex = item.Sex,
-                        Age = item.Age,
-                        Size = item.Size,
-                        Species = item.Species,
-                        Status = item.Status,
-                    }).ToList()
-                }
-            });
-        }
-
-        // Update Consignment Status Endpoint
-        [HttpPut("update-status/{consignmentId}")]
-        public IActionResult UpdateConsignmentStatus(string consignmentId, [FromBody] UpdateConsignmentStatusRequestModel model)
-        {
-            var consignment = _unitOfWork.ConsignmentRepository.GetSingle(c => c.Id == consignmentId && !c.IsDeleted, c => c.Items);
-            if (consignment == null)
-            {
-                return NotFound(new ResponseModel
-                {
-                    StatusCode = 404,
-                    MessageError = "Consignment not found."
-                });
-            }
-
-            if (consignment.Items.All(i => i.Status != "Pending"))
-            {
-                return BadRequest(new ResponseModel
-                {
-                    StatusCode = 400,
-                    MessageError = "All items are already approved or have a different status."
-                });
-            }
-
-            // Change status to "Approved"
-            foreach (var item in consignment.Items)
-            {
-                if (item.Status == "Pending")
-                {
-                    item.Status = "Approved";
-                }
-            }
-
-            _unitOfWork.ConsignmentRepository.Update(consignment);
-            _unitOfWork.SaveChange();
-
-            return Ok(new ResponseModel
-            {
-                StatusCode = 200,
-                MessageError = "Consignment status updated successfully.",
-                Data = new ConsignmentResponseModel
-                {
-                    ConsignmentId = consignment.Id,
-                    UserId = consignment.UserId,
-                    Items = consignment.Items.Select(item => new ConsignmentItemResponseModel
-                    {
-                        Name = item.Name,
-                        Category = item.Category,
-                        Origin = item.Origin,
-                        Sex = item.Sex,
-                        Age = item.Age,
-                        Size = item.Size,
-                        Species = item.Species,
                         Status = item.Status
                     }).ToList()
                 }
             });
         }
 
+
+        // Update Consignment Item Status
+        [HttpPut("update-item-status/{itemId}")]
+        public IActionResult UpdateConsignmentItemStatus(string itemId, [FromBody] UpdateConsignmentStatusRequestModel model)
+        {
+            var userId = GetUserIdFromClaims();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new ResponseModel
+                {
+                    StatusCode = 401,
+                    MessageError = "Unauthorized. User ID not found in claims."
+                });
+            }
+
+            // Retrieve the consignment item and ensure it belongs to the current user's consignment
+            var consignmentItem = _unitOfWork.ConsignmentItemRepository.GetSingle(ci => ci.Id == itemId && ci.Consignment.UserId == userId, ci => ci.Consignment);
+            if (consignmentItem == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "Consignment item not found or does not belong to the current user."
+                });
+            }
+
+            // Update the status
+            consignmentItem.Status = model.Status;
+            _unitOfWork.ConsignmentItemRepository.Update(consignmentItem);
+            _unitOfWork.SaveChange();
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                MessageError = "Consignment item status updated successfully."
+            });
+        }
+
+
+        // Checkout Consignment
         [HttpPost("checkout-consignment/{consignmentId}")]
         public IActionResult CheckoutConsignment(string consignmentId)
         {
@@ -167,7 +143,7 @@ namespace koi_farm_api.Controllers
                 });
             }
 
-            // Retrieve the consignment and its approved items
+            // Retrieve the consignment and ensure it belongs to the current user
             var consignment = _unitOfWork.ConsignmentRepository.GetSingle(c => c.Id == consignmentId && c.UserId == userId, c => c.Items);
             if (consignment == null)
             {
@@ -179,7 +155,7 @@ namespace koi_farm_api.Controllers
             }
 
             // Only checkout approved items
-            var approvedItems = consignment.Items.Where(i => i.Status == "Approved" && !i.Checkedout).ToList();
+            var approvedItems = consignment.Items.Where(i => i.Status == "Approved").ToList();
             if (!approvedItems.Any())
             {
                 return BadRequest(new ResponseModel
@@ -200,7 +176,6 @@ namespace koi_farm_api.Controllers
                 UserId = userId,
                 Status = "Pending",
                 Total = totalPrice,
-                Address = "Address goes here", // You can fetch from the user profile or input
                 Items = new List<OrderItem>()
             };
 
@@ -209,20 +184,15 @@ namespace koi_farm_api.Controllers
             {
                 var orderItem = new OrderItem
                 {
-                    ConsignmentItemId = consignmentItem.Id, // Link to ConsignmentItemId
-                    Quantity = 1 // Each consignment item is unique, quantity is always 1
+                    ConsignmentItemId = consignmentItem.Id,
+                    Quantity = 1
                 };
-
                 order.Items.Add(orderItem);
-
-                // Mark consignment item as checked out and link to orderItem
                 consignmentItem.Checkedout = true;
-                consignmentItem.OrderItem = orderItem;
             }
 
             // Save the order and update the consignment
             _unitOfWork.OrderRepository.Create(order);
-            _unitOfWork.ConsignmentRepository.Update(consignment);
             _unitOfWork.SaveChange();
 
             return Ok(new ResponseModel
@@ -231,17 +201,13 @@ namespace koi_farm_api.Controllers
                 Data = new
                 {
                     OrderId = order.Id,
-                    TotalPrice = totalPrice,
-                    Items = approvedItems.Select(item => new
-                    {
-                        item.Id,
-                        item.Name,
-                        PricePerItem = 25000 * totalDays // Display price per item based on the number of days
-                    }).ToList()
+                    TotalPrice = totalPrice
                 }
             });
         }
 
+
+        // Checkout a Single Consignment Item
         [HttpPost("checkout-item/{itemId}")]
         public IActionResult CheckoutItem(string itemId)
         {
@@ -255,9 +221,9 @@ namespace koi_farm_api.Controllers
                 });
             }
 
-            // Retrieve the consignment item
-            var consignmentItem = _unitOfWork.ConsignmentItemRepository.GetById(itemId);
-            if (consignmentItem == null || consignmentItem.Consignment == null || consignmentItem.Consignment.UserId != userId)
+            // Retrieve the consignment item and ensure it belongs to the current user's consignment
+            var consignmentItem = _unitOfWork.ConsignmentItemRepository.GetSingle(ci => ci.Id == itemId && ci.Consignment.UserId == userId, ci => ci.Consignment);
+            if (consignmentItem == null)
             {
                 return NotFound(new ResponseModel
                 {
@@ -266,7 +232,6 @@ namespace koi_farm_api.Controllers
                 });
             }
 
-            // Ensure the item is approved and not already checked out
             if (consignmentItem.Status != "Approved" || consignmentItem.Checkedout)
             {
                 return BadRequest(new ResponseModel
@@ -278,7 +243,7 @@ namespace koi_farm_api.Controllers
 
             // Calculate the number of days
             var totalDays = (DateTimeOffset.Now - consignmentItem.CreatedTime).Days;
-            if (totalDays < 1) totalDays = 1; // Minimum charge for at least 1 day
+            if (totalDays < 1) totalDays = 1;
             var totalPrice = 25000 * totalDays;
 
             // Create the order for this single consignment item
@@ -287,23 +252,19 @@ namespace koi_farm_api.Controllers
                 UserId = userId,
                 Status = "Pending",
                 Total = totalPrice,
-                Address = "Address goes here", // You can fetch from the user profile or input
-                Items = new List<OrderItem>()
-            };
-
-            var orderItem = new OrderItem
+                Items = new List<OrderItem>
+        {
+            new OrderItem
             {
-                ConsignmentItemId = consignmentItem.Id, // Link to the consignment item
-                Quantity = 1 // Since each consignment item represents a single product
+                ConsignmentItemId = consignmentItem.Id,
+                Quantity = 1
+            }
+        }
             };
 
-            order.Items.Add(orderItem);
-
-            // Mark consignment item as checked out
             consignmentItem.Checkedout = true;
-            consignmentItem.OrderItem = orderItem;
 
-            // Save changes
+            // Save the order and update the consignment item
             _unitOfWork.OrderRepository.Create(order);
             _unitOfWork.ConsignmentItemRepository.Update(consignmentItem);
             _unitOfWork.SaveChange();
@@ -314,23 +275,17 @@ namespace koi_farm_api.Controllers
                 Data = new
                 {
                     OrderId = order.Id,
-                    TotalPrice = totalPrice,
-                    Item = new
-                    {
-                        consignmentItem.Id,
-                        consignmentItem.Name,
-                        PricePerItem = totalPrice
-                    }
+                    TotalPrice = totalPrice
                 }
             });
         }
 
 
+        // Get all consignments
         [HttpGet("all-consignments")]
         public IActionResult GetAllConsignments()
         {
             var consignments = _unitOfWork.ConsignmentRepository.Get(c => !c.IsDeleted, includeProperties: c => c.Items).ToList();
-
             if (!consignments.Any())
             {
                 return NotFound(new ResponseModel
@@ -362,11 +317,11 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        // Get consignment item by ID
         [HttpGet("item/{itemId}")]
         public IActionResult GetConsignmentItemById(string itemId)
         {
             var consignmentItem = _unitOfWork.ConsignmentItemRepository.GetById(itemId);
-
             if (consignmentItem == null)
             {
                 return NotFound(new ResponseModel
@@ -393,6 +348,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        // Get consignments for the current user
         [HttpGet("user-consignments")]
         public IActionResult GetConsignmentsForCurrentUser()
         {
@@ -407,7 +363,6 @@ namespace koi_farm_api.Controllers
             }
 
             var consignments = _unitOfWork.ConsignmentRepository.Get(c => c.UserId == userId && !c.IsDeleted, includeProperties: c => c.Items).ToList();
-
             if (!consignments.Any())
             {
                 return NotFound(new ResponseModel

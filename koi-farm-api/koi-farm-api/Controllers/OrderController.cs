@@ -78,6 +78,7 @@ namespace koi_farm_api.Controllers
 
                 productItem.Quantity -= orderItem.Quantity;
                 _unitOfWork.ProductItemRepository.Update(productItem);
+
             }
 
             string address = _unitOfWork.UserRepository.GetById(GetUserIdFromClaims()).Address;
