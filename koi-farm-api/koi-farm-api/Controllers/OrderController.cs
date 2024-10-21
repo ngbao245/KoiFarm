@@ -24,14 +24,13 @@ namespace koi_farm_api.Controllers
             return User.FindFirst("UserID")?.Value;
         }
 
-        // Create Order Endpoint
         [HttpPost("create")]
         public IActionResult CreateOrder([FromBody] CreateOrderRequestModel model)
         {
             var cart = _unitOfWork.CartRepository.GetSingle(c => c.Id == model.CartId, c => c.Items);
             if (cart == null || !cart.Items.Any())
             {
-                return BadRequest(new ResponseModel
+                return NotFound(new ResponseModel
                 {
                     StatusCode = 400,
                     MessageError = "There is no Cart found or the cart is empty."
@@ -76,9 +75,25 @@ namespace koi_farm_api.Controllers
                 order.Items.Add(orderItem);
                 order.Total += orderItem.Quantity * productItem.Price;
 
+                // Reduce ProductItem quantity
                 productItem.Quantity -= orderItem.Quantity;
                 _unitOfWork.ProductItemRepository.Update(productItem);
 
+                // Reduce Product quantity
+                var product = _unitOfWork.ProductRepository.GetById(productItem.ProductId);
+                if (product != null)
+                {
+                    product.Quantity -= orderItem.Quantity;
+                    _unitOfWork.ProductRepository.Update(product);
+                }
+                else
+                {
+                    return BadRequest(new ResponseModel
+                    {
+                        StatusCode = 400,
+                        MessageError = $"Product not found for ProductItem with ID {productItem.Id}."
+                    });
+                }
             }
 
             string address = _unitOfWork.UserRepository.GetById(GetUserIdFromClaims()).Address;
@@ -92,7 +107,20 @@ namespace koi_farm_api.Controllers
             }
 
             _unitOfWork.CartRepository.Delete(cart);
-            _unitOfWork.SaveChange();
+
+            try
+            {
+                _unitOfWork.SaveChange();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(500, new ResponseModel
+                {
+                    StatusCode = 500,
+                    MessageError = "An error occurred while processing your order. Please try again later."
+                });
+            }
 
             return Ok(new ResponseModel
             {
@@ -106,7 +134,6 @@ namespace koi_farm_api.Controllers
                     StaffId = order.StaffId,
                     Address = order.Address,
                     CreatedTime = order.CreatedTime,
-                    IsDelivered = order.IsDelivered,
                     Items = order.Items.Select(item => new OrderItemResponseModel
                     {
                         ProductItemId = item.ProductItemId,
@@ -116,6 +143,7 @@ namespace koi_farm_api.Controllers
                 }
             });
         }
+
 
         // Get Order by ID Endpoint
         [HttpGet("{orderId}")]
