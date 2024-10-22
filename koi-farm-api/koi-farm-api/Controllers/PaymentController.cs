@@ -21,12 +21,14 @@ namespace koi_farm_api.Controllers
         private readonly IVnPayService _vnPayService;
         private readonly UnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public PaymentController(IVnPayService vnPayService, UnitOfWork unitOfWork, IMapper mapper)
+        public PaymentController(IVnPayService vnPayService, UnitOfWork unitOfWork, IMapper mapper, IConfiguration configuration)
         {
             _vnPayService = vnPayService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         // POST method to create a payment request and generate VNPAY payment URL
@@ -121,13 +123,15 @@ namespace koi_farm_api.Controllers
                 _unitOfWork.OrderRepository.Update(order);
             }
 
+            var paymentUrl = _configuration["FrontEndPort:PaymentUrl"];
+
             if (response.Success)
             {
-                return Redirect($"http://localhost:3000/payment-success?orderId={orderId}&paymentId={response.PaymentId}&status=success");
+                return Redirect($"{paymentUrl}/payment-success?orderId={orderId}&paymentId={response.PaymentId}&status=success");
             }
             else
             {
-                return Redirect($"http://localhost:3000/payment-failed?orderId={orderId}&status=failed");
+                return Redirect($"{paymentUrl}/payment-failed?orderId={orderId}&status=failed");
             }
         }
 

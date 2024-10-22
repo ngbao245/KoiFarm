@@ -11,6 +11,9 @@ using Repository.Repository;
 using Repository.Helper.AutoMapper;
 using Repository.Data;
 using Repository.PaymentService;
+using Microsoft.Extensions.Configuration;
+using Repository.EmailService;
+using Repository.Model.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -130,8 +133,11 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
         }
     };
 });
-
 builder.Services.AddScoped<IVnPayService, VnPayService>();
+
+IConfiguration configuration = builder.Configuration;
+EmailSettingModel.Instance = configuration.GetSection("EmailSettings").Get<EmailSettingModel>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 
