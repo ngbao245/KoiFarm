@@ -1,4 +1,5 @@
 ﻿using Azure;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Data.Entity;
 using Repository.Helper;
@@ -7,6 +8,7 @@ using Repository.Model.Auth;
 using Repository.Model.User;
 using Repository.Repository;
 using System;
+using System.Text.Json;
 
 namespace Repository.Controllers
 {
@@ -122,6 +124,51 @@ namespace Repository.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+
+        [HttpPost("google-signin")]
+        public async Task<IActionResult> GoogleSignIn([FromBody] string idToken)
+        {
+            try
+            {
+                var payload = await GoogleJsonWebSignature.ValidateAsync(idToken);
+                var user = _unitOfWork.UserRepository.GetSingle(u => u.Email == payload.Email);
+
+                if (user == null)
+                {
+                    user = new User
+                    {
+                        Name = payload.Name,
+                        Email = payload.Email,
+                        Password = "123456",
+                        RoleId = "0"
+                    };
+                    _unitOfWork.UserRepository.Create(user);
+                }
+
+                var token = _generateToken.GenerateTokenModel(user);
+                return Ok(new ResponseModel
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = new ResponseTokenModel
+                    {
+                        Token = token.Token,
+                        RefreshToken = token.RefreshToken,
+                        User = new ResponseUserModel
+                        {
+                            Name = user.Name,
+                            Email = user.Email,
+                            Address = user.Address,
+                            Phone = user.Phone,
+                            RoleId = user.RoleId
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error: " + ex.InnerException);
             }
         }
     }
