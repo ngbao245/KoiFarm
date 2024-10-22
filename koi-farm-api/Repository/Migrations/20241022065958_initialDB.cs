@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Repository.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class initialDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -231,6 +231,30 @@ namespace Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Consignment",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastUpdatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    DeletedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Consignment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Consignment_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Review",
                 columns: table => new
                 {
@@ -322,31 +346,6 @@ namespace Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Consignment",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    OrderId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    LastUpdatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    DeletedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Consignment", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Consignment_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Order",
                 columns: table => new
                 {
@@ -423,13 +422,13 @@ namespace Repository.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Origin = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Sex = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Age = table.Column<int>(type: "int", nullable: true),
-                    Size = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Species = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Origin = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Sex = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: false),
+                    Size = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Species = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Checkedout = table.Column<bool>(type: "bit", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ConsignmentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -458,7 +457,7 @@ namespace Repository.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     OrderID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    ProductItemId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductItemId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ConsignmentItemId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastUpdatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
@@ -484,8 +483,7 @@ namespace Repository.Migrations
                         name: "FK_OrderItem_ProductItem_ProductItemId",
                         column: x => x.ProductItemId,
                         principalTable: "ProductItem",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -507,11 +505,6 @@ namespace Repository.Migrations
                 name: "IX_CartItem_ProductItemId",
                 table: "CartItem",
                 column: "ProductItemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Consignment_OrderId",
-                table: "Consignment",
-                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Consignment_UserId",
@@ -604,13 +597,6 @@ namespace Repository.Migrations
                 column: "User_Id");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Consignment_Order_OrderId",
-                table: "Consignment",
-                column: "OrderId",
-                principalTable: "Order",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
                 name: "FK_ConsignmentItem_OrderItem_OrderItemId",
                 table: "ConsignmentItem",
                 column: "OrderItemId",
@@ -637,16 +623,12 @@ namespace Repository.Migrations
                 table: "OrderItem");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Consignment_Order_OrderId",
-                table: "Consignment");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_OrderItem_Order_OrderID",
-                table: "OrderItem");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_ConsignmentItem_Consignment_ConsignmentId",
                 table: "ConsignmentItem");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Order_Consignment_ConsignmentId",
+                table: "Order");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_ConsignmentItem_OrderItem_OrderItemId",
@@ -689,12 +671,6 @@ namespace Repository.Migrations
                 name: "Product");
 
             migrationBuilder.DropTable(
-                name: "Order");
-
-            migrationBuilder.DropTable(
-                name: "Promotion");
-
-            migrationBuilder.DropTable(
                 name: "Consignment");
 
             migrationBuilder.DropTable(
@@ -702,6 +678,12 @@ namespace Repository.Migrations
 
             migrationBuilder.DropTable(
                 name: "ConsignmentItem");
+
+            migrationBuilder.DropTable(
+                name: "Order");
+
+            migrationBuilder.DropTable(
+                name: "Promotion");
         }
     }
 }

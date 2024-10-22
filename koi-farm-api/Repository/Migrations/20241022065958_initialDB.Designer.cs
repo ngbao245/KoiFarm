@@ -12,8 +12,8 @@ using Repository.Data;
 namespace Repository.Migrations
 {
     [DbContext(typeof(KoiFarmDbContext))]
-    [Migration("20241018221537_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241022065958_initialDB")]
+    partial class initialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -194,9 +194,6 @@ namespace Repository.Migrations
                     b.Property<DateTimeOffset>("LastUpdatedTime")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("OrderId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -206,8 +203,6 @@ namespace Repository.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
 
                     b.HasIndex("UserId");
 
@@ -219,10 +214,11 @@ namespace Repository.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("Age")
+                    b.Property<int>("Age")
                         .HasColumnType("int");
 
                     b.Property<string>("Category")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Checkedout")
@@ -248,21 +244,26 @@ namespace Repository.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrderItemId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Origin")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Sex")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Size")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Species")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
@@ -366,7 +367,6 @@ namespace Repository.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProductItemId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Quantity")
@@ -849,17 +849,11 @@ namespace Repository.Migrations
 
             modelBuilder.Entity("Repository.Data.Entity.Consignment", b =>
                 {
-                    b.HasOne("Repository.Data.Entity.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId");
-
                     b.HasOne("Repository.Data.Entity.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Order");
 
                     b.Navigation("User");
                 });
@@ -925,9 +919,7 @@ namespace Repository.Migrations
 
                     b.HasOne("Repository.Data.Entity.ProductItem", "ProductItem")
                         .WithMany("orderItems")
-                        .HasForeignKey("ProductItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductItemId");
 
                     b.Navigation("ConsignmentItem");
 

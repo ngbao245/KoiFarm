@@ -279,42 +279,56 @@ namespace koi_farm_api.Controllers
             });
         }
 
-        //// Get All Orders Endpoint
-        //[HttpGet("get-all-orders")]
-        //public IActionResult GetAllOrders()
-        //{
-        //    var orders = _unitOfWork.OrderRepository.Get(includeProperties: "Items").ToList();
-        //    if (!orders.Any())
-        //    {
-        //        return NotFound(new ResponseModel
-        //        {
-        //            StatusCode = 404,
-        //            MessageError = "No orders found."
-        //        });
-        //    }
+        // Get All Orders Endpoint
+        [HttpGet("get-all-orders")]
+        public IActionResult GetAllOrders()
+        {
+            try
+            {
+                var orders = _unitOfWork.OrderRepository.Get(includeProperties: o => o.Items).ToList();
+                if (!orders.Any())
+                {
+                    return NotFound(new ResponseModel
+                    {
+                        StatusCode = 404,
+                        MessageError = "No orders found."
+                    });
+                }
 
-        //    return Ok(new ResponseModel
-        //    {
-        //        StatusCode = 200,
-        //        Data = orders.Select(order => new OrderResponseModel
-        //        {
-        //            OrderId = order.Id,
-        //            Total = order.Total,
-        //            Status = order.Status,
-        //            UserId = order.UserId,
-        //            StaffId = order.StaffId,
-        //            Address = order.Address,
-        //            CreatedTime = order.CreatedTime,
-        //            IsDelivered = order.IsDelivered,
-        //            Items = order.Items.Select(item => new OrderItemResponseModel
-        //            {
-        //                ProductItemId = item.ProductItemId,
-        //                Quantity = item.Quantity,
-        //                Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
-        //            }).ToList()
-        //        }).ToList()
-        //    });
-        //}
+                return Ok(new ResponseModel
+                {
+                    StatusCode = 200,
+                    Data = orders.Select(order => new OrderResponseModel
+                    {
+                        OrderId = order.Id,
+                        Total = order.Total,
+                        Status = order.Status,
+                        UserId = order.UserId,
+                        StaffId = order.StaffId,
+                        Address = order.Address,
+                        CreatedTime = order.CreatedTime,
+                        IsDelivered = order.IsDelivered,
+                        Items = order.Items.Select(item => new OrderItemResponseModel
+                        {
+                            ProductItemId = item.ProductItemId,
+                            Quantity = item.Quantity,
+                            Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId)?.Price ?? 0
+                        }).ToList()
+                    }).ToList()
+                });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error in GetAllOrders: {ex.Message}");
+                return StatusCode(500, new ResponseModel
+                {
+                    StatusCode = 500,
+                    MessageError = "An error occurred while retrieving orders."
+                });
+            }
+        }
+
 
         // Get Orders by Status Endpoint
         [HttpGet("get-orders-by-status/{status}")]
