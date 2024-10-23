@@ -637,12 +637,21 @@ namespace koi_farm_api.Controllers
                 });
             }
 
-            if ((bool)order.IsDelivered)
+            if (order.IsDelivered == true)
             {
                 return BadRequest(new ResponseModel
                 {
                     StatusCode = 400,
                     MessageError = "Order is already marked as delivered."
+                });
+            }
+
+            if (model.IsDelivered == null)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "The isDelivered field is required."
                 });
             }
 

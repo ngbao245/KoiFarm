@@ -11,6 +11,9 @@ using Repository.Repository;
 using Repository.Helper.AutoMapper;
 using Repository.Data;
 using Repository.PaymentService;
+using Microsoft.Extensions.Configuration;
+using Repository.EmailService;
+using Repository.Model.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -130,28 +133,38 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
         }
     };
 });
-
 builder.Services.AddScoped<IVnPayService, VnPayService>();
+
+IConfiguration configuration = builder.Configuration;
+EmailSettingModel.Instance = configuration.GetSection("EmailSettings").Get<EmailSettingModel>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 
 // Apply pending migrations automatically on startup
-using (var scope = app.Services.CreateScope())
+//using (var scope = app.Services.CreateScope())
+//{
+//    var dbContext = scope.ServiceProvider.GetRequiredService<KoiFarmDbContext>();
+//    dbContext.Database.Migrate();
+//}
+app.Use(async (context, next) =>
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<KoiFarmDbContext>();
-    dbContext.Database.Migrate();
-}
+    context.Response.Headers.Add("Cross-Origin-Opener-Policy", "same-origin");
+    context.Response.Headers.Add("Cross-Origin-Embedder-Policy", "require-corp");
+    await next();
+});
 
 // Configure the HTTP request pipeline.
 // Enable Swagger for both Development and Production environments
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "KoiFarm API V1");
-        c.RoutePrefix = string.Empty;  // Swagger will be served at root URL (http://localhost:8001/)
-    });
+    //app.UseSwaggerUI(c =>
+    //{
+    //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "KoiFarm API V1");
+    //    c.RoutePrefix = string.Empty;  // Swagger will be served at root URL (http://localhost:8001/)
+    //});
+    app.UseSwaggerUI();
 }
 
 //app.UseHttpsRedirection();
