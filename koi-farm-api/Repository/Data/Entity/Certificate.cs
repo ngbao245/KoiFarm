@@ -12,7 +12,7 @@ namespace Repository.Data.Entity
     public class Certificate : Entity
     {
         public string Name { get; set; }
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         public virtual ICollection<ProductCertificate> CertificateProduct { get; set; }
     }

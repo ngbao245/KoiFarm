@@ -9,6 +9,7 @@
         public int Age { get; set; }
         public string Size { get; set; }
         public string Species { get; set; }
+        public string? ImageUrl { get; set; }
     }
 
 }

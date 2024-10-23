@@ -16,7 +16,6 @@ namespace Repository.Data.Entity
         public string? ImageUrl { get; set; }
         public string? Description { get; set; }
 
-
         // Navigation property for related Product_Item entities
         public ICollection<ProductItem> ProductItems { get; set; }
 

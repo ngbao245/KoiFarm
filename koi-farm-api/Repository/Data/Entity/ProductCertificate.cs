@@ -10,7 +10,7 @@ namespace Repository.Data.Entity
     [Table("ProductCertificate")]
     public class ProductCertificate : Entity
     {
-         public string Provider { get; set; }
+        public string Provider { get; set; } = "Alan Walker";
         public string CertificateId { get; set; }
         public string ProductItemId { get; set; }
 
