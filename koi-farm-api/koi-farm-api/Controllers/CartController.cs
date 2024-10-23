@@ -128,7 +128,6 @@ namespace koi_farm_api.Controllers
             }
 
             _unitOfWork.CartRepository.Delete(cart);
-            _unitOfWork.SaveChange();
 
             return Ok(new ResponseModel
             {
@@ -194,7 +193,6 @@ namespace koi_farm_api.Controllers
 
             cart.Total = cart.Items.Sum(item => item.Quantity * _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price);
             _unitOfWork.CartRepository.Update(cart);
-            _unitOfWork.SaveChange();
 
             return Ok(new ResponseModel
             {

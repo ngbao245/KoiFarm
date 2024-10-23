@@ -17,7 +17,7 @@ namespace Repository.Data.Entity
         public bool Checkedout { get; set; } = false; // Indicates if this item has been checked out
 
         public string Status { get; set; } = "Pending"; // Status: Pending -> Approved -> Checkedout
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
         public string ConsignmentId { get; set; }
         [ForeignKey(nameof(ConsignmentId))]
         public Consignment Consignment { get; set; }

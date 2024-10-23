@@ -7,12 +7,9 @@ using System.Threading.Tasks;
 
 namespace Repository.Model.Certificate
 {
-    public class ProductCertificateCreateModel
+    public class ProductCertificateUpdateModel
     {
         [Required]
-        public string ProductItemId { get; set; }
-        [Required]
-        public string CertificateId { get; set; }
-        public string Provider { get; set; } = "Alan Walker";
+        public string Provider { get; set; }
     }
 }

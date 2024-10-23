@@ -12,7 +12,7 @@ using Repository.Data;
 namespace Repository.Migrations
 {
     [DbContext(typeof(KoiFarmDbContext))]
-    [Migration("20241022065958_initialDB")]
+    [Migration("20241023150637_initialDB")]
     partial class initialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -156,7 +156,6 @@ namespace Repository.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -236,6 +235,10 @@ namespace Repository.Migrations
 
                     b.Property<DateTimeOffset?>("DeletedTime")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
