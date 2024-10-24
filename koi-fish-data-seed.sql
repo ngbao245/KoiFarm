@@ -148,7 +148,7 @@ VALUES
     ('e4bfaf2848c2429ab06c85405707a925', 'Koi Platium', 100, 'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027810/products/platium.jpg',
 	N'Koi Platinum được ví như “thỏi bạc phát sáng” dưới hồ. Màu trắng bạch kim toàn thân là điểm nhấn độc đáo nhất của koi Platinum. Ai chơi Koi nhất định phải được sở hữu 1 em Bạch kim Platinum của riêng mình. Ở Việt Nam rất ít koi Platinum thuần chủng của Nhật , 80% bố mẹ là Koi F1 hoặc koi Việt. OnKoi Quang Minh là 1 trong số ít đối tác của Dainichi koi Farm Nhật Bản. Chúng tôi hiện đang có 1 vài em Koi Platinum với kết cấu body cực chuẩn, mạng lưới Fukurin đỉnh cao.', 
 	SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
-	('e4048e4bbf8d480fadfc8c7d0e3e981d', 'Koi Shusui', 1, 'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027850/products/shusui.jpg', 
+	('e4048e4bbf8d480fadfc8c7d0e3e981d', 'Koi Shusui', 100, 'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027850/products/shusui.jpg', 
 	N'Cá Koi Shusui Koi Shusui giống với Asagi nhưng koi shusui lại có da trơn. Shusui đẹp khi màu đỏ Hi kéo dài 2 bên hông từ bụng đến đuôi và vảy đầy đủ, tạo thành hàng dài thẳng hàng.', 
 	SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
     ('ca0884736a6542a98d0206716c2d6846', 'Koi Taisho Sanke', 100, 'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027825/products/sanke.jpg', 
