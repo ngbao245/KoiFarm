@@ -233,6 +233,15 @@ namespace koi_farm_api.Controllers
         [HttpPut("update-order-status/{orderId}")]
         public IActionResult UpdateOrderStatus(string orderId, [FromBody] RequestUpdateStatusModel model)
         {
+            var userId = GetUserIdFromClaims();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new ResponseModel
+                {
+                    StatusCode = 401,
+                    MessageError = "Unauthorized. User ID not found in claims."
+                });
+            }
             var order = _unitOfWork.OrderRepository.GetSingle(o => o.Id == orderId, o => o.Items);
             if (order == null)
             {

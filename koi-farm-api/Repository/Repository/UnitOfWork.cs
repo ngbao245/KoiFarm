@@ -29,7 +29,8 @@ namespace Repository.Repository
         private GenericRepository<Payment> _payment;
         private GenericRepository<Consignment> _consignment;
         private GenericRepository<ConsignmentItems> _consignmentItem;
-
+        private GenericRepository<Certificate> _certificate;
+        private GenericRepository<ProductCertificate> _productcertificate;
 
 
         private bool disposed = false;
@@ -217,6 +218,30 @@ namespace Repository.Repository
                     _consignmentItem = new GenericRepository<ConsignmentItems>(_context);
                 }
                 return _consignmentItem;
+            }
+        }
+
+        public GenericRepository<Certificate> CertificateRepository
+        {
+            get
+            {
+                if (_certificate == null)
+                {
+                    _certificate = new GenericRepository<Certificate>(_context);
+                }
+                return _certificate;
+            }
+        }
+
+        public GenericRepository<ProductCertificate> ProductCertificateRepository
+        {
+            get
+            {
+                if (_productcertificate== null)
+                {
+                    _productcertificate = new GenericRepository<ProductCertificate>(_context);
+                }
+                return _productcertificate;
             }
         }
 

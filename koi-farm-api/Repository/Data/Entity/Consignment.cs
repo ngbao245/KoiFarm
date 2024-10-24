@@ -15,6 +15,5 @@ namespace Repository.Data.Entity
 
         // You don't need an OrderId here; consignments don't need to map directly to orders
         // Instead, OrderItems will now link to ConsignmentItems
-        public string Status { get; set; } = "Pending";
     }
 }
