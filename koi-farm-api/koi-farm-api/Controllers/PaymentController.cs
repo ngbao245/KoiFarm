@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -139,6 +140,37 @@ namespace koi_farm_api.Controllers
             {
                 return Redirect($"{paymentUrl}/payment-failed?orderId={orderId}&status=failed");
             }
+        }
+
+        [HttpPost("create-payment")]
+        public IActionResult CreatePayment(RequestPaymentModel response)
+        {
+            var orderId = response.OrderId;
+            var order = _unitOfWork.OrderRepository.GetById(orderId);
+
+            if (order == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "Order not found."
+                });
+            }
+
+            var payment = new Payment
+            {
+                Amount = order.Total,
+                Status = "SuccessCOD",
+                Method = "Cash on Delivery",
+                OrderId = order.Id
+            };
+            _unitOfWork.PaymentRepository.Create(payment);
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = payment
+            });
+
         }
 
         [HttpGet("get-all-payments")]
