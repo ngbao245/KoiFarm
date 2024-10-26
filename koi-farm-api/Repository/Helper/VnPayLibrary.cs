@@ -152,7 +152,7 @@ public class VnPayLibrary
         return myChecksum.Equals(inputHash, StringComparison.InvariantCultureIgnoreCase);
     }
 
-    private string HmacSha512(string key, string inputData)
+    public string HmacSha512(string key, string inputData)
     {
         var hash = new StringBuilder();
         var keyBytes = Encoding.UTF8.GetBytes(key);

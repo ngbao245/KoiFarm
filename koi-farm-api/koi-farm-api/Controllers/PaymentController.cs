@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Azure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Repository.Data.Entity;
 using Repository.Model;
 using Repository.Model.Order;
@@ -29,6 +31,11 @@ namespace koi_farm_api.Controllers
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _configuration = configuration;
+        }
+
+        private string GetUserIdFromClaims()
+        {
+            return User.FindFirst("UserID")?.Value;
         }
 
         // POST method to create a payment request and generate VNPAY payment URL
@@ -135,6 +142,37 @@ namespace koi_farm_api.Controllers
             }
         }
 
+        [HttpPost("create-payment")]
+        public IActionResult CreatePayment(RequestPaymentModel response)
+        {
+            var orderId = response.OrderId;
+            var order = _unitOfWork.OrderRepository.GetById(orderId);
+
+            if (order == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "Order not found."
+                });
+            }
+
+            var payment = new Payment
+            {
+                Amount = order.Total,
+                Status = "SuccessCOD",
+                Method = "Cash on Delivery",
+                OrderId = order.Id
+            };
+            _unitOfWork.PaymentRepository.Create(payment);
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = payment
+            });
+
+        }
+
         [HttpGet("get-all-payments")]
         public IActionResult GetAllPayments()
         {
@@ -228,6 +266,78 @@ namespace koi_farm_api.Controllers
                 StatusCode = 200,
                 Data = responsePayments
             });
+        }
+
+
+
+        [HttpPost("process-refund")]
+        public IActionResult ProcessRefund([FromBody] RefundRequestModel refundRequest)
+        {
+            var payment = _unitOfWork.PaymentRepository.GetById(refundRequest.TransactionNo);
+            if (payment == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "Payment not found."
+                });
+            }
+            
+            if (refundRequest == null || string.IsNullOrEmpty(payment.OrderId))
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Invalid refund request model or missing OrderId."
+                });
+            }
+
+            var order = _unitOfWork.OrderRepository.GetById(payment.OrderId);
+            if (order == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "Order not found."
+                });
+            }
+
+            if (order.Status != "Cancelled")
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "This order has not been cancelled"
+                });
+            }
+
+            var userId = GetUserIdFromClaims();
+            var user = _unitOfWork.UserRepository.GetById(userId);
+
+            try
+            {
+                var response = _vnPayService.ProcessRefund(refundRequest, HttpContext, payment.CreatedTime, payment.Amount, user.Name, payment.OrderId);
+
+                if (response.ResponseCode == "00")
+                {
+                    payment.Status = "Refunded";
+                    _unitOfWork.PaymentRepository.Update(payment);
+                }
+
+                return Ok(new ResponseModel
+                {
+                    StatusCode = 200,
+                    Data = response
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseModel
+                {
+                    StatusCode = 500,
+                    MessageError = "Failed to process refund: " + ex.InnerException
+                });
+            }
         }
     }
 }
