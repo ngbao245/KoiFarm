@@ -136,8 +136,14 @@ namespace Repository.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(idToken) || idToken.Split('.').Length != 3)
+                {
+                    return BadRequest("Invalid idToken format.");
+                }
+
                 var payload = await GoogleJsonWebSignature.ValidateAsync(idToken);
-                var user = _unitOfWork.UserRepository.GetSingle(u => u.Email == payload.Email);
+                var user = _unitOfWork.UserRepository.GetSingle(u => u.Email == payload.Email,
+                    includeProperties: q => q.Role);
 
                 if (user == null)
                 {
