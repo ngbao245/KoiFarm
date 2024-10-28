@@ -41,7 +41,7 @@ namespace Repository.Helper
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim("UserID", userEntity.Id),
-                    new Claim(ClaimTypes.Role, userEntity.Role?.Name ?? "User"),
+                    new Claim(ClaimTypes.Role, userEntity.Role.Name),
                     new Claim(JwtRegisteredClaimNames.Jti, jwtId)
                 }),
                 IssuedAt = DateTime.Now,

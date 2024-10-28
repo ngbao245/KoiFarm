@@ -309,4 +309,70 @@ VALUES
 	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027785/products/ochiba.jpg', 100, 'Fish', 
 	'af301c6d526849e4bfde6e2ead5be943', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL);
 
+
+
+INSERT INTO [KoiFarm].[dbo].[Consignment]
+    ([Id],
+    [UserId],
+    [CreatedTime],
+    [LastUpdatedTime],
+    [DeletedTime],
+    [IsDeleted],
+    [DeletedAt])
+VALUES
+    ('c7d35ea3c567426ea7f71e9a9c2c147e', 'aa5fd505e603484ba3abd30223d0c29f', GETDATE(), GETDATE(), NULL, 0, NULL),
+    ('f8b24c9ae45847d9b3091c1d6bf72d89', 'aa5fd505e603484ba3abd30223d0c29f', GETDATE(), GETDATE(), NULL, 0, NULL),
+    ('a9c45d8eb12340f68ed7c2a5f4b3e901', 'aa5fd505e603484ba3abd30223d0c29f', GETDATE(), GETDATE(), NULL, 0, NULL);
+GO
+
+INSERT INTO [KoiFarm].[dbo].[ConsignmentItem]
+    ([Id],
+    [Name],
+    [Category],
+    [Origin],
+    [Sex],
+    [Age],
+    [Size],
+    [Species],
+    [Checkedout],
+    [Status],
+    [ImageUrl],
+    [ConsignmentId],
+    [OrderItemId],
+    [CreatedTime],
+    [LastUpdatedTime],
+    [DeletedTime],
+    [IsDeleted],
+    [DeletedAt])
+VALUES
+    -- First consignment items
+    ('d1e45f2acd894728b567a901bcdef123', N'Kohaku Premium', 'Premium', 'Japan', 'Female', 2, '45cm', 'Kohaku', 0, 'Pending', 
+    'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027750/products/kohaku.jpg', 
+    'c7d35ea3c567426ea7f71e9a9c2c147e', NULL, GETDATE(), GETDATE(), NULL, 0, NULL),
+    
+    ('e2f56g3bde905839c678b012cdefg234', N'Tancho Elite', 'Elite', 'Japan', 'Male', 3, '50cm', 'Tancho', 0, 'Approved',
+    'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027860/products/tancho.jpg',
+    'c7d35ea3c567426ea7f71e9a9c2c147e', NULL, GETDATE(), GETDATE(), NULL, 0, NULL),
+
+    -- Second consignment items
+    ('f3g67h4cef016940d789c123defgh345', N'Bekko Special', 'Special', 'Japan', 'Female', 1, '35cm', 'Bekko', 0, 'Pending',
+    'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728028081/products/bekko.jpg',
+    'f8b24c9ae45847d9b3091c1d6bf72d89', NULL, GETDATE(), GETDATE(), NULL, 0, NULL),
+    
+    ('g4h78i5dfg127051e890d234efghi456', N'Doitsu Classic', 'Classic', 'Japan', 'Male', 2, '40cm', 'Doitsu', 0, 'Approved',
+    'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027691/products/doitsu.jpg',
+    'f8b24c9ae45847d9b3091c1d6bf72d89', NULL, GETDATE(), GETDATE(), NULL, 0, NULL),
+
+    -- Third consignment items
+    ('h5i89j6efg238162f901e345fghij567', N'Ginrin Select', 'Select', 'Japan', 'Female', 4, '55cm', 'Ginrin', 0, 'Pending',
+    'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027702/products/ginrin.jpg',
+    'a9c45d8eb12340f68ed7c2a5f4b3e901', NULL, GETDATE(), GETDATE(), NULL, 0, NULL),
+    
+    ('i6j90k7fgh349273g012f456ghijk678', N'Goshiki Deluxe', 'Deluxe', 'Japan', 'Male', 2, '48cm', 'Goshiki', 0, 'Approved',
+    'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027714/products/goshiki.jpg',
+    'a9c45d8eb12340f68ed7c2a5f4b3e901', NULL, GETDATE(), GETDATE(), NULL, 0, NULL);
+GO
+
+
+
 COMMIT;

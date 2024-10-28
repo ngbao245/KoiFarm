@@ -1,5 +1,6 @@
 ﻿using Azure;
 using Google.Apis.Auth;
+using Google.Apis.Util;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Data.Entity;
 using Repository.Helper;
@@ -36,7 +37,10 @@ namespace Repository.Controllers
 
             try
             {
-                var user = _unitOfWork.UserRepository.GetSingle(u => u.Email == signInModel.Email);
+                var user = _unitOfWork.UserRepository.GetSingle(
+                    u => u.Email == signInModel.Email,
+                    includeProperties: q => q.Role
+                );
                 if (user == null || user.Password != signInModel.Password)
                     return Unauthorized("Invalid credentials.");
 

@@ -23,10 +23,10 @@ namespace Repository.Data.Entity
         [Phone]
         public string? Phone { get; set; }
 
-        public string? RoleId { get; set; }
+        public string RoleId { get; set; }
 
         [ForeignKey(nameof(RoleId))]
-        public Role? Role { get; set; }
+        public Role Role { get; set; }
 
         public ICollection<Review> Reviews { get; set; }
         public ICollection<Cart> Carts { get; set; }
