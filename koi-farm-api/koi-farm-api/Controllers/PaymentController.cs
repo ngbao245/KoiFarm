@@ -140,15 +140,19 @@ namespace koi_farm_api.Controllers
                 _unitOfWork.PaymentRepository.Create(payment);
                 _unitOfWork.OrderRepository.Update(order);
 
+                //Send confirmation mail
                 var emailRequest = new SendMailModel
                 {
                     ReceiveAddress = user.Email,
                     Title = "Xác Nhận Thanh Toán",
-                    Content = $"Kính chào {user.Name},\n\n" +
-                    $"Cảm ơn quý khách đã mua hàng. Thanh toán cho Đơn hàng ID: {orderId} của quý khách đã thành công.\n" +
-                    $"Số giao dịch của quý khách: {payment.Id}.\n" +
-                    $"Số tiền: {order.Total.ToString("C0", new CultureInfo("vi-VN"))}.\n\n" +
-                    "Trân trọng,\nKoiShop"
+                    Content = $@"
+                    <p>Kính chào {user.Name},</p>
+                    <p>Cảm ơn quý khách đã mua hàng. Thanh toán cho Đơn hàng <strong>ID: {orderId}</strong> của quý khách đã thành công.</p>
+                    <p>Số giao dịch của quý khách: <strong>{payment.Id}</strong>.</p>
+                    <p>Số tiền: <strong>{order.Total.ToString("C0", new CultureInfo("vi-VN"))}</strong>.</p>
+                    <br>
+                    <p>Trân trọng,</p>
+                    <p>KoiShop</p>"
                 };
 
                 _emailService.SendMail(emailRequest);

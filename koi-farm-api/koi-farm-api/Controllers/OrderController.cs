@@ -1,10 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Repository.Data.Entity;
+using Repository.EmailService;
 using Repository.Model;
+using Repository.Model.Email;
 using Repository.Model.Order;
 using Repository.Repository;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace koi_farm_api.Controllers
 {
@@ -14,9 +19,12 @@ namespace koi_farm_api.Controllers
     public class OrderController : Controller
     {
         private readonly UnitOfWork _unitOfWork;
-        public OrderController(UnitOfWork unitOfWork)
+        private readonly IEmailService _emailService;
+
+        public OrderController(UnitOfWork unitOfWork, IServiceProvider serviceProvider)
         {
             _unitOfWork = unitOfWork;
+            _emailService = serviceProvider.GetRequiredService<IEmailService>();
         }
 
         private string GetUserIdFromClaims()
@@ -122,6 +130,9 @@ namespace koi_farm_api.Controllers
                 });
             }
 
+            //Send mail with certificate
+            SendOrderConfirmationEmailWithCertificates(order);
+
             return Ok(new ResponseModel
             {
                 StatusCode = 201,
@@ -142,6 +153,53 @@ namespace koi_farm_api.Controllers
                     }).ToList()
                 }
             });
+        }
+
+        private void SendOrderConfirmationEmailWithCertificates(Order order)
+        {
+            var user = _unitOfWork.UserRepository.GetById(order.UserId);
+            if (user == null) return;
+
+            var certificateImages = new List<string>();
+
+            foreach (var orderItem in order.Items)
+            {
+                var productCertificates = _unitOfWork.ProductCertificateRepository
+                 .Get()
+                 .Include(pc => pc.certificate)
+                 .Where(pc => pc.ProductItemId == orderItem.ProductItemId)
+                 .Select(pc => pc.certificate.ImageUrl)
+                 .ToList();
+
+                certificateImages.AddRange(productCertificates);
+            }
+
+            var emailContent = new StringBuilder();
+            emailContent.AppendLine($"<p>Kính chào {user.Name},</p>");
+            emailContent.AppendLine($"<p>Đơn hàng ID: <strong>{order.Id}</strong> của quý khách đã được tạo thành công.<p>");
+
+            if (certificateImages.Any())
+            {
+                emailContent.AppendLine("<p>Hình ảnh giấy chứng nhận cho các sản phẩm quý khách đã mua:</p>");
+                foreach (var imageUrl in certificateImages)
+                {
+                    emailContent.AppendLine($"<p><img src=\"{imageUrl}\" style=\"max-width:200px;\"></p>");
+                }
+            }
+
+            emailContent.AppendLine("<br>");
+            emailContent.AppendLine("<p>Trân trọng,</p>");
+            emailContent.AppendLine("<p>KoiShop</p>");
+
+
+            var emailModel = new SendMailModel
+            {
+                ReceiveAddress = user.Email,
+                Title = "Xác Nhận Các Chứng Chỉ Cho Cá Koi Đã Mua",
+                Content = emailContent.ToString()
+            };
+
+            _emailService.SendMail(emailModel);
         }
 
 
