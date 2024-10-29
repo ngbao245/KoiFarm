@@ -350,32 +350,27 @@ INSERT INTO [dbo].[ProductCertificate]
 	[LastUpdatedTime], 
 	[IsDeleted])
 VALUES
-	('1', 'Alan Walker', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '6f85a2a795ff4e24b3c8f1824c1c379c', GETDATE(), GETDATE(), 0),
-	('2', 'Alan Walker', '32edff23aa5a4aad802d98b356c89688', '7c1a5056c6504b53a412a7217e5cd941', GETDATE(), GETDATE(), 0),
-	('3', 'Alan Walker', '1bc906b277b84b149b1bb2f01f6cdac4', 'c47567c6f30a4c9e8220736ad4852aa7', GETDATE(), GETDATE(), 0),
-	('4', 'Alan Walker', '28bdb42d6bcf4ad6a836009b40c4367e', 'b48b2e5cb58d4683ba4c046eaf7d9581', GETDATE(), GETDATE(), 0),
-	('5', 'Alan Walker', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '42fc166f2e1a4381975130a465cdb9b5', GETDATE(), GETDATE(), 0),
-	('6', 'Alan Walker', '32edff23aa5a4aad802d98b356c89688', '10e769abd1ce4ded8f25be14760087a6', GETDATE(), GETDATE(), 0),
-	('7', 'Alan Walker', '1bc906b277b84b149b1bb2f01f6cdac4', 'a182ba85fc3b47c5ad444b472ae0f41d', GETDATE(), GETDATE(), 0),
-	('8', 'Alan Walker', '28bdb42d6bcf4ad6a836009b40c4367e', '95c7236b9dd6466f9889e56c665b3b62', GETDATE(), GETDATE(), 0),
-	('9', 'Alan Walker', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '4a1055d39aa04034a5829a4464a74495', GETDATE(), GETDATE(), 0),
-	('10', 'Alan Walker', '32edff23aa5a4aad802d98b356c89688', 'f431751ad8a4447a9b05cc7b368aad40', GETDATE(), GETDATE(), 0),
-	('11', 'Alan Walker', '1bc906b277b84b149b1bb2f01f6cdac4', '27f0a2ff06b8407db0b4f95d74acb227', GETDATE(), GETDATE(), 0),
-	('12', 'Alan Walker', '28bdb42d6bcf4ad6a836009b40c4367e', '869177e959d24996bb67c6cd810d2ecb', GETDATE(), GETDATE(), 0),
-	('13', 'Alan Walker', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '697b702518b34a708fe4f4eee783f574', GETDATE(), GETDATE(), 0),
-	('14', 'Alan Walker', '32edff23aa5a4aad802d98b356c89688', '31f140dcb2a2404e901198a15338d3c1', GETDATE(), GETDATE(), 0),
-	('15', 'Alan Walker', '1bc906b277b84b149b1bb2f01f6cdac4', '8b3988c0790f468590b9ab446865761a', GETDATE(), GETDATE(), 0),
-	('16', 'Alan Walker', '28bdb42d6bcf4ad6a836009b40c4367e', 'ac6168756e424113876e767f451e52e5', GETDATE(), GETDATE(), 0),
-	('17', 'Alan Walker', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '5e5db3301a914461880840f9beb11b09', GETDATE(), GETDATE(), 0),
-	('18', 'Alan Walker', '32edff23aa5a4aad802d98b356c89688', 'cd95f97eb7fd4aa383f8a2e410c2d0a4', GETDATE(), GETDATE(), 0),
-	('19', 'Alan Walker', '1bc906b277b84b149b1bb2f01f6cdac4', '1878040e415d45ceb86bde653f96284c', GETDATE(), GETDATE(), 0),
-	('20', 'Alan Walker', '28bdb42d6bcf4ad6a836009b40c4367e', 'b977b30ca52a4fa69f42e2e8c250513f', GETDATE(), GETDATE(), 0),
-	('21', 'Alan Walker', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '0d5cd9f72b1f42d3b08224627a27837d', GETDATE(), GETDATE(), 0);
+	('87a612eef7574f4aac35c4e73cd41781', 'Spring viraemia of carp (SVC)', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '6f85a2a795ff4e24b3c8f1824c1c379c', GETDATE(), GETDATE(), 0),
+	('a7a81c9f2da64422bbd92e86c754f927', 'Koi herpesvirus disease (KHV)', '32edff23aa5a4aad802d98b356c89688', '7c1a5056c6504b53a412a7217e5cd941', GETDATE(), GETDATE(), 0),
+	('76a7951ab7d24a93b925ba4eeb1845a2', 'Epizootic ulcerative syndrome (EUS)', '1bc906b277b84b149b1bb2f01f6cdac4', 'c47567c6f30a4c9e8220736ad4852aa7', GETDATE(), GETDATE(), 0),
+	('83d67800d54a48f08ec14436ccd1cdd8', 'Epizootic haematopoietic necrosis (EHN)', '28bdb42d6bcf4ad6a836009b40c4367e', 'b48b2e5cb58d4683ba4c046eaf7d9581', GETDATE(), GETDATE(), 0),
+	('0ca9eab22a8442709cbd699085f556b6', 'White spot disease (WSD)', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '42fc166f2e1a4381975130a465cdb9b5', GETDATE(), GETDATE(), 0),
+	('30d1284b00e649c28bb988b82979658b', 'Furunculosis (Aeromonas Salmonicida)', '32edff23aa5a4aad802d98b356c89688', '10e769abd1ce4ded8f25be14760087a6', GETDATE(), GETDATE(), 0),
+	('ebc5e31111dd4f1abcaa2a7ee335613f', 'Spring viraemia of carp (SVC)', '1bc906b277b84b149b1bb2f01f6cdac4', 'a182ba85fc3b47c5ad444b472ae0f41d', GETDATE(), GETDATE(), 0),
+	('41e79bd13d794e54921abbc597601b5d', 'Koi herpesvirus disease (KHV)', '28bdb42d6bcf4ad6a836009b40c4367e', '95c7236b9dd6466f9889e56c665b3b62', GETDATE(), GETDATE(), 0),
+	('72efbad9552147eca704d95fdbaa134a', 'Epizootic ulcerative syndrome (EUS)', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '4a1055d39aa04034a5829a4464a74495', GETDATE(), GETDATE(), 0),
+	('f53e97deb527426f91267bb8b316a350', 'Epizootic haematopoietic necrosis (EHN)', '32edff23aa5a4aad802d98b356c89688', 'f431751ad8a4447a9b05cc7b368aad40', GETDATE(), GETDATE(), 0),
+	('7a5e27df7b0c481cb2633889655ca92e', 'White spot disease (WSD)', '1bc906b277b84b149b1bb2f01f6cdac4', '27f0a2ff06b8407db0b4f95d74acb227', GETDATE(), GETDATE(), 0),
+	('2126db843f704c929ccc02eea482ea1e', 'Furunculosis (Aeromonas Salmonicida)', '28bdb42d6bcf4ad6a836009b40c4367e', '869177e959d24996bb67c6cd810d2ecb', GETDATE(), GETDATE(), 0),
+	('2cd8c720057f4020b01b81eba393607b', 'Spring viraemia of carp (SVC)', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '697b702518b34a708fe4f4eee783f574', GETDATE(), GETDATE(), 0),
+	('64818625770544b79074aec86891df97', 'Koi herpesvirus disease (KHV)', '32edff23aa5a4aad802d98b356c89688', '31f140dcb2a2404e901198a15338d3c1', GETDATE(), GETDATE(), 0),
+	('f9bc3ee5720541a989070efb8420deb7', 'Epizootic ulcerative syndrome (EUS)', '1bc906b277b84b149b1bb2f01f6cdac4', '8b3988c0790f468590b9ab446865761a', GETDATE(), GETDATE(), 0),
+	('a71e589a61b746398d6269f8de080ef6', 'Epizootic haematopoietic necrosis (EHN)', '28bdb42d6bcf4ad6a836009b40c4367e', 'ac6168756e424113876e767f451e52e5', GETDATE(), GETDATE(), 0),
+	('b76612e8c6154ec99b6c850284870f91', 'White spot disease (WSD)', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '5e5db3301a914461880840f9beb11b09', GETDATE(), GETDATE(), 0),
+	('c9bee55418c24e019147f8b167f26c28', 'Spring viraemia of carp (SVC)', '32edff23aa5a4aad802d98b356c89688', 'cd95f97eb7fd4aa383f8a2e410c2d0a4', GETDATE(), GETDATE(), 0),
+	('29de0dff5816465b8ce148d791813600', 'Koi herpesvirus disease (KHV)', '1bc906b277b84b149b1bb2f01f6cdac4', '1878040e415d45ceb86bde653f96284c', GETDATE(), GETDATE(), 0),
+	('fbdc2b32134b4990b42ae4dd8316c735', 'Epizootic ulcerative syndrome (EUS)', '28bdb42d6bcf4ad6a836009b40c4367e', 'b977b30ca52a4fa69f42e2e8c250513f', GETDATE(), GETDATE(), 0),
+	('48e01d8e1d7d4a20ba101c66f8e9ff44', 'Epizootic haematopoietic necrosis (EHN)', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '0d5cd9f72b1f42d3b08224627a27837d', GETDATE(), GETDATE(), 0);
 GO
 
 COMMIT;
-
-
-
-
-
