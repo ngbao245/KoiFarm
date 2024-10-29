@@ -374,5 +374,36 @@ VALUES
 GO
 
 
+-- Insert certificates with new IDs
+INSERT INTO [dbo].[Certificate] 
+([Id], [Name], [ImageUrl], [CreatedTime], [LastUpdatedTime], [IsDeleted]) 
+VALUES 
+('cert101', N'ISO 9001', 'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027762/products/kujaku.jpg', GETDATE(), GETDATE(), 0),
+('cert102', N'Fair Trade', 'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027774/products/matsuba.jpg', GETDATE(), GETDATE(), 0),
+('cert103', N'Organic Certification', 'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027737/products/kikokryu.jpg', GETDATE(), GETDATE(), 0),
+('cert104', N'Quality Assurance', 'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027677/products/chagoi.jpg', GETDATE(), GETDATE(), 0);
+
+-- Link products with certificates using new IDs
+INSERT INTO [dbo].[ProductCertificate]
+([Id], [Provider], [CertificateId], [ProductItemId], [CreatedTime], [LastUpdatedTime], [IsDeleted])
+VALUES
+('pc101', 'Alan Walker', 'cert101', '1', GETDATE(), GETDATE(), 0),
+('pc102', 'Alan Walker', 'cert102', '4', GETDATE(), GETDATE(), 0),
+('pc103', 'Alan Walker', 'cert103', '2', GETDATE(), GETDATE(), 0),
+('pc113', 'Alan Walker', 'cert101', '5', GETDATE(), GETDATE(), 0),
+('pc111', 'Alan Walker', 'cert103', '4', GETDATE(), GETDATE(), 0),
+('pc112', 'Alan Walker', 'cert104', '4', GETDATE(), GETDATE(), 0),
+('pc114', 'Alan Walker', 'cert102', '5', GETDATE(), GETDATE(), 0),
+('pc104', 'Alan Walker', 'cert104', '3', GETDATE(), GETDATE(), 0);
+
+
+GO
+
+
 
 COMMIT;
+
+
+
+
+
