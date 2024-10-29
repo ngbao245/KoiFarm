@@ -2,10 +2,16 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Data.Entity;
+using Repository.EmailService;
+using Repository.ForgotPasswordService;
 using Repository.Model;
+using Repository.Model.Email;
+using Repository.Model.ForgotPassword;
 using Repository.Model.ProductItem;
 using Repository.Model.User;
 using Repository.Repository;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace koi_farm_api.Controllers
 {
@@ -15,11 +21,18 @@ namespace koi_farm_api.Controllers
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ITokenService _tokenService;
+        private readonly IEmailService _emailService;
+        private readonly IConfiguration _configuration;
 
-        public UserController(UnitOfWork unitOfWork, IMapper mapper)
+
+        public UserController(UnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService, IServiceProvider serviceProvider, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _tokenService = tokenService;
+            _emailService = serviceProvider.GetRequiredService<IEmailService>();
+            _configuration = configuration;
         }
 
         [HttpGet("get-all-users")]
@@ -310,6 +323,72 @@ namespace koi_farm_api.Controllers
             {
                 StatusCode = 200,
                 Data = responseUser
+            });
+        }
+
+        [HttpPost("request-password-reset")]
+        public IActionResult RequestPasswordReset([FromBody] RequestPasswordResetModel model)
+        {
+            var user = _unitOfWork.UserRepository.GetAll().FirstOrDefault(x => x.Email == model.Email);
+
+            if (user == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "User not found!"
+                });
+            }
+
+            var token = _tokenService.GenerateToken(model.Email);
+            var frontendUrl = _configuration["FrontEndPort:PaymentUrl"];
+
+            // Send reset email
+            var resetUrl = $"{frontendUrl}/reset-password?token={token}&email={model.Email}";
+            _emailService.SendMail(new SendMailModel
+            {
+                ReceiveAddress = model.Email,
+                Title = "Password Reset Request",
+                Content = $"Click the link to reset your password: {resetUrl}"
+            });
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                MessageError = "Successfully request password reset"
+            });
+        }
+
+
+        [HttpPost("reset-password")]
+        public IActionResult ResetPassword([FromBody] ResetPasswordModel model)
+        {
+            if (!_tokenService.ValidateToken(model.Email, model.Token)) return BadRequest("Invalid or expired token");
+
+            if (string.IsNullOrEmpty(model.Email))
+            {
+                return BadRequest(new ResponseModel { StatusCode = 400, MessageError = "Email is required!" });
+            }
+
+            var user = _unitOfWork.UserRepository.GetAll().FirstOrDefault(x => x.Email == model.Email);
+
+            if (user == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "User not found!"
+                });
+            }
+
+            user.Password = model.NewPassword;
+            _unitOfWork.UserRepository.Update(user);
+            _tokenService.RemoveToken(model.Email);
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                MessageError = "New password updated successfully"
             });
         }
 

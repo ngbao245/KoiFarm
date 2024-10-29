@@ -14,6 +14,7 @@ using Repository.PaymentService;
 using Microsoft.Extensions.Configuration;
 using Repository.EmailService;
 using Repository.Model.Email;
+using Repository.ForgotPasswordService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -138,6 +139,7 @@ builder.Services.AddScoped<IVnPayService, VnPayService>();
 IConfiguration configuration = builder.Configuration;
 EmailSettingModel.Instance = configuration.GetSection("EmailSettings").Get<EmailSettingModel>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddSingleton<ITokenService, TokenService>();
 
 var app = builder.Build();
 
