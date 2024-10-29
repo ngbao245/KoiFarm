@@ -186,6 +186,10 @@ namespace koi_farm_api.Controllers
                     emailContent.AppendLine($"<p><img src=\"{imageUrl}\" style=\"max-width:200px;\"></p>");
                 }
             }
+            else
+            {
+                emailContent.AppendLine("<p>Hiện tại chưa có giấy chứng nhận cho sản phẩm quý khách đã mua, mong quý khách thông cảm:</p>");
+            }
 
             emailContent.AppendLine("<br>");
             emailContent.AppendLine("<p>Trân trọng,</p>");
