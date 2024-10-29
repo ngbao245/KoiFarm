@@ -23,7 +23,7 @@ namespace Repository.EmailService
                 {
                     Subject = model.Title,
                     Body = model.Content,
-                    IsBodyHtml = false,
+                    IsBodyHtml = true,
                 };
                 mailMessage.From = new MailAddress(EmailSettingModel.Instance.FromEmailAddress, EmailSettingModel.Instance.FromDisplayName);
                 mailMessage.To.Add(model.ReceiveAddress);
