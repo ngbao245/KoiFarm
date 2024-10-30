@@ -101,11 +101,11 @@ namespace koi_farm_api.Controllers
         }
 
 
-
         // Update Consignment Item Status
         [HttpPut("update-item-status/{itemId}")]
         public IActionResult UpdateConsignmentItemStatus(string itemId, [FromBody] UpdateConsignmentStatusRequestModel model)
         {
+            // Get the user ID from the claims
             var userId = GetUserIdFromClaims();
             if (string.IsNullOrEmpty(userId))
             {
@@ -116,14 +116,41 @@ namespace koi_farm_api.Controllers
                 });
             }
 
-            // Retrieve the consignment item and ensure it belongs to the current user's consignment
-            var consignmentItem = _unitOfWork.ConsignmentItemRepository.GetSingle(ci => ci.Id == itemId && ci.Consignment.UserId == userId, ci => ci.Consignment);
+            // Get the current user from the repository, including the user's role
+            var currentUser = _unitOfWork.UserRepository.GetSingle(u => u.Id == userId, u => u.Role);
+            if (currentUser == null)
+            {
+                return Unauthorized(new ResponseModel
+                {
+                    StatusCode = 401,
+                    MessageError = "Unauthorized. User not found."
+                });
+            }
+
+            // Retrieve the consignment item without filtering by userId
+            var consignmentItem = _unitOfWork.ConsignmentItemRepository.GetSingle(
+                ci => ci.Id == itemId,
+                ci => ci.Consignment);
+
             if (consignmentItem == null)
             {
                 return NotFound(new ResponseModel
                 {
                     StatusCode = 404,
-                    MessageError = "Consignment item not found or does not belong to the current user."
+                    MessageError = "Consignment item not found."
+                });
+            }
+
+            // Check if the current user has access (owner or Staff/Manager role)
+            bool isOwner = consignmentItem.Consignment.UserId == userId;
+            bool isStaffOrManager = currentUser.Role.Name == "Staff" || currentUser.Role.Name == "Manager";
+
+            if (!isOwner && !isStaffOrManager)
+            {
+                return Unauthorized(new ResponseModel
+                {
+                    StatusCode = 403,
+                    MessageError = "You do not have permission to update the status of this consignment item."
                 });
             }
 
@@ -131,13 +158,14 @@ namespace koi_farm_api.Controllers
             consignmentItem.Status = model.Status;
             _unitOfWork.ConsignmentItemRepository.Update(consignmentItem);
 
-
             return Ok(new ResponseModel
             {
                 StatusCode = 200,
-                MessageError = "Consignment item status updated successfully."
+                MessageError = "Consignment item status updated successfully.",
+                Data = consignmentItem.Status
             });
         }
+
 
 
         // Get all consignments
