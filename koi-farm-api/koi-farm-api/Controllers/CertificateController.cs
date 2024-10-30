@@ -40,7 +40,8 @@ public class CertificateController : ControllerBase
             ImageUrl = certificate.ImageUrl,
             ProductCertificates = certificate.CertificateProduct.Select(item => new
             {
-                ItemId = item.Id,
+                ProductItemId = item.ProductItemId ,
+                Id = item.Id,
                 Provider = item.Provider,
                 PublishDate = item.CreatedTime
             }).ToList()
