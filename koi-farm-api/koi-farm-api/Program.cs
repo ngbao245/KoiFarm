@@ -159,11 +159,11 @@ app.Use(async (context, next) =>
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
-    //app.UseSwaggerUI(c =>
-    //{
-    //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "KoiFarm API V1");
-    //    c.RoutePrefix = string.Empty;  // Swagger will be served at root URL (http://localhost:8001/)
-    //});
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "KoiFarm API V1");
+        c.RoutePrefix = string.Empty;
+    });
     app.UseSwaggerUI();
 }
 
