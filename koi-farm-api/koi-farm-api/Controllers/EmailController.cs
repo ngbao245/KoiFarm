@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.EmailService;
+using Repository.Model;
 using Repository.Model.Email;
 
 namespace koi_farm_api.Controllers
@@ -20,11 +21,19 @@ namespace koi_farm_api.Controllers
             try
             {
                 _emailService.SendMail(request);
-                return Ok("Send mail success!");
+                return Ok(new ResponseModel
+                {
+                    StatusCode = 200,
+                    MessageError = "Send mail success!"
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = ex.Message
+                });
             }
         }
     }
