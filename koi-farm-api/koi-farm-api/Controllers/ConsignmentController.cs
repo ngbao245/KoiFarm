@@ -193,7 +193,9 @@ namespace koi_farm_api.Controllers
                     Category = item.Category,
                     Status = item.Status,
                     ImageUrl = item.ImageUrl,
-                    Checkedout = item.Checkedout
+
+                    Checkedout = item.Checkedout,
+                    createDate = item.CreatedTime
                 }).ToList()
             }).ToList();
 
@@ -272,7 +274,8 @@ namespace koi_farm_api.Controllers
                     Category = item.Category,
                     Status = item.Status,
                     ImageUrl = item.ImageUrl,
-                    Checkedout = item.Checkedout
+                    Checkedout = item.Checkedout,
+                    createDate = item.CreatedTime
                 }).ToList()
             }).ToList();
 

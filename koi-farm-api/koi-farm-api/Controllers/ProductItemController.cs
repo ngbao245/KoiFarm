@@ -152,7 +152,7 @@ namespace koi_farm_api.Controllers
                 string.IsNullOrEmpty(productItemModel.PH) ||
                 string.IsNullOrEmpty(productItemModel.ImageUrl) ||
                 string.IsNullOrEmpty(productItemModel.Type) ||
-                productItemModel.Price <= 10000 ||
+                productItemModel.Price < 10000 ||
                 productItemModel.Age <= 0 ||
                 productItemModel.Quantity <= 0 ||
                 string.IsNullOrEmpty(productItemModel.ProductId))
