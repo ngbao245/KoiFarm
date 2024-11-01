@@ -299,5 +299,57 @@ namespace koi_farm_api.Controllers
                 MessageError = "ProductItem successfully deleted."
             });
         }
+
+        [HttpPut("update-product-item-type/{id}")]
+        public IActionResult UpdateProductItemType(string id, [FromBody] RequestUpdateProductItemType model)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "ProductItem ID is required."
+                });
+            }
+
+            if (string.IsNullOrEmpty(model.Type))
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "New type is required."
+                });
+            }
+
+            var productItem = _unitOfWork.ProductItemRepository.GetById(id);
+            if (productItem == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "ProductItem not found."
+                });
+            }
+
+            var validTypes = new[] { "Pending Approval", "Approved", "Rejected" };
+            if (!validTypes.Contains(model.Type))
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Invalid order status."
+                });
+            }
+
+            productItem.Type = model.Type;
+            _unitOfWork.ProductItemRepository.Update(productItem);
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                MessageError = "ProductItem type updated successfully."
+            });
+        }
+
     }
 }
