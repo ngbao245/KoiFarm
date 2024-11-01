@@ -228,7 +228,8 @@ namespace koi_farm_api.Controllers
                 Status = consignmentItem.Status,
                 Checkedout = consignmentItem.Checkedout,
                 ImageUrl = consignmentItem.ImageUrl,
-                ConsignmentId = consignmentItem.ConsignmentId
+                ConsignmentId = consignmentItem.ConsignmentId,
+                createDate = consignmentItem.CreatedTime
             };
 
             return Ok(new ResponseModel
