@@ -223,106 +223,106 @@ INSERT INTO [dbo].[ProductItem]
 VALUES
 	-- ProductItem for 'Koi Kohaku'
 	('6f85a2a795ff4e24b3c8f1824c1c379c', 'Koi Kohaku', 1000000, 'Kohaku', 'Japan', 'Unknown', 2, 'Medium', 'Koi', 'Calm', 50, 20, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027750/products/kohaku.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027750/products/kohaku.jpg', 100, 'Approved', 
 	'41c2fbe4b02549c587837a3c4658e02a', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Ogon'
 	('7c1a5056c6504b53a412a7217e5cd941', 'Koi Ogon', 1500000, 'Ogon', 'Japan', 'Unknown', 3, 'Large', 'Koi', 'Active', 70, 18, 'High', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027798/products/ogon.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027798/products/ogon.jpg', 100, 'Approved', 
 	'd93645edc83a4a0e8cfcbb9f2d819cc9', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Showa'
 	('c47567c6f30a4c9e8220736ad4852aa7', 'Koi Showa', 2000000, 'Showa', 'Japan', 'Male', 1, 'Large', 'Koi', 'Aggressive', 80, 22, 'Low', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027838/products/showa.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027838/products/showa.jpg', 100, 'Approved', 
 	'4f89cbd2af1e422fbfbfb1b78eb5d620', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Tancho'
 	('b48b2e5cb58d4683ba4c046eaf7d9581', 'Koi Tancho', 1200000, 'Tancho', 'Japan', 'Female', 2, 'Medium', 'Koi', 'Friendly', 60, 20, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027860/products/tancho.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027860/products/tancho.jpg', 100, 'Approved', 
 	'3369c7cbba56453098a3d9487f22e4bc', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Bekko'
 	('42fc166f2e1a4381975130a465cdb9b5', 'Koi Bekko', 1100000, 'Bekko', 'Japan', 'Male', 3, 'Medium', 'Koi', 'Aggressive', 60, 18, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728028081/products/bekko.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728028081/products/bekko.jpg', 100, 'Approved', 
 	'64eb0df76e7b4c7ab2cdb7e94ddc8d8f', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Doitsu'
 	('10e769abd1ce4ded8f25be14760087a6', 'Koi Doitsu', 1300000, 'Doitsu', 'Japan', 'Unknown', 1, 'Small', 'Koi', 'Calm', 50, 19, 'High', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027691/products/doitsu.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027691/products/doitsu.jpg', 100, 'Approved', 
 	'4ef098cfc4f94649bbb7c48b280cd31a', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Ginrin'
 	('a182ba85fc3b47c5ad444b472ae0f41d', 'Koi Ginrin', 2500000, 'Ginrin', 'Japan', 'Female', 4, 'Large', 'Koi', 'Friendly', 90, 22, 'Low', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027702/products/ginrin.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027702/products/ginrin.jpg', 100, 'Approved', 
 	'4e55d312c48d4071af5b678b391646d5', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Goshiki'
 	('95c7236b9dd6466f9889e56c665b3b62', 'Koi Goshiki', 1800000, 'Goshiki', 'Japan', 'Male', 2, 'Medium', 'Koi', 'Calm', 65, 19, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027714/products/goshiki.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027714/products/goshiki.jpg', 100, 'Approved', 
 	'bc1b07abc67945cabcfb9dbb4cd26763', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	('4a1055d39aa04034a5829a4464a74495', 'Koi Benigoi', 1400000, 'Benigoi', 'Japan', 'Unknown', 2, 'Medium', 'Koi', 'Friendly', 55, 19, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027660/products/benigoi.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027660/products/benigoi.jpg', 100, 'Approved', 
 	'01b364370e6b428581d3d2a344a197b2', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Asagi'
 	('f431751ad8a4447a9b05cc7b368aad40', 'Koi Asagi', 1900000, 'Asagi', 'Japan', 'Male', 3, 'Large', 'Koi', 'Calm', 65, 18, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728028069/products/asagi.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728028069/products/asagi.jpg', 100, 'Approved', 
 	'5b160e9cee4c40a79e1d8a7cf80f3d0b', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Platium'
 	('27f0a2ff06b8407db0b4f95d74acb227', 'Koi Platium', 2200000, 'Platinum', 'Japan', 'Female', 4, 'Large', 'Koi', 'Calm', 75, 20, 'High', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027810/products/platium.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027810/products/platium.jpg', 100, 'Approved', 
 	'e4bfaf2848c2429ab06c85405707a925', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Shusui'
 	('869177e959d24996bb67c6cd810d2ecb', 'Koi Shusui', 1600000, 'Shusui', 'Japan', 'Male', 3, 'Medium', 'Koi', 'Friendly', 60, 19, 'Low', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027850/products/shusui.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027850/products/shusui.jpg', 100, 'Approved', 
 	'e4048e4bbf8d480fadfc8c7d0e3e981d', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Taisho Sanke'
 	('697b702518b34a708fe4f4eee783f574', 'Koi Taisho Sanke', 2400000, 'Sanke', 'Japan', 'Female', 2, 'Medium', 'Koi', 'Aggressive', 75, 21, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027825/products/sanke.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027825/products/sanke.jpg', 100, 'Approved', 
 	'ca0884736a6542a98d0206716c2d6846', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Utsurimono'
 	('31f140dcb2a2404e901198a15338d3c1', 'Koi Utsurimono', 2500000, 'Utsurimono', 'Japan', 'Male', 3, 'Large', 'Koi', 'Aggressive', 80, 22, 'High', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027871/products/utsurimono.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027871/products/utsurimono.jpg', 100, 'Approved', 
 	'5a84123588704afb83ca029c8eca218b', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Chagoi'
 	('8b3988c0790f468590b9ab446865761a', 'Koi Chagoi', 1800000, 'Chagoi', 'Japan', 'Female', 2, 'Large', 'Koi', 'Friendly', 65, 19, 'Low', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027677/products/chagoi.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027677/products/chagoi.jpg', 100, 'Approved', 
 	'2f7a5273a19240c58db1f9e0b157b208', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Karashi'
 	('ac6168756e424113876e767f451e52e5', 'Koi Karashi', 1700000, 'Karashi', 'Japan', 'Male', 3, 'Medium', 'Koi', 'Calm', 60, 20, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027725/products/karashi.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027725/products/karashi.jpg', 100, 'Approved', 
 	'611ce6b1bca74c909b42609ee18f674d', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Kawarimono'
 	('5e5db3301a914461880840f9beb11b09', 'Koi Kawarimono', 2100000, 'Kawarimono', 'Japan', 'Female', 4, 'Large', 'Koi', 'Aggressive', 70, 21, 'High', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728028056/products/kawarimono.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728028056/products/kawarimono.jpg', 100, 'Approved', 
 	'ca226aab2bc946ce839057c492574219', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Kujaku'
 	('cd95f97eb7fd4aa383f8a2e410c2d0a4', 'Koi Kujaku', 1900000, 'Kujaku', 'Japan', 'Unknown', 2, 'Medium', 'Koi', 'Calm', 65, 20, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027762/products/kujaku.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027762/products/kujaku.jpg', 100, 'Approved', 
 	'1368ee1fa303461b87ddbb5b26d6d8d0', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Matsuba'
 	('1878040e415d45ceb86bde653f96284c', 'Koi Matsuba', 1700000, 'Matsuba', 'Japan', 'Female', 3, 'Large', 'Koi', 'Friendly', 70, 19, 'High', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027774/products/matsuba.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027774/products/matsuba.jpg', 100, 'Approved', 
 	'2db74b614ecc44dd9b2c10429ff49cb3', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi KikoKryu'
 	('b977b30ca52a4fa69f42e2e8c250513f', 'Koi KikoKryu', 2000000, 'KikoKryu', 'Japan', 'Unknown', 3, 'Large', 'Koi', 'Aggressive', 80, 22, 'High', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027737/products/kikokryu.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027737/products/kikokryu.jpg', 100, 'Approved', 
 	'af42c9de1e8048c7a7d8b254dc71afea', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Ochiba'
 	('0d5cd9f72b1f42d3b08224627a27837d', 'Koi Ochiba', 1500000, 'Ochiba', 'Japan', 'Male', 2, 'Medium', 'Koi', 'Friendly', 55, 19, 'Low', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027785/products/ochiba.jpg', 100, 'Fish', 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027785/products/ochiba.jpg', 100, 'Approved', 
 	'af301c6d526849e4bfde6e2ead5be943', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL);
 GO
 
