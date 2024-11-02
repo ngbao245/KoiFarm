@@ -344,7 +344,7 @@ namespace koi_farm_api.Controllers
                 });
             }
 
-            var userId = GetUserIdFromClaims();
+            var userId = order.UserId;
             var user = _unitOfWork.UserRepository.GetById(userId);
 
             try

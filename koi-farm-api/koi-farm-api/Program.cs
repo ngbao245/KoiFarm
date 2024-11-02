@@ -144,11 +144,11 @@ builder.Services.AddSingleton<ITokenService, TokenService>();
 var app = builder.Build();
 
 // Apply pending migrations automatically on startup
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<KoiFarmDbContext>();
-    dbContext.Database.Migrate();
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var dbContext = scope.ServiceProvider.GetRequiredService<KoiFarmDbContext>();
+//    dbContext.Database.Migrate();
+//}
 app.Use(async (context, next) =>
 {
     context.Response.Headers.Add("Cross-Origin-Opener-Policy", "same-origin");
