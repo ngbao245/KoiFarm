@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Repository.Migrations
 {
-    public partial class UpdateDatabase : Migration
+    public partial class AddAdditionalFieldsToConsignmentItem : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -434,6 +434,12 @@ namespace Repository.Migrations
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConsignmentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     OrderItemId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Personality = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FoodAmount = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WaterTemp = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MineralContent = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PH = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastUpdatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     DeletedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
