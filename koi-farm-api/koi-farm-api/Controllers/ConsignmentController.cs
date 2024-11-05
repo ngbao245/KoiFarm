@@ -101,11 +101,11 @@ namespace koi_farm_api.Controllers
         }
 
 
-
         // Update Consignment Item Status
         [HttpPut("update-item-status/{itemId}")]
         public IActionResult UpdateConsignmentItemStatus(string itemId, [FromBody] UpdateConsignmentStatusRequestModel model)
         {
+            // Get the user ID from the claims
             var userId = GetUserIdFromClaims();
             if (string.IsNullOrEmpty(userId))
             {
@@ -116,14 +116,41 @@ namespace koi_farm_api.Controllers
                 });
             }
 
-            // Retrieve the consignment item and ensure it belongs to the current user's consignment
-            var consignmentItem = _unitOfWork.ConsignmentItemRepository.GetSingle(ci => ci.Id == itemId && ci.Consignment.UserId == userId, ci => ci.Consignment);
+            // Get the current user from the repository, including the user's role
+            var currentUser = _unitOfWork.UserRepository.GetSingle(u => u.Id == userId, u => u.Role);
+            if (currentUser == null)
+            {
+                return Unauthorized(new ResponseModel
+                {
+                    StatusCode = 401,
+                    MessageError = "Unauthorized. User not found."
+                });
+            }
+
+            // Retrieve the consignment item without filtering by userId
+            var consignmentItem = _unitOfWork.ConsignmentItemRepository.GetSingle(
+                ci => ci.Id == itemId,
+                ci => ci.Consignment);
+
             if (consignmentItem == null)
             {
                 return NotFound(new ResponseModel
                 {
                     StatusCode = 404,
-                    MessageError = "Consignment item not found or does not belong to the current user."
+                    MessageError = "Consignment item not found."
+                });
+            }
+
+            // Check if the current user has access (owner or Staff/Manager role)
+            bool isOwner = consignmentItem.Consignment.UserId == userId;
+            bool isStaffOrManager = currentUser.Role.Name == "Staff" || currentUser.Role.Name == "Manager";
+
+            if (!isOwner && !isStaffOrManager)
+            {
+                return Unauthorized(new ResponseModel
+                {
+                    StatusCode = 403,
+                    MessageError = "You do not have permission to update the status of this consignment item."
                 });
             }
 
@@ -131,13 +158,14 @@ namespace koi_farm_api.Controllers
             consignmentItem.Status = model.Status;
             _unitOfWork.ConsignmentItemRepository.Update(consignmentItem);
 
-
             return Ok(new ResponseModel
             {
                 StatusCode = 200,
-                MessageError = "Consignment item status updated successfully."
+                MessageError = "Consignment item status updated successfully.",
+                Data = consignmentItem.Status
             });
         }
+
 
 
         // Get all consignments
@@ -165,7 +193,9 @@ namespace koi_farm_api.Controllers
                     Category = item.Category,
                     Status = item.Status,
                     ImageUrl = item.ImageUrl,
-                    Checkedout = item.Checkedout
+
+                    Checkedout = item.Checkedout,
+                    createDate = item.CreatedTime
                 }).ToList()
             }).ToList();
 
@@ -198,7 +228,8 @@ namespace koi_farm_api.Controllers
                 Status = consignmentItem.Status,
                 Checkedout = consignmentItem.Checkedout,
                 ImageUrl = consignmentItem.ImageUrl,
-                ConsignmentId = consignmentItem.ConsignmentId
+                ConsignmentId = consignmentItem.ConsignmentId,
+                createDate = consignmentItem.CreatedTime
             };
 
             return Ok(new ResponseModel
@@ -244,7 +275,8 @@ namespace koi_farm_api.Controllers
                     Category = item.Category,
                     Status = item.Status,
                     ImageUrl = item.ImageUrl,
-                    Checkedout = item.Checkedout
+                    Checkedout = item.Checkedout,
+                    createDate = item.CreatedTime
                 }).ToList()
             }).ToList();
 
@@ -258,99 +290,111 @@ namespace koi_farm_api.Controllers
         [HttpPost("checkout/{consignmentItemId}")]
         public IActionResult CheckoutConsignmentItem(string consignmentItemId)
         {
-                var userId = GetUserIdFromClaims();
-                if (string.IsNullOrEmpty(userId))
+            var userId = GetUserIdFromClaims();
+            Console.WriteLine($"User ID from claims: {userId}");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new ResponseModel
                 {
-                    return Unauthorized(new ResponseModel
-                    {
-                        StatusCode = 401,
-                        MessageError = "Unauthorized. User ID not found in claims."
-                    });
-                }
-
-                var consignmentItem = _unitOfWork.ConsignmentItemRepository.GetSingle(
-                    ci => ci.Id == consignmentItemId && ci.Consignment.UserId == userId && !ci.Checkedout
-                );
-
-                if (consignmentItem == null)
-                {
-                    return NotFound(new ResponseModel
-                    {
-                        StatusCode = 404,
-                        MessageError = "Consignment item not found or not available for checkout."
-                    });
-                }
-
-                if (consignmentItem.Status != "Approved")
-                {
-                    return BadRequest(new ResponseModel
-                    {
-                        StatusCode = 400,
-                        MessageError = "Consignment item is not approved for checkout."
-                    });
-                }
-
-                var consignment = _unitOfWork.ConsignmentRepository.GetSingle(c => c.Id == consignmentItem.ConsignmentId);
-                if (consignment == null)
-                {
-                    return NotFound(new ResponseModel
-                    {
-                        StatusCode = 404,
-                        MessageError = "Associated consignment not found."
-                    });
-                }
-
-                // Calculate the total price based on the number of days
-                var totalDays = (DateTimeOffset.Now - consignmentItem.CreatedTime).Days;
-                if (totalDays < 1) totalDays = 1; // Minimum charge for at least 1 day
-                var totalPrice = 25000 * totalDays;
-
-                // Create a new order
-                var order = new Order
-                {
-                    UserId = userId,
-                    Total = totalPrice,
-                    Status = "Pending",
-                    Address = GetUserAddress(userId),
-                    Items = new List<OrderItem>
-                {
-                    new OrderItem
-                    {
-                        ConsignmentItemId = consignmentItem.Id,
-                        Quantity = 1
-                    }
-                }
-                };
-
-                // Remove the ConsignmentItem from the Consignment
-                consignment.Items.Remove(consignmentItem);
-
-                // Save changes
-                _unitOfWork.OrderRepository.Create(order);
-
-          
-            _unitOfWork.ConsignmentRepository.Update(consignment);
-         
-
-            return Ok(new ResponseModel
-                {
-                    StatusCode = 201,
-                    Data = new OrderResponseModel
-                    {
-                        OrderId = order.Id,
-                        Total = order.Total,
-                        Status = order.Status,
-                        UserId = order.UserId,
-                        Address = order.Address,
-                        CreatedTime = order.CreatedTime,
-                        Items = order.Items.Select(item => new OrderItemResponseModel
-                        {
-                            ProductItemId = item.ConsignmentItemId,
-                            Quantity = item.Quantity
-                        }).ToList()
-                    }
+                    StatusCode = 401,
+                    MessageError = "Unauthorized. User ID not found in claims."
                 });
             }
+
+            var consignmentItem = _unitOfWork.ConsignmentItemRepository.GetSingle(
+                ci => ci.Id == consignmentItemId && ci.Consignment.UserId == userId && ci.Status == "Approved" && !ci.Checkedout
+            );
+
+            if (consignmentItem == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "Consignment item not found or not available for checkout."
+                });
+            }
+
+            Console.WriteLine("Consignment item found and eligible for checkout.");
+
+            try
+            {
+                var newProduct = new Product
+                {
+                    Name = consignmentItem.Name,
+                    Quantity = 1,
+                };
+
+                var newProductItem = new ProductItem
+                {
+                    Name = newProduct.Name,
+                    Price = 25000,
+                    Category = consignmentItem.Category ?? "Unknown",
+                    Origin = consignmentItem.Origin ?? "Unknown",
+                    Size = consignmentItem.Size ?? "Unknown",
+                    Species = consignmentItem.Species ?? "Unknown",
+                    Sex = consignmentItem.Sex ?? "Unknown",
+                    Age = consignmentItem.Age,
+                    Personality = consignmentItem.Personality ?? "Unknown",
+                    FoodAmount = consignmentItem.FoodAmount ?? "Standard",
+                    WaterTemp = consignmentItem.WaterTemp ?? "Normal",
+                    MineralContent = consignmentItem.MineralContent ?? "Normal",
+                    PH = consignmentItem.PH ?? "Neutral",
+                    ImageUrl = consignmentItem.ImageUrl ?? "",
+                    Quantity = 1,
+                    Type = consignmentItem.Type ?? "Default",
+                    ProductId = newProduct.Id,
+                };
+
+                newProduct.ProductItems = new List<ProductItem> { newProductItem };
+
+                var newOrder = new Order
+                {
+                    UserId = userId,
+                    Total = 25000,
+                    CreatedTime = DateTimeOffset.Now,
+                    Status = "Pending"
+                };
+
+                var newOrderItem = new OrderItem
+                {
+                    OrderID = newOrder.Id,
+                    ProductItemId = newProductItem.Id,
+                    ConsignmentItemId = consignmentItem.Id,
+                    Quantity = 1
+                };
+
+                newOrder.Items = new List<OrderItem> { newOrderItem };
+
+                _unitOfWork.ProductRepository.Create(newProduct);
+                _unitOfWork.OrderRepository.Create(newOrder);
+
+                Console.WriteLine("Product, ProductItem, Order, and OrderItem created successfully.");
+
+                consignmentItem.Checkedout = true;
+                _unitOfWork.ConsignmentItemRepository.Delete(consignmentItem);
+
+                return Ok(new ResponseModel
+                {
+                    StatusCode = 201,
+                    MessageError = "Consignment item checked out and converted to product successfully.",
+                    Data = new { ProductId = newProduct.Id, ProductItemId = newProductItem.Id, OrderId = newOrder.Id, OrderItemId = newOrderItem.Id }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating entities: {ex.Message}");
+                return StatusCode(500, new ResponseModel
+                {
+                    StatusCode = 500,
+                    MessageError = "An error occurred while processing the checkout.",
+                    Data = null
+                });
+            }
+        }
+
+
+
 
         [HttpDelete("remove-item/{itemId}")]
         public IActionResult RemoveConsignmentItem(string itemId)

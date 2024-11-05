@@ -24,6 +24,21 @@ BEGIN
 END
 GO
 
+
+-- Check and Delete if any data exists in the Certificate table
+IF EXISTS (SELECT 1 FROM [dbo].[Certificate])
+BEGIN
+    DELETE FROM [dbo].[Certificate];
+END
+GO
+
+-- Check and Delete if any data exists in the ProductCertificate table
+IF EXISTS (SELECT 1 FROM [dbo].[ProductCertificate])
+BEGIN
+    DELETE FROM [dbo].[ProductCertificate];
+END
+GO
+
 -- Check and Delete if any data exists in the Role table
 IF EXISTS (SELECT 1 FROM [dbo].[ProductItem])
 BEGIN
@@ -178,8 +193,9 @@ VALUES
     ('af301c6d526849e4bfde6e2ead5be943', 'Koi Ochiba', 100, 'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027785/products/ochiba.jpg', 
 	N'Matsuba là một loại cá Koi có màu kim loại với hoa văn lưới màu đen. Cơ thể của cá koi Matsuba có một màu với vảy hình nón thông. Loại cá này có lớp vảy óng ánh vô cùng đẹp mắt. Để tìm hiểu kỹ hơn về giống cá Koi Matsuba này hãy cùng tham khảo bài viết dưới đây của chúng tôi nhé', 
 	SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL);
+GO
 
--- Insert ProductItems for each product
+-- Insert ProductItems into ProductItem table
 INSERT INTO [dbo].[ProductItem]
     ([Id], 
 	[Name], 
@@ -206,204 +222,155 @@ INSERT INTO [dbo].[ProductItem]
 	[DeletedAt])
 VALUES
 	-- ProductItem for 'Koi Kohaku'
-	('1', 'Koi Kohaku', 1000000, 'Kohaku', 'Japan', 'Unknown', 2, 'Medium', 'Koi', 'Calm', 50, 20, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027750/products/kohaku.jpg', 100, 'Fish', 
+	('6f85a2a795ff4e24b3c8f1824c1c379c', 'Koi Kohaku', 1000000, 'Kohaku', 'Japan', 'Unknown', 2, 'Medium', 'Koi', 'Calm', 50, 20, 'Medium', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027750/products/kohaku.jpg', 100, 'Approved', 
 	'41c2fbe4b02549c587837a3c4658e02a', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Ogon'
-	('2', 'Koi Ogon', 1500000, 'Ogon', 'Japan', 'Unknown', 3, 'Large', 'Koi', 'Active', 70, 18, 'High', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027798/products/ogon.jpg', 100, 'Fish', 
+	('7c1a5056c6504b53a412a7217e5cd941', 'Koi Ogon', 1500000, 'Ogon', 'Japan', 'Unknown', 3, 'Large', 'Koi', 'Active', 70, 18, 'High', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027798/products/ogon.jpg', 100, 'Approved', 
 	'd93645edc83a4a0e8cfcbb9f2d819cc9', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Showa'
-	('3', 'Koi Showa', 2000000, 'Showa', 'Japan', 'Male', 1, 'Large', 'Koi', 'Aggressive', 80, 22, 'Low', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027838/products/showa.jpg', 100, 'Fish', 
+	('c47567c6f30a4c9e8220736ad4852aa7', 'Koi Showa', 2000000, 'Showa', 'Japan', 'Male', 1, 'Large', 'Koi', 'Aggressive', 80, 22, 'Low', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027838/products/showa.jpg', 100, 'Approved', 
 	'4f89cbd2af1e422fbfbfb1b78eb5d620', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Tancho'
-	('4', 'Koi Tancho', 1200000, 'Tancho', 'Japan', 'Female', 2, 'Medium', 'Koi', 'Friendly', 60, 20, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027860/products/tancho.jpg', 100, 'Fish', 
+	('b48b2e5cb58d4683ba4c046eaf7d9581', 'Koi Tancho', 1200000, 'Tancho', 'Japan', 'Female', 2, 'Medium', 'Koi', 'Friendly', 60, 20, 'Medium', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027860/products/tancho.jpg', 100, 'Approved', 
 	'3369c7cbba56453098a3d9487f22e4bc', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Bekko'
-	('5', 'Koi Bekko', 1100000, 'Bekko', 'Japan', 'Male', 3, 'Medium', 'Koi', 'Aggressive', 60, 18, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728028081/products/bekko.jpg', 100, 'Fish', 
+	('42fc166f2e1a4381975130a465cdb9b5', 'Koi Bekko', 1100000, 'Bekko', 'Japan', 'Male', 3, 'Medium', 'Koi', 'Aggressive', 60, 18, 'Medium', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728028081/products/bekko.jpg', 100, 'Approved', 
 	'64eb0df76e7b4c7ab2cdb7e94ddc8d8f', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Doitsu'
-	('6', 'Koi Doitsu', 1300000, 'Doitsu', 'Japan', 'Unknown', 1, 'Small', 'Koi', 'Calm', 50, 19, 'High', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027691/products/doitsu.jpg', 100, 'Fish', 
+	('10e769abd1ce4ded8f25be14760087a6', 'Koi Doitsu', 1300000, 'Doitsu', 'Japan', 'Unknown', 1, 'Small', 'Koi', 'Calm', 50, 19, 'High', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027691/products/doitsu.jpg', 100, 'Approved', 
 	'4ef098cfc4f94649bbb7c48b280cd31a', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Ginrin'
-	('7', 'Koi Ginrin', 2500000, 'Ginrin', 'Japan', 'Female', 4, 'Large', 'Koi', 'Friendly', 90, 22, 'Low', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027702/products/ginrin.jpg', 100, 'Fish', 
+	('a182ba85fc3b47c5ad444b472ae0f41d', 'Koi Ginrin', 2500000, 'Ginrin', 'Japan', 'Female', 4, 'Large', 'Koi', 'Friendly', 90, 22, 'Low', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027702/products/ginrin.jpg', 100, 'Approved', 
 	'4e55d312c48d4071af5b678b391646d5', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Goshiki'
-	('8', 'Koi Goshiki', 1800000, 'Goshiki', 'Japan', 'Male', 2, 'Medium', 'Koi', 'Calm', 65, 19, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027714/products/goshiki.jpg', 100, 'Fish', 
+	('95c7236b9dd6466f9889e56c665b3b62', 'Koi Goshiki', 1800000, 'Goshiki', 'Japan', 'Male', 2, 'Medium', 'Koi', 'Calm', 65, 19, 'Medium', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027714/products/goshiki.jpg', 100, 'Approved', 
 	'bc1b07abc67945cabcfb9dbb4cd26763', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
-	('9', 'Koi Benigoi', 1400000, 'Benigoi', 'Japan', 'Unknown', 2, 'Medium', 'Koi', 'Friendly', 55, 19, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027660/products/benigoi.jpg', 100, 'Fish', 
+	('4a1055d39aa04034a5829a4464a74495', 'Koi Benigoi', 1400000, 'Benigoi', 'Japan', 'Unknown', 2, 'Medium', 'Koi', 'Friendly', 55, 19, 'Medium', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027660/products/benigoi.jpg', 100, 'Approved', 
 	'01b364370e6b428581d3d2a344a197b2', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Asagi'
-	('10', 'Koi Asagi', 1900000, 'Asagi', 'Japan', 'Male', 3, 'Large', 'Koi', 'Calm', 65, 18, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728028069/products/asagi.jpg', 100, 'Fish', 
+	('f431751ad8a4447a9b05cc7b368aad40', 'Koi Asagi', 1900000, 'Asagi', 'Japan', 'Male', 3, 'Large', 'Koi', 'Calm', 65, 18, 'Medium', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728028069/products/asagi.jpg', 100, 'Approved', 
 	'5b160e9cee4c40a79e1d8a7cf80f3d0b', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Platium'
-	('11', 'Koi Platium', 2200000, 'Platinum', 'Japan', 'Female', 4, 'Large', 'Koi', 'Calm', 75, 20, 'High', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027810/products/platium.jpg', 100, 'Fish', 
+	('27f0a2ff06b8407db0b4f95d74acb227', 'Koi Platium', 2200000, 'Platinum', 'Japan', 'Female', 4, 'Large', 'Koi', 'Calm', 75, 20, 'High', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027810/products/platium.jpg', 100, 'Approved', 
 	'e4bfaf2848c2429ab06c85405707a925', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Shusui'
-	('12', 'Koi Shusui', 1600000, 'Shusui', 'Japan', 'Male', 3, 'Medium', 'Koi', 'Friendly', 60, 19, 'Low', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027850/products/shusui.jpg', 100, 'Fish', 
+	('869177e959d24996bb67c6cd810d2ecb', 'Koi Shusui', 1600000, 'Shusui', 'Japan', 'Male', 3, 'Medium', 'Koi', 'Friendly', 60, 19, 'Low', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027850/products/shusui.jpg', 100, 'Approved', 
 	'e4048e4bbf8d480fadfc8c7d0e3e981d', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Taisho Sanke'
-	('13', 'Koi Taisho Sanke', 2400000, 'Sanke', 'Japan', 'Female', 2, 'Medium', 'Koi', 'Aggressive', 75, 21, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027825/products/sanke.jpg', 100, 'Fish', 
+	('697b702518b34a708fe4f4eee783f574', 'Koi Taisho Sanke', 2400000, 'Sanke', 'Japan', 'Female', 2, 'Medium', 'Koi', 'Aggressive', 75, 21, 'Medium', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027825/products/sanke.jpg', 100, 'Approved', 
 	'ca0884736a6542a98d0206716c2d6846', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Utsurimono'
-	('14', 'Koi Utsurimono', 2500000, 'Utsurimono', 'Japan', 'Male', 3, 'Large', 'Koi', 'Aggressive', 80, 22, 'High', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027871/products/utsurimono.jpg', 100, 'Fish', 
+	('31f140dcb2a2404e901198a15338d3c1', 'Koi Utsurimono', 2500000, 'Utsurimono', 'Japan', 'Male', 3, 'Large', 'Koi', 'Aggressive', 80, 22, 'High', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027871/products/utsurimono.jpg', 100, 'Approved', 
 	'5a84123588704afb83ca029c8eca218b', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Chagoi'
-	('15', 'Koi Chagoi', 1800000, 'Chagoi', 'Japan', 'Female', 2, 'Large', 'Koi', 'Friendly', 65, 19, 'Low', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027677/products/chagoi.jpg', 100, 'Fish', 
+	('8b3988c0790f468590b9ab446865761a', 'Koi Chagoi', 1800000, 'Chagoi', 'Japan', 'Female', 2, 'Large', 'Koi', 'Friendly', 65, 19, 'Low', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027677/products/chagoi.jpg', 100, 'Approved', 
 	'2f7a5273a19240c58db1f9e0b157b208', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Karashi'
-	('16', 'Koi Karashi', 1700000, 'Karashi', 'Japan', 'Male', 3, 'Medium', 'Koi', 'Calm', 60, 20, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027725/products/karashi.jpg', 100, 'Fish', 
+	('ac6168756e424113876e767f451e52e5', 'Koi Karashi', 1700000, 'Karashi', 'Japan', 'Male', 3, 'Medium', 'Koi', 'Calm', 60, 20, 'Medium', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027725/products/karashi.jpg', 100, 'Approved', 
 	'611ce6b1bca74c909b42609ee18f674d', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Kawarimono'
-	('17', 'Koi Kawarimono', 2100000, 'Kawarimono', 'Japan', 'Female', 4, 'Large', 'Koi', 'Aggressive', 70, 21, 'High', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728028056/products/kawarimono.jpg', 100, 'Fish', 
+	('5e5db3301a914461880840f9beb11b09', 'Koi Kawarimono', 2100000, 'Kawarimono', 'Japan', 'Female', 4, 'Large', 'Koi', 'Aggressive', 70, 21, 'High', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728028056/products/kawarimono.jpg', 100, 'Approved', 
 	'ca226aab2bc946ce839057c492574219', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Kujaku'
-	('18', 'Koi Kujaku', 1900000, 'Kujaku', 'Japan', 'Unknown', 2, 'Medium', 'Koi', 'Calm', 65, 20, 'Medium', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027762/products/kujaku.jpg', 100, 'Fish', 
+	('cd95f97eb7fd4aa383f8a2e410c2d0a4', 'Koi Kujaku', 1900000, 'Kujaku', 'Japan', 'Unknown', 2, 'Medium', 'Koi', 'Calm', 65, 20, 'Medium', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027762/products/kujaku.jpg', 100, 'Approved', 
 	'1368ee1fa303461b87ddbb5b26d6d8d0', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Matsuba'
-	('19', 'Koi Matsuba', 1700000, 'Matsuba', 'Japan', 'Female', 3, 'Large', 'Koi', 'Friendly', 70, 19, 'High', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027774/products/matsuba.jpg', 100, 'Fish', 
+	('1878040e415d45ceb86bde653f96284c', 'Koi Matsuba', 1700000, 'Matsuba', 'Japan', 'Female', 3, 'Large', 'Koi', 'Friendly', 70, 19, 'High', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027774/products/matsuba.jpg', 100, 'Approved', 
 	'2db74b614ecc44dd9b2c10429ff49cb3', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi KikoKryu'
-	('20', 'Koi KikoKryu', 2000000, 'KikoKryu', 'Japan', 'Unknown', 3, 'Large', 'Koi', 'Aggressive', 80, 22, 'High', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027737/products/kikokryu.jpg', 100, 'Fish', 
+	('b977b30ca52a4fa69f42e2e8c250513f', 'Koi KikoKryu', 2000000, 'KikoKryu', 'Japan', 'Unknown', 3, 'Large', 'Koi', 'Aggressive', 80, 22, 'High', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027737/products/kikokryu.jpg', 100, 'Approved', 
 	'af42c9de1e8048c7a7d8b254dc71afea', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL),
 
 	-- ProductItem for 'Koi Ochiba'
-	('21', 'Koi Ochiba', 1500000, 'Ochiba', 'Japan', 'Male', 2, 'Medium', 'Koi', 'Friendly', 55, 19, 'Low', 7, 
-	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027785/products/ochiba.jpg', 100, 'Fish', 
+	('0d5cd9f72b1f42d3b08224627a27837d', 'Koi Ochiba', 1500000, 'Ochiba', 'Japan', 'Male', 2, 'Medium', 'Koi', 'Friendly', 55, 19, 'Low', 7, 
+	'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027785/products/ochiba.jpg', 100, 'Approved', 
 	'af301c6d526849e4bfde6e2ead5be943', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL);
-
-
-
-INSERT INTO [KoiFarm].[dbo].[Consignment]
-    ([Id],
-    [UserId],
-    [CreatedTime],
-    [LastUpdatedTime],
-    [DeletedTime],
-    [IsDeleted],
-    [DeletedAt])
-VALUES
-    ('c7d35ea3c567426ea7f71e9a9c2c147e', 'aa5fd505e603484ba3abd30223d0c29f', GETDATE(), GETDATE(), NULL, 0, NULL),
-    ('f8b24c9ae45847d9b3091c1d6bf72d89', 'aa5fd505e603484ba3abd30223d0c29f', GETDATE(), GETDATE(), NULL, 0, NULL),
-    ('a9c45d8eb12340f68ed7c2a5f4b3e901', 'aa5fd505e603484ba3abd30223d0c29f', GETDATE(), GETDATE(), NULL, 0, NULL);
 GO
 
-INSERT INTO [KoiFarm].[dbo].[ConsignmentItem]
-    ([Id],
-    [Name],
-    [Category],
-    [Origin],
-    [Sex],
-    [Age],
-    [Size],
-    [Species],
-    [Checkedout],
-    [Status],
-    [ImageUrl],
-    [ConsignmentId],
-    [OrderItemId],
-    [CreatedTime],
-    [LastUpdatedTime],
-    [DeletedTime],
-    [IsDeleted],
-    [DeletedAt])
-VALUES
-    -- First consignment items
-    ('d1e45f2acd894728b567a901bcdef123', N'Kohaku Premium', 'Premium', 'Japan', 'Female', 2, '45cm', 'Kohaku', 0, 'Pending', 
-    'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027750/products/kohaku.jpg', 
-    'c7d35ea3c567426ea7f71e9a9c2c147e', NULL, GETDATE(), GETDATE(), NULL, 0, NULL),
-    
-    ('e2f56g3bde905839c678b012cdefg234', N'Tancho Elite', 'Elite', 'Japan', 'Male', 3, '50cm', 'Tancho', 0, 'Approved',
-    'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027860/products/tancho.jpg',
-    'c7d35ea3c567426ea7f71e9a9c2c147e', NULL, GETDATE(), GETDATE(), NULL, 0, NULL),
-
-    -- Second consignment items
-    ('f3g67h4cef016940d789c123defgh345', N'Bekko Special', 'Special', 'Japan', 'Female', 1, '35cm', 'Bekko', 0, 'Pending',
-    'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728028081/products/bekko.jpg',
-    'f8b24c9ae45847d9b3091c1d6bf72d89', NULL, GETDATE(), GETDATE(), NULL, 0, NULL),
-    
-    ('g4h78i5dfg127051e890d234efghi456', N'Doitsu Classic', 'Classic', 'Japan', 'Male', 2, '40cm', 'Doitsu', 0, 'Approved',
-    'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027691/products/doitsu.jpg',
-    'f8b24c9ae45847d9b3091c1d6bf72d89', NULL, GETDATE(), GETDATE(), NULL, 0, NULL),
-
-    -- Third consignment items
-    ('h5i89j6efg238162f901e345fghij567', N'Ginrin Select', 'Select', 'Japan', 'Female', 4, '55cm', 'Ginrin', 0, 'Pending',
-    'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027702/products/ginrin.jpg',
-    'a9c45d8eb12340f68ed7c2a5f4b3e901', NULL, GETDATE(), GETDATE(), NULL, 0, NULL),
-    
-    ('i6j90k7fgh349273g012f456ghijk678', N'Goshiki Deluxe', 'Deluxe', 'Japan', 'Male', 2, '48cm', 'Goshiki', 0, 'Approved',
-    'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027714/products/goshiki.jpg',
-    'a9c45d8eb12340f68ed7c2a5f4b3e901', NULL, GETDATE(), GETDATE(), NULL, 0, NULL);
-GO
-
-
--- Insert certificates with new IDs
+-- Insert certificates into Certificate table
 INSERT INTO [dbo].[Certificate] 
-([Id], [Name], [ImageUrl], [CreatedTime], [LastUpdatedTime], [IsDeleted]) 
+	([Id], 
+	[Name], 
+	[ImageUrl], 
+	[CreatedTime], 
+	[LastUpdatedTime], 
+	[IsDeleted]) 
 VALUES 
-('cert101', N'ISO 9001', 'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027762/products/kujaku.jpg', GETDATE(), GETDATE(), 0),
-('cert102', N'Fair Trade', 'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027774/products/matsuba.jpg', GETDATE(), GETDATE(), 0),
-('cert103', N'Organic Certification', 'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027737/products/kikokryu.jpg', GETDATE(), GETDATE(), 0),
-('cert104', N'Quality Assurance', 'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1728027677/products/chagoi.jpg', GETDATE(), GETDATE(), 0);
+	('ab3d6e2d2bc7417a825cf1113fb8f7f5', N'ISO 9001', 'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1730188615/certificates/mwhssoyn08g26aaf94d1.jpg', GETDATE(), GETDATE(), 0),
+	('32edff23aa5a4aad802d98b356c89688', N'Fair Trade', 'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1730188614/certificates/uhqhcdljmi35kcpcpbmr.jpg', GETDATE(), GETDATE(), 0),
+	('1bc906b277b84b149b1bb2f01f6cdac4', N'Organic Certification', 'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1730188613/certificates/lssx2px3tthkzyszk6jv.jpg', GETDATE(), GETDATE(), 0),
+	('28bdb42d6bcf4ad6a836009b40c4367e', N'Quality Assurance', 'https://res.cloudinary.com/dv7tuoxwb/image/upload/v1730188613/certificates/dhwqviydt6frio9dazk6.jpg', GETDATE(), GETDATE(), 0);
 
--- Link products with certificates using new IDs
+-- Insert product certificates in to ProductCertificate table
 INSERT INTO [dbo].[ProductCertificate]
-([Id], [Provider], [CertificateId], [ProductItemId], [CreatedTime], [LastUpdatedTime], [IsDeleted])
+	([Id], 
+	[Provider], 
+	[CertificateId], 
+	[ProductItemId], 
+	[CreatedTime], 
+	[LastUpdatedTime], 
+	[IsDeleted])
 VALUES
-('pc101', 'Alan Walker', 'cert101', '1', GETDATE(), GETDATE(), 0),
-('pc102', 'Alan Walker', 'cert102', '4', GETDATE(), GETDATE(), 0),
-('pc103', 'Alan Walker', 'cert103', '2', GETDATE(), GETDATE(), 0),
-('pc113', 'Alan Walker', 'cert101', '5', GETDATE(), GETDATE(), 0),
-('pc111', 'Alan Walker', 'cert103', '4', GETDATE(), GETDATE(), 0),
-('pc112', 'Alan Walker', 'cert104', '4', GETDATE(), GETDATE(), 0),
-('pc114', 'Alan Walker', 'cert102', '5', GETDATE(), GETDATE(), 0),
-('pc104', 'Alan Walker', 'cert104', '3', GETDATE(), GETDATE(), 0);
-
-
+	('87a612eef7574f4aac35c4e73cd41781', 'Spring viraemia of carp (SVC)', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '6f85a2a795ff4e24b3c8f1824c1c379c', GETDATE(), GETDATE(), 0),
+	('a7a81c9f2da64422bbd92e86c754f927', 'Koi herpesvirus disease (KHV)', '32edff23aa5a4aad802d98b356c89688', '7c1a5056c6504b53a412a7217e5cd941', GETDATE(), GETDATE(), 0),
+	('76a7951ab7d24a93b925ba4eeb1845a2', 'Epizootic ulcerative syndrome (EUS)', '1bc906b277b84b149b1bb2f01f6cdac4', 'c47567c6f30a4c9e8220736ad4852aa7', GETDATE(), GETDATE(), 0),
+	('83d67800d54a48f08ec14436ccd1cdd8', 'Epizootic haematopoietic necrosis (EHN)', '28bdb42d6bcf4ad6a836009b40c4367e', 'b48b2e5cb58d4683ba4c046eaf7d9581', GETDATE(), GETDATE(), 0),
+	('0ca9eab22a8442709cbd699085f556b6', 'White spot disease (WSD)', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '42fc166f2e1a4381975130a465cdb9b5', GETDATE(), GETDATE(), 0),
+	('30d1284b00e649c28bb988b82979658b', 'Furunculosis (Aeromonas Salmonicida)', '32edff23aa5a4aad802d98b356c89688', '10e769abd1ce4ded8f25be14760087a6', GETDATE(), GETDATE(), 0),
+	('ebc5e31111dd4f1abcaa2a7ee335613f', 'Spring viraemia of carp (SVC)', '1bc906b277b84b149b1bb2f01f6cdac4', 'a182ba85fc3b47c5ad444b472ae0f41d', GETDATE(), GETDATE(), 0),
+	('41e79bd13d794e54921abbc597601b5d', 'Koi herpesvirus disease (KHV)', '28bdb42d6bcf4ad6a836009b40c4367e', '95c7236b9dd6466f9889e56c665b3b62', GETDATE(), GETDATE(), 0),
+	('72efbad9552147eca704d95fdbaa134a', 'Epizootic ulcerative syndrome (EUS)', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '4a1055d39aa04034a5829a4464a74495', GETDATE(), GETDATE(), 0),
+	('f53e97deb527426f91267bb8b316a350', 'Epizootic haematopoietic necrosis (EHN)', '32edff23aa5a4aad802d98b356c89688', 'f431751ad8a4447a9b05cc7b368aad40', GETDATE(), GETDATE(), 0),
+	('7a5e27df7b0c481cb2633889655ca92e', 'White spot disease (WSD)', '1bc906b277b84b149b1bb2f01f6cdac4', '27f0a2ff06b8407db0b4f95d74acb227', GETDATE(), GETDATE(), 0),
+	('2126db843f704c929ccc02eea482ea1e', 'Furunculosis (Aeromonas Salmonicida)', '28bdb42d6bcf4ad6a836009b40c4367e', '869177e959d24996bb67c6cd810d2ecb', GETDATE(), GETDATE(), 0),
+	('2cd8c720057f4020b01b81eba393607b', 'Spring viraemia of carp (SVC)', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '697b702518b34a708fe4f4eee783f574', GETDATE(), GETDATE(), 0),
+	('64818625770544b79074aec86891df97', 'Koi herpesvirus disease (KHV)', '32edff23aa5a4aad802d98b356c89688', '31f140dcb2a2404e901198a15338d3c1', GETDATE(), GETDATE(), 0),
+	('f9bc3ee5720541a989070efb8420deb7', 'Epizootic ulcerative syndrome (EUS)', '1bc906b277b84b149b1bb2f01f6cdac4', '8b3988c0790f468590b9ab446865761a', GETDATE(), GETDATE(), 0),
+	('a71e589a61b746398d6269f8de080ef6', 'Epizootic haematopoietic necrosis (EHN)', '28bdb42d6bcf4ad6a836009b40c4367e', 'ac6168756e424113876e767f451e52e5', GETDATE(), GETDATE(), 0),
+	('b76612e8c6154ec99b6c850284870f91', 'White spot disease (WSD)', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '5e5db3301a914461880840f9beb11b09', GETDATE(), GETDATE(), 0),
+	('c9bee55418c24e019147f8b167f26c28', 'Spring viraemia of carp (SVC)', '32edff23aa5a4aad802d98b356c89688', 'cd95f97eb7fd4aa383f8a2e410c2d0a4', GETDATE(), GETDATE(), 0),
+	('29de0dff5816465b8ce148d791813600', 'Koi herpesvirus disease (KHV)', '1bc906b277b84b149b1bb2f01f6cdac4', '1878040e415d45ceb86bde653f96284c', GETDATE(), GETDATE(), 0),
+	('fbdc2b32134b4990b42ae4dd8316c735', 'Epizootic ulcerative syndrome (EUS)', '28bdb42d6bcf4ad6a836009b40c4367e', 'b977b30ca52a4fa69f42e2e8c250513f', GETDATE(), GETDATE(), 0),
+	('48e01d8e1d7d4a20ba101c66f8e9ff44', 'Epizootic haematopoietic necrosis (EHN)', 'ab3d6e2d2bc7417a825cf1113fb8f7f5', '0d5cd9f72b1f42d3b08224627a27837d', GETDATE(), GETDATE(), 0);
 GO
-
-
 
 COMMIT;
-
-
-
-
-

@@ -26,5 +26,13 @@ namespace Repository.Data.Entity
         public string? OrderItemId { get; set; }
         [ForeignKey(nameof(OrderItemId))]
         public OrderItem? OrderItem { get; set; }
+
+        // Additional fields to align with ProductItem requirements
+        public string Personality { get; set; } = "Unknown"; // Default value if not provided
+        public string FoodAmount { get; set; } = "Standard"; // Default value if not provided
+        public string WaterTemp { get; set; } = "Normal"; // Default value if not provided
+        public string MineralContent { get; set; } = "Normal"; // Default value if not provided
+        public string PH { get; set; } = "Neutral"; // Default value if not provided
+        public string Type { get; set; } = "Default"; // Default value if not provided
     }
 }

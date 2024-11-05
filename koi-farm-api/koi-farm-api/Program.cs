@@ -14,6 +14,7 @@ using Repository.PaymentService;
 using Microsoft.Extensions.Configuration;
 using Repository.EmailService;
 using Repository.Model.Email;
+using Repository.ForgotPasswordService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -138,15 +139,16 @@ builder.Services.AddScoped<IVnPayService, VnPayService>();
 IConfiguration configuration = builder.Configuration;
 EmailSettingModel.Instance = configuration.GetSection("EmailSettings").Get<EmailSettingModel>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddSingleton<ITokenService, TokenService>();
 
 var app = builder.Build();
 
 // Apply pending migrations automatically on startup
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<KoiFarmDbContext>();
-    dbContext.Database.Migrate();
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var dbContext = scope.ServiceProvider.GetRequiredService<KoiFarmDbContext>();
+//    dbContext.Database.Migrate();
+//}
 app.Use(async (context, next) =>
 {
     context.Response.Headers.Add("Cross-Origin-Opener-Policy", "same-origin");

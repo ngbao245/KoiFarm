@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Model.Consignment
 {
@@ -18,6 +14,11 @@ namespace Repository.Model.Consignment
         public string Species { get; set; }
         public string Status { get; set; }
         public string? ImageUrl { get; set; }
+        public string Personality { get; set; }
+        public string FoodAmount { get; set; }
+        public string WaterTemp { get; set; }
+        public string MineralContent { get; set; }
+        public string PH { get; set; }
+        public string Type { get; set; }
     }
-
 }
