@@ -85,7 +85,6 @@ INSERT INTO [dbo].[User]
            ,[DeletedAt])
 VALUES
            ('aa5fd505e603484ba3abd30223d0c29f' ,'manager', 'manager@gmail.com', '123456', NULL, '0934140524', '1', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL)
-           ('staff', 'staff', 'staff@gmail.com', '123456', '123 Koi Street, Tokyo', '0912345678', '2', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET(), NULL, 0, NULL)
 GO
 
 -- Insert blogs into Blog table

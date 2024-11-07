@@ -125,14 +125,16 @@ namespace koi_farm_api.Controllers
 
             if (response.Success)
             {
-
-                //order.Status = "Paid";
+                if (!string.IsNullOrEmpty(order.ConsignmentId))
+                {
+                    order.Status = "Completed";
+                }
 
                 var payment = new Payment
                 {
                     Id = response.PaymentId,
                     Amount = order.Total,
-                    Status = "Success",
+                    Status = (!string.IsNullOrEmpty(order.ConsignmentId)) ? "SuccessConsignment" : "Success",
                     Method = response.PaymentMethod,
                     OrderId = order.Id
                 };
