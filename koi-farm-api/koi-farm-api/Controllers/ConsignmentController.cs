@@ -384,6 +384,7 @@ namespace koi_farm_api.Controllers
                 _unitOfWork.OrderRepository.Create(newOrder);
 
                 consignmentItem.Checkedout = true;
+                _unitOfWork.ConsignmentItemRepository.Delete(consignmentItem);
 
                 return Ok(new ResponseModel
                 {
