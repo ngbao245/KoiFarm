@@ -174,6 +174,24 @@ namespace koi_farm_api.Controllers
                 });
             }
 
+            if (promotionModel.Type != "Direct" && promotionModel.Type != "Percentage")
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Invalid promotion type. It should only be Direct or Percentage."
+                });
+            }
+
+            if (promotionModel.Type == "Percentage" && promotionModel.Amount > 100)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Invalid promotion amount. It should be lower than 100 if the type is Percentage"
+                });
+            }
+
             _mapper.Map(promotionModel, promotion);
 
             _unitOfWork.PromotionRepository.Update(promotion);
