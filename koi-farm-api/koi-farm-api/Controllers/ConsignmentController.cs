@@ -332,6 +332,8 @@ namespace koi_farm_api.Controllers
                 {
                     Name = consignmentItem.Name,
                     Quantity = 1,
+                    IsDeleted = true,
+                    DeletedTime = DateTime.UtcNow,
                 };
 
                 var newProductItem = new ProductItem
@@ -353,7 +355,8 @@ namespace koi_farm_api.Controllers
                     Quantity = 1,
                     Type = consignmentItem.Type ?? "Default",
                     ProductId = newProduct.Id,
-
+                    IsDeleted = true,
+                    DeletedTime = DateTime.UtcNow,
                 };
 
                 newProduct.ProductItems = new List<ProductItem> { newProductItem };
