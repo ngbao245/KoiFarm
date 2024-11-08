@@ -45,12 +45,22 @@ namespace koi_farm_api.Controllers
                 });
             }
 
+            //Check if there is a valid promotion
+            var promotion = _unitOfWork.PromotionRepository.GetAll().FirstOrDefault(p => p.Code == model.PromotionCode);
+            bool isPromotionValid = promotion != null &&
+                                    ((promotion.Type == "Percentage" && promotion.Amount > 0 && promotion.Amount <= 100) ||
+                                     (promotion.Type == "Direct" && promotion.Amount > 0));
+
+
+
             var order = new Order
             {
                 UserId = GetUserIdFromClaims(),
                 Total = 0,
                 Status = "Pending",
-                Items = new List<OrderItem>()
+                Items = new List<OrderItem>(),
+
+                PromotionId = isPromotionValid ? promotion.Id : null
             };
 
             foreach (var cartItem in cart.Items)
@@ -101,6 +111,18 @@ namespace koi_farm_api.Controllers
                         StatusCode = 400,
                         MessageError = $"Product not found for ProductItem with ID {productItem.Id}."
                     });
+                }
+            }
+
+            if (isPromotionValid)
+            {
+                if (promotion.Type == "Percentage")
+                {
+                    order.Total -= order.Total * ((decimal)promotion.Amount / 100);
+                }
+                else if (promotion.Type == "Direct")
+                {
+                    order.Total -= promotion.Amount;
                 }
             }
 
@@ -232,6 +254,7 @@ namespace koi_farm_api.Controllers
                     UserId = order.UserId,
                     StaffId = order.StaffId,
                     Address = order.Address,
+                    ConsignmentId = order.ConsignmentId,
                     CreatedTime = order.CreatedTime,
                     IsDelivered = order.IsDelivered,
                     Items = order.Items.Select(item => new OrderItemResponseModel
@@ -279,6 +302,7 @@ namespace koi_farm_api.Controllers
                     UserId = order.UserId,
                     StaffId = order.StaffId,
                     Address = order.Address,
+                    ConsignmentId = order.ConsignmentId,
                     CreatedTime = order.CreatedTime,
                     IsDelivered = order.IsDelivered,
                     Items = order.Items.Select(item => new OrderItemResponseModel
@@ -377,6 +401,7 @@ namespace koi_farm_api.Controllers
                         UserId = order.UserId,
                         StaffId = order.StaffId,
                         Address = order.Address,
+                        ConsignmentId = order.ConsignmentId,
                         CreatedTime = order.CreatedTime,
                         IsDelivered = order.IsDelivered,
                         Items = order.Items.Select(item => new OrderItemResponseModel
@@ -436,6 +461,7 @@ namespace koi_farm_api.Controllers
                     UserId = order.UserId,
                     StaffId = order.StaffId,
                     Address = order.Address,
+                    ConsignmentId = order.ConsignmentId,
                     CreatedTime = order.CreatedTime,
                     IsDelivered = order.IsDelivered,
                     Items = order.Items.Select(item => new OrderItemResponseModel
@@ -495,6 +521,7 @@ namespace koi_farm_api.Controllers
                     UserId = order.UserId,
                     StaffId = order.StaffId,
                     Address = order.Address,
+                    ConsignmentId = order.ConsignmentId,
                     CreatedTime = order.CreatedTime,
                     IsDelivered = order.IsDelivered,
                     Items = order.Items.Select(item => new OrderItemResponseModel
@@ -659,6 +686,7 @@ namespace koi_farm_api.Controllers
                 UserId = order.UserId,
                 StaffId = order.StaffId,
                 Address = order.Address,
+                ConsignmentId = order.ConsignmentId,
                 CreatedTime = order.CreatedTime,
                 IsDelivered = order.IsDelivered,
                 Items = order.Items.Select(item => new OrderItemResponseModel

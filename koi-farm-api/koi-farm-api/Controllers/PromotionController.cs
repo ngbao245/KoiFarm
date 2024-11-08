@@ -92,7 +92,7 @@ namespace koi_farm_api.Controllers
 
         public IActionResult CreatePromotion(RequestCreatePromotionModel promotionModel)
         {
-            if (promotionModel == null || string.IsNullOrEmpty(promotionModel.Code) || promotionModel.Amount < 0 || string.IsNullOrEmpty(promotionModel.Type))
+            if (promotionModel == null || string.IsNullOrEmpty(promotionModel.Code) || promotionModel.Amount <= 0 || string.IsNullOrEmpty(promotionModel.Type))
             {
                 return BadRequest(new ResponseModel
                 {
@@ -108,6 +108,24 @@ namespace koi_farm_api.Controllers
                 {
                     StatusCode = 409,
                     MessageError = "Code already exists."
+                });
+            }
+
+            if (promotionModel.Type != "Direct" && promotionModel.Type != "Percentage")
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Invalid promotion type. It should only be Direct or Percentage."
+                });
+            }
+
+            if (promotionModel.Type == "Percentage" && promotionModel.Amount > 100)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Invalid promotion amount. It should be lower than 100 if the type is Percentage"
                 });
             }
 
@@ -153,6 +171,24 @@ namespace koi_farm_api.Controllers
                 {
                     StatusCode = 409,
                     MessageError = "Promotion code already exists."
+                });
+            }
+
+            if (promotionModel.Type != "Direct" && promotionModel.Type != "Percentage")
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Invalid promotion type. It should only be Direct or Percentage."
+                });
+            }
+
+            if (promotionModel.Type == "Percentage" && promotionModel.Amount > 100)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "Invalid promotion amount. It should be lower than 100 if the type is Percentage"
                 });
             }
 
