@@ -155,6 +155,7 @@ namespace Repository.Controllers
                         RoleId = "0"
                     };
                     _unitOfWork.UserRepository.Create(user);
+                    user = _unitOfWork.UserRepository.GetSingle(u => u.Email == payload.Email, includeProperties: q => q.Role);
                 }
 
                 var token = _generateToken.GenerateTokenModel(user);
