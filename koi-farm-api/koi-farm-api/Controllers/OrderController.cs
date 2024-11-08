@@ -254,6 +254,7 @@ namespace koi_farm_api.Controllers
                     UserId = order.UserId,
                     StaffId = order.StaffId,
                     Address = order.Address,
+                    ConsignmentId = order.ConsignmentId,
                     CreatedTime = order.CreatedTime,
                     IsDelivered = order.IsDelivered,
                     Items = order.Items.Select(item => new OrderItemResponseModel
@@ -301,6 +302,7 @@ namespace koi_farm_api.Controllers
                     UserId = order.UserId,
                     StaffId = order.StaffId,
                     Address = order.Address,
+                    ConsignmentId = order.ConsignmentId,
                     CreatedTime = order.CreatedTime,
                     IsDelivered = order.IsDelivered,
                     Items = order.Items.Select(item => new OrderItemResponseModel
@@ -399,6 +401,7 @@ namespace koi_farm_api.Controllers
                         UserId = order.UserId,
                         StaffId = order.StaffId,
                         Address = order.Address,
+                        ConsignmentId = order.ConsignmentId,
                         CreatedTime = order.CreatedTime,
                         IsDelivered = order.IsDelivered,
                         Items = order.Items.Select(item => new OrderItemResponseModel
@@ -458,6 +461,7 @@ namespace koi_farm_api.Controllers
                     UserId = order.UserId,
                     StaffId = order.StaffId,
                     Address = order.Address,
+                    ConsignmentId = order.ConsignmentId,
                     CreatedTime = order.CreatedTime,
                     IsDelivered = order.IsDelivered,
                     Items = order.Items.Select(item => new OrderItemResponseModel
@@ -517,6 +521,7 @@ namespace koi_farm_api.Controllers
                     UserId = order.UserId,
                     StaffId = order.StaffId,
                     Address = order.Address,
+                    ConsignmentId = order.ConsignmentId,
                     CreatedTime = order.CreatedTime,
                     IsDelivered = order.IsDelivered,
                     Items = order.Items.Select(item => new OrderItemResponseModel
@@ -681,6 +686,7 @@ namespace koi_farm_api.Controllers
                 UserId = order.UserId,
                 StaffId = order.StaffId,
                 Address = order.Address,
+                ConsignmentId = order.ConsignmentId,
                 CreatedTime = order.CreatedTime,
                 IsDelivered = order.IsDelivered,
                 Items = order.Items.Select(item => new OrderItemResponseModel
