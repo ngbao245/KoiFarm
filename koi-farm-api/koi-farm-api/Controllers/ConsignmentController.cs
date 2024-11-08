@@ -172,7 +172,7 @@ namespace koi_farm_api.Controllers
         [HttpGet("all-consignments")]
         public IActionResult GetAllConsignments()
         {
-            var consignments = _unitOfWork.ConsignmentRepository.Get(c=>c.IsDeleted == false, includeProperties: c => c.Items).ToList();
+            var consignments = _unitOfWork.ConsignmentRepository.Get(c => !c.IsDeleted, includeProperties: c => c.Items).ToList();
             if (!consignments.Any())
             {
                 return NotFound(new ResponseModel
