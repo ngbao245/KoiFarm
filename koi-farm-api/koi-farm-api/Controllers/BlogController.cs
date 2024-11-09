@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Data.Entity;
@@ -71,6 +72,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [Authorize(Roles = "Manager,Staff")]
         [HttpPost("create-blog")]
         public IActionResult CreateBlog([FromBody] RequestCreateBlogModel blogModel)
         {
@@ -107,6 +109,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [Authorize(Roles = "Manager,Staff")]
         [HttpPut("update-blog/{id}")]
         public IActionResult UpdateBlog(string id, [FromBody] RequestCreateBlogModel blogModel)
         {
@@ -140,8 +143,8 @@ namespace koi_farm_api.Controllers
                 });
             }
 
-            // Only allow the user who created the blog to update it
-            if (blog.UserId != userId)
+            // Only allow the user who created the blog and manager to update it
+            if (blog.UserId != userId && _unitOfWork.UserRepository.GetById(userId).RoleId != "1")
             {
                 return Forbid();
             }
@@ -157,6 +160,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [Authorize(Roles = "Manager,Staff")]
         [HttpDelete("delete-blog/{id}")]
         public IActionResult DeleteBlog(string id)
         {

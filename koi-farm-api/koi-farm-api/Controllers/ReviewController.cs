@@ -105,6 +105,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [Authorize]
         [HttpPost("create-review")]
         public IActionResult CreateReview(RequestCreateReviewModel reviewModel)
         {
@@ -214,6 +215,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [Authorize]
         [HttpDelete("delete-review/{id}")]
         public IActionResult DeleteReview(string id)
         {

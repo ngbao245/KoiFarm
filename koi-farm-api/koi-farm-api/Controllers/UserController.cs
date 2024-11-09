@@ -143,6 +143,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost("create-user-staff")]
         public IActionResult CreateUserStaff([FromBody] RequestCreateUserModel responseCreateUser)
         {
@@ -178,6 +179,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPut("update-user/{id}")]
         public IActionResult UpdateUser(string id, [FromBody] RequestCreateUserModel updateUserModel)
         {
@@ -259,6 +261,7 @@ namespace koi_farm_api.Controllers
         }
 
 
+        [Authorize(Roles = "Manager")]
         [HttpDelete("delete-user/{id}")]
         public IActionResult DeleteUser(string id)
         {

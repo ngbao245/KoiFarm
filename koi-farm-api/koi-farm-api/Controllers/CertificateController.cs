@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Repository.Data.Entity;
 using Repository.Model;
 using Repository.Model.Certificate;
@@ -92,6 +93,8 @@ public class CertificateController : ControllerBase
         });
     }
 
+
+    [Authorize(Roles = "Manager,Staff")]
     [HttpPost("create-certificate")]
     public IActionResult CreateCertificate([FromBody] CertificateCreateModel model)
     {
@@ -127,6 +130,7 @@ public class CertificateController : ControllerBase
         });
     }
 
+    [Authorize(Roles = "Manager,Staff")]
     [HttpPost("add-product-certificate")]
     public IActionResult AddProductCertificate([FromBody] ProductCertificateCreateModel model)
     {
@@ -205,6 +209,7 @@ public class CertificateController : ControllerBase
         });
     }
 
+    [Authorize(Roles = "Manager,Staff")]
     [HttpPut("update-product-certificate/{id}")]
     public IActionResult UpdateProductCertificate(string id, [FromBody] ProductCertificateUpdateModel model)
     {
@@ -252,6 +257,7 @@ public class CertificateController : ControllerBase
         });
     }
 
+    [Authorize(Roles = "Manager,Staff")]
     [HttpDelete("remove-product-certificate/{id}")]
     public IActionResult RemoveProductCertificate(string id)
     {
@@ -282,6 +288,7 @@ public class CertificateController : ControllerBase
         });
     }
 
+    [Authorize(Roles = "Manager,Staff")]
     [HttpPut("update-certificate-image/{id}")]
     public IActionResult UpdateCertificateImage(string id, [FromBody] CertificateImageUpdateModel model)
     {
@@ -327,6 +334,7 @@ public class CertificateController : ControllerBase
         });
     }
 
+    [Authorize(Roles = "Manager,Staff")]
     [HttpPut("update-certificate/{id}")]
     public IActionResult UpdateCertificate(string id, [FromBody] CertificateUpdateModel model)
     {
@@ -362,6 +370,7 @@ public class CertificateController : ControllerBase
         });
     }
 
+    [Authorize(Roles = "Manager,Staff")]
     [HttpDelete("delete-certificate/{id}")]
     public IActionResult DeleteCertificate(string id)
     {
