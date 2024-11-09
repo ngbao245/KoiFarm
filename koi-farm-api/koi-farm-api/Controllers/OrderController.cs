@@ -261,7 +261,7 @@ namespace koi_farm_api.Controllers
                     {
                         ProductItemId = item.ProductItemId,
                         Quantity = item.Quantity,
-                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId)?.Price ?? 25000
                     }).ToList()
                 }
             });

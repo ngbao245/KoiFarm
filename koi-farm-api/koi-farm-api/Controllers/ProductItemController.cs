@@ -26,7 +26,9 @@ namespace koi_farm_api.Controllers
         [HttpGet("get-all-product-items")]
         public IActionResult GetAllProductItems(int pageIndex = 1, int pageSize = 10, string? searchQuery = null)
         {
-            var productItems = _unitOfWork.ProductItemRepository.GetAll();
+            var productItems = _unitOfWork.ProductItemRepository
+                .Get(c => !c.IsDeleted && !c.Name.StartsWith("[Consignment]-"))
+                .ToList();
 
             if (!productItems.Any())
             {
@@ -52,7 +54,6 @@ namespace koi_farm_api.Controllers
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
-
 
             var responseProductItems = _mapper.Map<List<ResponseProductItemModel>>(pagedProductItems);
 
@@ -86,7 +87,7 @@ namespace koi_farm_api.Controllers
 
             var productItem = _unitOfWork.ProductItemRepository.GetById(id);
 
-            if (productItem == null)
+            if (productItem == null || productItem.Name.StartsWith("[Consignment]-"))
             {
                 return NotFound(new ResponseModel
                 {
@@ -104,6 +105,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
+
         [HttpGet("get-product-item-by-product/{productId}")]
         public IActionResult GetReviewsByProductItem(string productId)
         {
@@ -117,14 +119,16 @@ namespace koi_farm_api.Controllers
                 });
             }
 
-            var productItems = _unitOfWork.ProductItemRepository.GetAll().Where(r => r.ProductId == productId);
+            var productItems = _unitOfWork.ProductItemRepository
+                .GetAll()
+                .Where(r => r.ProductId == productId && !r.Name.StartsWith("[Consignment]-"));
 
             if (!productItems.Any())
             {
                 return NotFound(new ResponseModel
                 {
                     StatusCode = 404,
-                    MessageError = "No product Items found for this product."
+                    MessageError = "No product items found for this product."
                 });
             }
 
@@ -136,6 +140,7 @@ namespace koi_farm_api.Controllers
                 Data = responseProductItems
             });
         }
+
 
         private bool ValidateField(RequestCreateProductItemModel productItemModel)
         {

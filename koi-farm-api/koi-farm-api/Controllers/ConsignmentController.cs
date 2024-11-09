@@ -316,7 +316,8 @@ namespace koi_farm_api.Controllers
 
             var consignment = _unitOfWork.ConsignmentRepository.GetSingle(
                 ci => ci.Id == consignmentItem.ConsignmentId
-                );
+            );
+
             if (consignment == null)
             {
                 return NotFound(new ResponseModel
@@ -328,17 +329,16 @@ namespace koi_farm_api.Controllers
 
             try
             {
+                // Prefix the name to identify consignment-generated products
                 var newProduct = new Product
                 {
-                    Name = consignmentItem.Name,
+                    Name = $"[Consignment]-{consignmentItem.Name}",
                     Quantity = 1,
-                    IsDeleted = true,
-                    DeletedTime = DateTime.UtcNow,
                 };
 
                 var newProductItem = new ProductItem
                 {
-                    Name = newProduct.Name,
+                    Name = $"[Consignment]-{newProduct.Name}",
                     Price = 25000,
                     Category = consignmentItem.Category ?? "Unknown",
                     Origin = consignmentItem.Origin ?? "Unknown",
@@ -355,8 +355,6 @@ namespace koi_farm_api.Controllers
                     Quantity = 1,
                     Type = consignmentItem.Type ?? "Default",
                     ProductId = newProduct.Id,
-                    IsDeleted = true,
-                    DeletedTime = DateTime.UtcNow,
                 };
 
                 newProduct.ProductItems = new List<ProductItem> { newProductItem };
@@ -384,7 +382,9 @@ namespace koi_farm_api.Controllers
                 _unitOfWork.OrderRepository.Create(newOrder);
 
                 consignmentItem.Checkedout = true;
+                consignmentItem.OrderItemId = newOrderItem.Id;
                 _unitOfWork.ConsignmentItemRepository.Update(consignmentItem);
+                _unitOfWork.SaveChange();
 
                 return Ok(new ResponseModel
                 {
@@ -403,6 +403,7 @@ namespace koi_farm_api.Controllers
                 });
             }
         }
+
 
 
 
