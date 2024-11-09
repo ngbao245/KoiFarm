@@ -291,7 +291,6 @@ namespace koi_farm_api.Controllers
         public IActionResult CheckoutConsignmentItem(string consignmentItemId)
         {
             var userId = GetUserIdFromClaims();
-            Console.WriteLine($"User ID from claims: {userId}");
 
             if (string.IsNullOrEmpty(userId))
             {
@@ -317,7 +316,8 @@ namespace koi_farm_api.Controllers
 
             var consignment = _unitOfWork.ConsignmentRepository.GetSingle(
                 ci => ci.Id == consignmentItem.ConsignmentId
-                );
+            );
+
             if (consignment == null)
             {
                 return NotFound(new ResponseModel
@@ -327,19 +327,18 @@ namespace koi_farm_api.Controllers
                 });
             }
 
-            Console.WriteLine("Consignment item found and eligible for checkout.");
-
             try
             {
+                // Prefix the name to identify consignment-generated products
                 var newProduct = new Product
                 {
-                    Name = consignmentItem.Name,
+                    Name = $"[Consignment]-{consignmentItem.Name}",
                     Quantity = 1,
                 };
 
                 var newProductItem = new ProductItem
                 {
-                    Name = newProduct.Name,
+                    Name = $"[Consignment]-{newProduct.Name}",
                     Price = 25000,
                     Category = consignmentItem.Category ?? "Unknown",
                     Origin = consignmentItem.Origin ?? "Unknown",
@@ -383,10 +382,10 @@ namespace koi_farm_api.Controllers
                 _unitOfWork.ProductRepository.Create(newProduct);
                 _unitOfWork.OrderRepository.Create(newOrder);
 
-                Console.WriteLine("Product, ProductItem, Order, and OrderItem created successfully.");
-
                 consignmentItem.Checkedout = true;
-                _unitOfWork.ConsignmentItemRepository.Delete(consignmentItem);
+                consignmentItem.OrderItemId = newOrderItem.Id;
+                _unitOfWork.ConsignmentItemRepository.Update(consignmentItem);
+                _unitOfWork.SaveChange();
 
                 return Ok(new ResponseModel
                 {
@@ -397,7 +396,6 @@ namespace koi_farm_api.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error creating entities: {ex.Message}");
                 return StatusCode(500, new ResponseModel
                 {
                     StatusCode = 500,
@@ -406,6 +404,8 @@ namespace koi_farm_api.Controllers
                 });
             }
         }
+
+
 
 
         [HttpDelete("remove-item/{itemId}")]

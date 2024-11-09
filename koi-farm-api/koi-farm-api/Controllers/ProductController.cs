@@ -23,10 +23,11 @@ namespace koi_farm_api.Controllers
         }
 
         [HttpGet("get-all-products")]
-
         public IActionResult GetAllProducts()
         {
-            var products = _unitOfWork.ProductRepository.GetAll();
+            var products = _unitOfWork.ProductRepository
+                .Get(c => !c.IsDeleted && !c.Name.StartsWith("[Consignment]-"))
+                .ToList();
 
             if (!products.Any())
             {
@@ -60,7 +61,7 @@ namespace koi_farm_api.Controllers
 
             var product = _unitOfWork.ProductRepository.GetById(id);
 
-            if (product == null)
+            if (product == null || product.Name.StartsWith("[Consignment]-"))
             {
                 return NotFound(new ResponseModel
                 {
@@ -77,6 +78,7 @@ namespace koi_farm_api.Controllers
                 Data = responseProduct
             });
         }
+
 
         [HttpPost("create-product")]
 

@@ -9,5 +9,7 @@ namespace Repository.Model.Order
     public class CreateOrderRequestModel
     {
         public string CartId { get; set; }
+
+        public string? PromotionCode { get; set; }
     }
 }
