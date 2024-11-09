@@ -196,10 +196,15 @@ namespace koi_farm_api.Controllers
                 });
             }
 
+            if (!string.IsNullOrEmpty(order.ConsignmentId))
+            {
+                order.Status = "Completed";
+            }
+
             var payment = new Payment
             {
                 Amount = order.Total,
-                Status = "SuccessCOD",
+                Status = (!string.IsNullOrEmpty(order.ConsignmentId)) ? "SuccessConsignmentCOD" : "SuccessCOD",
                 Method = "Cash on Delivery",
                 OrderId = order.Id
             };
