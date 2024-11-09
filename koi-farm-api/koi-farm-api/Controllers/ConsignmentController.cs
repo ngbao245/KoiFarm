@@ -315,6 +315,18 @@ namespace koi_farm_api.Controllers
                 });
             }
 
+            var consignment = _unitOfWork.ConsignmentRepository.GetSingle(
+                ci => ci.Id == consignmentItem.ConsignmentId
+                );
+            if (consignment == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "Consignment not found or not available for checkout."
+                });
+            }
+
             Console.WriteLine("Consignment item found and eligible for checkout.");
 
             try
@@ -344,6 +356,7 @@ namespace koi_farm_api.Controllers
                     Quantity = 1,
                     Type = consignmentItem.Type ?? "Default",
                     ProductId = newProduct.Id,
+                    
                 };
 
                 newProduct.ProductItems = new List<ProductItem> { newProductItem };
@@ -353,7 +366,8 @@ namespace koi_farm_api.Controllers
                     UserId = userId,
                     Total = 25000,
                     CreatedTime = DateTimeOffset.Now,
-                    Status = "Pending"
+                    Status = "Pending",
+                    ConsignmentId = consignment.Id,
                 };
 
                 var newOrderItem = new OrderItem
@@ -361,7 +375,7 @@ namespace koi_farm_api.Controllers
                     OrderID = newOrder.Id,
                     ProductItemId = newProductItem.Id,
                     ConsignmentItemId = consignmentItem.Id,
-                    Quantity = 1
+                    Quantity = 1,
                 };
 
                 newOrder.Items = new List<OrderItem> { newOrderItem };
@@ -392,8 +406,6 @@ namespace koi_farm_api.Controllers
                 });
             }
         }
-
-
 
 
         [HttpDelete("remove-item/{itemId}")]

@@ -12,7 +12,7 @@ using Repository.Data;
 namespace Repository.Migrations
 {
     [DbContext(typeof(KoiFarmDbContext))]
-    [Migration("20241104102106_AddAdditionalFieldsToConsignmentItem")]
+    [Migration("20241105043118_AddAdditionalFieldsToConsignmentItem")]
     partial class AddAdditionalFieldsToConsignmentItem
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
