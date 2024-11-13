@@ -75,7 +75,7 @@ namespace Repository.PaymentService
                 var vnp_Command = "refund";
                 var vnp_TransactionType = "02";
                 //var vnp_Amount = (refundRequest.Amount * 100).ToString();
-                var vnp_Amount = ((int)amount * 100).ToString();
+                var vnp_Amount = ((long)amount * 100).ToString();
                 //var vnp_TxnRef = refundRequest.OrderId;
                 var vnp_TxnRef = orderId;
                 //var vnp_OrderInfo = $"Refund for Order {refundRequest.OrderId}";
