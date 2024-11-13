@@ -22,6 +22,50 @@ namespace Repository.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("Repository.Data.Entity.Batch", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTimeOffset>("CreatedTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("LastUpdatedTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ProductId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Batch");
+                });
+
             modelBuilder.Entity("Repository.Data.Entity.Blog", b =>
                 {
                     b.Property<string>("Id")
@@ -533,6 +577,9 @@ namespace Repository.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
+                    b.Property<string>("BatchId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Category")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -612,6 +659,8 @@ namespace Repository.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BatchId");
 
                     b.HasIndex("ProductId");
 
@@ -827,6 +876,15 @@ namespace Repository.Migrations
                     b.ToTable("UserRefreshToken");
                 });
 
+            modelBuilder.Entity("Repository.Data.Entity.Batch", b =>
+                {
+                    b.HasOne("Repository.Data.Entity.Product", "Product")
+                        .WithMany("BatchItems")
+                        .HasForeignKey("ProductId");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Repository.Data.Entity.Blog", b =>
                 {
                     b.HasOne("Repository.Data.Entity.User", "User")
@@ -981,11 +1039,17 @@ namespace Repository.Migrations
 
             modelBuilder.Entity("Repository.Data.Entity.ProductItem", b =>
                 {
+                    b.HasOne("Repository.Data.Entity.Batch", "Batch")
+                        .WithMany("batchItems")
+                        .HasForeignKey("BatchId");
+
                     b.HasOne("Repository.Data.Entity.Product", "Product")
                         .WithMany("ProductItems")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Batch");
 
                     b.Navigation("Product");
                 });
@@ -1031,6 +1095,11 @@ namespace Repository.Migrations
                     b.Navigation("UserEntity");
                 });
 
+            modelBuilder.Entity("Repository.Data.Entity.Batch", b =>
+                {
+                    b.Navigation("batchItems");
+                });
+
             modelBuilder.Entity("Repository.Data.Entity.Cart", b =>
                 {
                     b.Navigation("Items");
@@ -1053,6 +1122,8 @@ namespace Repository.Migrations
 
             modelBuilder.Entity("Repository.Data.Entity.Product", b =>
                 {
+                    b.Navigation("BatchItems");
+
                     b.Navigation("ProductItems");
                 });
 

@@ -27,7 +27,7 @@ namespace koi_farm_api.Controllers
         public IActionResult GetAllProductItems(int pageIndex = 1, int pageSize = 10, string? searchQuery = null)
         {
             var productItems = _unitOfWork.ProductItemRepository
-                .Get(c => !c.IsDeleted && !c.Name.StartsWith("[Consignment]-"))
+                .Get(c => !c.IsDeleted && !c.Name.StartsWith("[Consignment]-") && c.BatchId == null)
                 .ToList();
 
             if (!productItems.Any())
@@ -85,7 +85,7 @@ namespace koi_farm_api.Controllers
                 });
             }
 
-            var productItem = _unitOfWork.ProductItemRepository.GetById(id);
+            var productItem = _unitOfWork.ProductItemRepository.Get(c => c.Id == id && c.BatchId == null).FirstOrDefault();
 
             if (productItem == null || productItem.Name.StartsWith("[Consignment]-"))
             {
@@ -120,8 +120,8 @@ namespace koi_farm_api.Controllers
             }
 
             var productItems = _unitOfWork.ProductItemRepository
-                .GetAll()
-                .Where(r => r.ProductId == productId && !r.Name.StartsWith("[Consignment]-"));
+                .Get(r => r.ProductId == productId && !r.Name.StartsWith("[Consignment]-") && r.BatchId == null)
+                .ToList();
 
             if (!productItems.Any())
             {

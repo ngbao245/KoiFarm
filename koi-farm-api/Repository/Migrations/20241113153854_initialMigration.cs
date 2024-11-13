@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Repository.Migrations
 {
-    public partial class AddAdditionalFieldsToConsignmentItem : Migration
+    public partial class initialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -84,27 +84,15 @@ namespace Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductItem",
+                name: "Batch",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Origin = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Sex = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Age = table.Column<int>(type: "int", nullable: false),
-                    Size = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Species = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Personality = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FoodAmount = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    WaterTemp = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MineralContent = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PH = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastUpdatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     DeletedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -113,13 +101,12 @@ namespace Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductItem", x => x.Id);
+                    table.PrimaryKey("PK_Batch", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductItem_Product_ProductId",
+                        name: "FK_Batch_Product_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Product",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -151,13 +138,28 @@ namespace Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductCertificate",
+                name: "ProductItem",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Provider = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CertificateId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProductItemId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Origin = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Sex = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: false),
+                    Size = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Species = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Personality = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FoodAmount = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WaterTemp = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MineralContent = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PH = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    BatchId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastUpdatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     DeletedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -166,17 +168,16 @@ namespace Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductCertificate", x => x.Id);
+                    table.PrimaryKey("PK_ProductItem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductCertificate_Certificate_CertificateId",
-                        column: x => x.CertificateId,
-                        principalTable: "Certificate",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_ProductItem_Batch_BatchId",
+                        column: x => x.BatchId,
+                        principalTable: "Batch",
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ProductCertificate_ProductItem_ProductItemId",
-                        column: x => x.ProductItemId,
-                        principalTable: "ProductItem",
+                        name: "FK_ProductItem_Product_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Product",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -255,6 +256,65 @@ namespace Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserRefreshToken",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    User_Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    JwtId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    isUsed = table.Column<bool>(type: "bit", nullable: false),
+                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpireTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastUpdatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    DeletedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRefreshToken", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserRefreshToken_User_User_Id",
+                        column: x => x.User_Id,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductCertificate",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Provider = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CertificateId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductItemId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastUpdatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    DeletedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductCertificate", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductCertificate_Certificate_CertificateId",
+                        column: x => x.CertificateId,
+                        principalTable: "Certificate",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductCertificate_ProductItem_ProductItemId",
+                        column: x => x.ProductItemId,
+                        principalTable: "ProductItem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Review",
                 columns: table => new
                 {
@@ -281,34 +341,6 @@ namespace Repository.Migrations
                     table.ForeignKey(
                         name: "FK_Review_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserRefreshToken",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    User_Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    JwtId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    isUsed = table.Column<bool>(type: "bit", nullable: false),
-                    CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ExpireTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    LastUpdatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    DeletedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserRefreshToken", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserRefreshToken_User_User_Id",
-                        column: x => x.User_Id,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -494,6 +526,11 @@ namespace Repository.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Batch_ProductId",
+                table: "Batch",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Blog_UserId",
                 table: "Blog",
                 column: "UserId");
@@ -579,6 +616,11 @@ namespace Repository.Migrations
                 column: "ProductItemId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductItem_BatchId",
+                table: "ProductItem",
+                column: "BatchId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductItem_ProductId",
                 table: "ProductItem",
                 column: "ProductId");
@@ -613,6 +655,14 @@ namespace Repository.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Batch_Product_ProductId",
+                table: "Batch");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_ProductItem_Product_ProductId",
+                table: "ProductItem");
+
             migrationBuilder.DropForeignKey(
                 name: "FK_Consignment_User_UserId",
                 table: "Consignment");
@@ -666,6 +716,9 @@ namespace Repository.Migrations
                 name: "Certificate");
 
             migrationBuilder.DropTable(
+                name: "Product");
+
+            migrationBuilder.DropTable(
                 name: "User");
 
             migrationBuilder.DropTable(
@@ -675,7 +728,7 @@ namespace Repository.Migrations
                 name: "ProductItem");
 
             migrationBuilder.DropTable(
-                name: "Product");
+                name: "Batch");
 
             migrationBuilder.DropTable(
                 name: "Consignment");

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Repository.Data.Entity
 {
@@ -51,6 +52,13 @@ namespace Repository.Data.Entity
 
         public ICollection<Review> Reviews { get; set; }
 
-            
+        [AllowNull]
+        public string? BatchId { get; set; }
+
+        // Foreign key for Product entity
+        [ForeignKey(nameof(BatchId))]
+        public Batch? Batch { get; set; }
+
+
     }
 }

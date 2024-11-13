@@ -18,6 +18,7 @@ namespace Repository.Data.Entity
 
         // Navigation property for related Product_Item entities
         public ICollection<ProductItem> ProductItems { get; set; }
+        public ICollection<Batch> BatchItems { get; set; }
 
     }
 }
