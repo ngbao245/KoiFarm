@@ -548,7 +548,7 @@ namespace koi_farm_api.Controllers
                 });
             }
 
-            if (order.Status != "Pending")
+            if (order.Status != "Pending" && order.Status != "Failed")
             {
                 return BadRequest(new ResponseModel
                 {
