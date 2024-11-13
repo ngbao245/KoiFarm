@@ -34,7 +34,7 @@ namespace Repository.PaymentService
             pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
             pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
             pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
-            pay.AddRequestData("vnp_Amount", ((int)total * 100).ToString());
+            pay.AddRequestData("vnp_Amount", ((long)total * 100).ToString());
             pay.AddRequestData("vnp_CreateDate", timeNow.ToString("yyyyMMddHHmmss"));
             pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
@@ -75,7 +75,7 @@ namespace Repository.PaymentService
                 var vnp_Command = "refund";
                 var vnp_TransactionType = "02";
                 //var vnp_Amount = (refundRequest.Amount * 100).ToString();
-                var vnp_Amount = ((int)amount * 100).ToString();
+                var vnp_Amount = ((long)amount * 100).ToString();
                 //var vnp_TxnRef = refundRequest.OrderId;
                 var vnp_TxnRef = orderId;
                 //var vnp_OrderInfo = $"Refund for Order {refundRequest.OrderId}";

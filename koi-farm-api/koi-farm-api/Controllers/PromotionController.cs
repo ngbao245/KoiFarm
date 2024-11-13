@@ -6,6 +6,7 @@ using Repository.Model;
 using Repository.Repository;
 using Repository.Model.Promotion;
 using Repository.Data.Entity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace koi_farm_api.Controllers
 {
@@ -23,7 +24,6 @@ namespace koi_farm_api.Controllers
         }
 
         [HttpGet("get-all-promotion")]
-
         public IActionResult GetAllPromotions()
         {
             var promotions = _unitOfWork.PromotionRepository.GetAll();
@@ -88,8 +88,8 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [Authorize(Roles = "Manager,Staff")]
         [HttpPost("create-promotion")]
-
         public IActionResult CreatePromotion(RequestCreatePromotionModel promotionModel)
         {
             if (promotionModel == null || string.IsNullOrEmpty(promotionModel.Code) || promotionModel.Amount <= 0 || string.IsNullOrEmpty(promotionModel.Type))
@@ -140,8 +140,8 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [Authorize(Roles = "Manager,Staff")]
         [HttpPut("update-promotion/{id}")]
-
         public IActionResult UpdatePromotion(string id, [FromBody] RequestCreatePromotionModel promotionModel)
         {
             if (string.IsNullOrEmpty(id) || promotionModel == null || string.IsNullOrEmpty(promotionModel.Code) ||
@@ -203,6 +203,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [Authorize(Roles = "Manager,Staff")]
         [HttpDelete("delete-promotion/{id}")]
         public IActionResult DeletePromotion(string id)
         {

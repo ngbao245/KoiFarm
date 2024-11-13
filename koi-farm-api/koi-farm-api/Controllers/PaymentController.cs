@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -21,6 +22,7 @@ namespace koi_farm_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PaymentController : ControllerBase
     {
         private readonly IVnPayService _vnPayService;
@@ -43,6 +45,7 @@ namespace koi_farm_api.Controllers
         {
             return User.FindFirst("UserID")?.Value;
         }
+
 
         // POST method to create a payment request and generate VNPAY payment URL
         [HttpPost("create-payment-url")]
@@ -85,6 +88,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [AllowAnonymous]
         // GET method to handle the payment callback from VNPAY
         [HttpGet("payment-callback")]
         public IActionResult PaymentCallback()
@@ -129,6 +133,10 @@ namespace koi_farm_api.Controllers
                 {
                     order.Status = "Completed";
                 }
+                else
+                {
+                    order.Status = "Pending";
+                }
 
                 var payment = new Payment
                 {
@@ -163,6 +171,22 @@ namespace koi_farm_api.Controllers
             {
                 order.Status = "Failed";
                 _unitOfWork.OrderRepository.Update(order);
+
+                //Send confirmation mail
+                var emailRequest = new SendMailModel
+                {
+                    ReceiveAddress = user.Email,
+                    Title = "Thanh Toán Thất Bại",
+                    Content = $@"
+                    <p>Kính chào {user.Name},</p>
+                    <p>Thanh toán cho Đơn hàng <strong>ID: {orderId}</strong> của quý khách đã thất bại.</p>
+                    <p>Quý khách có thể mua lại hoặc hủy đơn hàng này.</p>
+                    <br>
+                    <p>Trân trọng,</p>
+                    <p>KoiShop</p>"
+                };
+
+                _emailService.SendMail(emailRequest);
             }
 
             var paymentUrl = _configuration["FrontEndPort:PaymentUrl"];
@@ -192,10 +216,15 @@ namespace koi_farm_api.Controllers
                 });
             }
 
+            if (!string.IsNullOrEmpty(order.ConsignmentId))
+            {
+                order.Status = "Completed";
+            }
+
             var payment = new Payment
             {
                 Amount = order.Total,
-                Status = "SuccessCOD",
+                Status = (!string.IsNullOrEmpty(order.ConsignmentId)) ? "SuccessConsignmentCOD" : "SuccessCOD",
                 Method = "Cash on Delivery",
                 OrderId = order.Id
             };

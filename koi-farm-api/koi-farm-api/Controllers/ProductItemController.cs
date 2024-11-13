@@ -7,6 +7,7 @@ using Repository.Model;
 using Repository.Model.ProductItem;
 using Repository.Model.Review;
 using Repository.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace koi_farm_api.Controllers
 {
@@ -167,6 +168,7 @@ namespace koi_farm_api.Controllers
             return true;
         }
 
+        [Authorize(Roles = "Manager,Staff")]
         [HttpPost("create-product-item")]
         public IActionResult CreateProductItem(RequestCreateProductItemModel productItemModel)
         {
@@ -202,6 +204,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [Authorize(Roles = "Manager,Staff")]
         [HttpPut("update-product-item/{id}")]
         public IActionResult UpdateProductItem(string id, RequestCreateProductItemModel productItemModel)
         {
@@ -261,6 +264,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [Authorize(Roles = "Manager,Staff")]
         [HttpDelete("delete-product-item/{id}")]
         public IActionResult DeleteProductItem(string id)
         {
@@ -305,6 +309,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPut("update-product-item-type/{id}")]
         public IActionResult UpdateProductItemType(string id, [FromBody] RequestUpdateProductItemType model)
         {

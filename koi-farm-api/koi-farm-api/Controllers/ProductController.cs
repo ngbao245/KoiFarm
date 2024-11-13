@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Data.Entity;
@@ -80,8 +81,8 @@ namespace koi_farm_api.Controllers
         }
 
 
+        [Authorize(Roles = "Manager,Staff")]
         [HttpPost("create-product")]
-
         public IActionResult CreateProduct(RequestCreateProductModel productModel)
         {
             if (productModel == null || string.IsNullOrEmpty(productModel.Name))
@@ -114,8 +115,8 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [Authorize(Roles = "Manager,Staff")]
         [HttpPut("update-product/{id}")]
-
         public IActionResult UpdateProduct(string id, [FromBody] RequestCreateProductModel productModel)
         {
             if (string.IsNullOrEmpty(id) || productModel == null)
@@ -158,6 +159,7 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [Authorize(Roles = "Manager,Staff")]
         [HttpDelete("delete-product/{id}")]
         public IActionResult DeleteProduct(string id)
         {
