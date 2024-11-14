@@ -18,10 +18,10 @@ namespace Repository.Data.Entity
         public int Quantity { get; set; }
         public virtual ICollection<ProductItem> batchItems { get; set; }
 
-        [AllowNull]
-        public string? ProductId { get; set; }
+        //[AllowNull]
+        //public string? ProductId { get; set; }
 
-        [ForeignKey(nameof(ProductId))]
-        public Product? Product { get; set; }
+        //[ForeignKey(nameof(ProductId))]
+        //public Product? Product { get; set; }
     }
 }
