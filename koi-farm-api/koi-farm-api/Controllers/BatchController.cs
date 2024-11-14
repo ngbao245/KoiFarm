@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileSystemGlobbing;
 using Repository.Data.Entity;
 using Repository.Model;
 using Repository.Model.Batch;
@@ -56,8 +57,8 @@ public class BatchController : ControllerBase
     }
 
     // Get batches filtered by productId
-    [HttpGet("batches-by-product")]
-    public IActionResult GetBatchesByProductId([FromQuery] string productId)
+    [HttpGet("batches-by-product/{productId}")]
+    public IActionResult GetBatchesByProductId(string productId)
     {
         if (string.IsNullOrEmpty(productId))
         {
@@ -146,7 +147,7 @@ public class BatchController : ControllerBase
     [HttpGet("batch-by-name/{name}")]
     public IActionResult GetBatchByName(string name)
     {
-        var batch = _unitOfWork.BatchRepository.Get(b => b.name == name, includeProperties: b => b.batchItems).FirstOrDefault();
+        var batch = _unitOfWork.BatchRepository.Get(b => b.name.Contains(name), includeProperties: b => b.batchItems).ToList();
 
         if (batch == null)
         {
@@ -157,7 +158,7 @@ public class BatchController : ControllerBase
             });
         }
 
-        var response = new
+        var response = batch.Select(batch => new
         {
             BatchId = batch.Id,
             BatchName = batch.name,
@@ -172,7 +173,7 @@ public class BatchController : ControllerBase
                 Price = item.Price,
                 ImageUrl = item.ImageUrl
             }).ToList()
-        };
+        }).ToList();
 
         return Ok(new ResponseModel
         {
