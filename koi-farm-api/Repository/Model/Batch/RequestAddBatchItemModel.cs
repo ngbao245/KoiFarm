@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Repository.Model.Batch
 {
-    public class BatchCreateModel
+    public class RequestAddBatchItemModel
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string ProductItemId { get; set; }
     }
-
 }

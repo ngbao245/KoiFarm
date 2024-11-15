@@ -40,28 +40,27 @@ namespace Repository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset>("LastUpdatedTime")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("ProductId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("Batch");
                 });
@@ -876,15 +875,6 @@ namespace Repository.Migrations
                     b.ToTable("UserRefreshToken");
                 });
 
-            modelBuilder.Entity("Repository.Data.Entity.Batch", b =>
-                {
-                    b.HasOne("Repository.Data.Entity.Product", "Product")
-                        .WithMany("BatchItems")
-                        .HasForeignKey("ProductId");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("Repository.Data.Entity.Blog", b =>
                 {
                     b.HasOne("Repository.Data.Entity.User", "User")
@@ -1122,8 +1112,6 @@ namespace Repository.Migrations
 
             modelBuilder.Entity("Repository.Data.Entity.Product", b =>
                 {
-                    b.Navigation("BatchItems");
-
                     b.Navigation("ProductItems");
                 });
 
