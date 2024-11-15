@@ -275,6 +275,10 @@ public class BatchController : ControllerBase
         productItem.BatchId = batchId;
         _unitOfWork.ProductItemRepository.Update(productItem);
 
+        batch.Quantity++;
+        batch.Price += productItem.Price;
+        _unitOfWork.BatchRepository.Update(batch);
+
         return Ok(new ResponseModel
         {
             StatusCode = 200,
@@ -307,6 +311,10 @@ public class BatchController : ControllerBase
 
         productItem.BatchId = null;
         _unitOfWork.ProductItemRepository.Update(productItem);
+
+        batch.Quantity--;
+        batch.Price -= productItem.Price;
+        _unitOfWork.BatchRepository.Update(batch);
 
         return Ok(new ResponseModel
         {
