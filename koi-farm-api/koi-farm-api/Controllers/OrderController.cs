@@ -51,8 +51,6 @@ namespace koi_farm_api.Controllers
                                     ((promotion.Type == "Percentage" && promotion.Amount > 0 && promotion.Amount <= 100) ||
                                      (promotion.Type == "Direct" && promotion.Amount > 0));
 
-
-
             var order = new Order
             {
                 UserId = GetUserIdFromClaims(),
@@ -171,7 +169,8 @@ namespace koi_farm_api.Controllers
                     {
                         ProductItemId = item.ProductItemId,
                         Quantity = item.Quantity,
-                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price,
+                        BatchId = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).BatchId
                     }).ToList()
                 }
             });
@@ -261,7 +260,8 @@ namespace koi_farm_api.Controllers
                     {
                         ProductItemId = item.ProductItemId,
                         Quantity = item.Quantity,
-                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId)?.Price ?? 25000
+                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId)?.Price ?? 25000,
+                        BatchId = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).BatchId
                     }).ToList()
                 }
             });
@@ -309,7 +309,8 @@ namespace koi_farm_api.Controllers
                     {
                         ProductItemId = item.ProductItemId,
                         Quantity = item.Quantity,
-                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price,
+                        BatchId = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).BatchId
                     }).ToList()
                 }).ToList()
             });
@@ -368,7 +369,8 @@ namespace koi_farm_api.Controllers
                     {
                         ProductItemId = item.ProductItemId,
                         Quantity = item.Quantity,
-                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price,
+                        BatchId = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).BatchId
                     }).ToList()
                 }
             });
@@ -408,7 +410,8 @@ namespace koi_farm_api.Controllers
                         {
                             ProductItemId = item.ProductItemId,
                             Quantity = item.Quantity,
-                            Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId)?.Price ?? 0
+                            Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId)?.Price ?? 0,
+                            BatchId = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).BatchId
                         }).ToList()
                     }).ToList()
                 });
@@ -468,7 +471,8 @@ namespace koi_farm_api.Controllers
                     {
                         ProductItemId = item.ProductItemId,
                         Quantity = item.Quantity,
-                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price,
+                        BatchId = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).BatchId
                     }).ToList()
                 }).ToList()
             });
@@ -528,7 +532,8 @@ namespace koi_farm_api.Controllers
                     {
                         ProductItemId = item.ProductItemId,
                         Quantity = item.Quantity,
-                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price,
+                        BatchId = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).BatchId
                     }).ToList()
                 }).ToList()
             });
@@ -646,7 +651,8 @@ namespace koi_farm_api.Controllers
                     {
                         ProductItemId = item.ProductItemId,
                         Quantity = item.Quantity,
-                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price,
+                        BatchId = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).BatchId
                     }).ToList()
                 }
             });
@@ -693,7 +699,8 @@ namespace koi_farm_api.Controllers
                 {
                     ProductItemId = item.ProductItemId,
                     Quantity = item.Quantity,
-                    Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                    Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price,
+                    BatchId = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).BatchId
                 }).ToList()
             }).ToList();
 
@@ -765,7 +772,8 @@ namespace koi_farm_api.Controllers
                     {
                         ProductItemId = item.ProductItemId,
                         Quantity = item.Quantity,
-                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                        Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price,
+                        BatchId = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).BatchId
                     }).ToList()
                 }
             });
