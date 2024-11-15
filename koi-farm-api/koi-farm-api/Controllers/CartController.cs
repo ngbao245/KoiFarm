@@ -110,6 +110,108 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [HttpPost("add-batch-to-cart")]
+        public IActionResult AddBatchToCart([FromBody] BatchCartRequestModel requestModel)
+        {
+            var userId = User.FindFirst("UserID")?.Value;
+
+            var cart = _unitOfWork.CartRepository.GetSingle(c => c.UserId == userId, c => c.Items);
+            if (cart == null)
+            {
+                cart = new Cart
+                {
+                    UserId = userId,
+                    Items = new List<CartItem>(),
+                    Total = 0
+                };
+                _unitOfWork.CartRepository.Create(cart);
+            }
+
+            var batch = _unitOfWork.BatchRepository.GetById(requestModel.BatchId);
+            if (batch == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "Batch not found."
+                });
+            }
+
+            var productItems = _unitOfWork.ProductItemRepository
+                .Get(pi => pi.BatchId == requestModel.BatchId)
+                .ToList();
+
+            if (!productItems.Any())
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "No product items found in this batch."
+                });
+            }
+
+            foreach (var productItem in productItems)
+            {
+                if (productItem.Quantity <= 0)
+                {
+                    return BadRequest(new ResponseModel
+                    {
+                        StatusCode = 400,
+                        MessageError = $"Product item '{productItem.Name}' is out of stock."
+                    });
+                }
+
+                var cartItem = cart.Items.FirstOrDefault(ci => ci.ProductItemId == productItem.Id);
+                if (cartItem != null)
+                {
+                    cartItem.Quantity++;
+                    if (cartItem.Quantity > productItem.Quantity)
+                    {
+                        return BadRequest(new ResponseModel
+                        {
+                            StatusCode = 400,
+                            MessageError = $"Requested quantity exceeds available stock for '{productItem.Name}'."
+                        });
+                    }
+                    _unitOfWork.CartItemRepository.Update(cartItem);
+                }
+                else
+                {
+                    cartItem = new CartItem
+                    {
+                        ProductItemId = productItem.Id,
+                        Quantity = 1,
+                        CartId = cart.Id
+                    };
+                    cart.Items.Add(cartItem);
+                    _unitOfWork.CartItemRepository.Create(cartItem);
+                }
+            }
+
+            cart.Total = cart.Items.Sum(item => item.Quantity * _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price);
+            _unitOfWork.SaveChange();
+
+            var response = new CartResponseModel
+            {
+                CartId = cart.Id,
+                Total = cart.Total,
+                Items = cart.Items.Select(item => new CartItemModel
+                {
+                    ProductItemId = item.ProductItemId,
+                    Quantity = item.Quantity,
+                    ProductName = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Name,
+                    Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                }).ToList()
+            };
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = response
+            });
+        }
+
+
         // Remove from Cart Endpoint
         [HttpDelete("remove-from-cart/{cartId}")]
         [Authorize]
@@ -236,7 +338,8 @@ namespace koi_farm_api.Controllers
                     ProductItemId = item.ProductItemId,
                     Quantity = item.Quantity,
                     ProductName = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Name,
-                    Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                    Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price,
+                    BatchId = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).BatchId
                 }).ToList()
             };
 
@@ -251,7 +354,7 @@ namespace koi_farm_api.Controllers
         [HttpGet("get-all-carts")]
         public IActionResult GetAllCarts()
         {
-            var carts = _unitOfWork.CartRepository.GetAll().ToList();
+            var carts = _unitOfWork.CartRepository.Get(includeProperties: c => c.Items).ToList();
 
             if (!carts.Any())
             {
@@ -271,7 +374,8 @@ namespace koi_farm_api.Controllers
                     ProductItemId = item.ProductItemId,
                     Quantity = item.Quantity,
                     ProductName = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Name,
-                    Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price
+                    Price = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price,
+                    BatchId = _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).BatchId
                 }).ToList()
             }).ToList();
 
