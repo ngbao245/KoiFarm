@@ -34,6 +34,8 @@ namespace Repository.Helper.AutoMapper
             CreateMap<ProductItem, RequestCreateProductItemModel>().ReverseMap();
             CreateMap<ProductItem, ResponseProductItemModel>().ReverseMap();
 
+            CreateMap<ProductItem, ResponseBatchProductItemModel>().ReverseMap();
+
             CreateMap<Review, RequestCreateReviewModel>().ReverseMap();
             CreateMap<Review, ResponseReviewModel>().ReverseMap();
 
