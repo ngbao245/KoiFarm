@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Repository.Data.Entity;
 using Repository.Model;
@@ -98,6 +99,7 @@ public class BatchController : ControllerBase
         });
     }
 
+    [Authorize(Roles = "Manager,Staff")]
     [HttpPost("create-batch")]
     public IActionResult CreateBatch([FromBody] RequestCreateBatchModel model)
     {
@@ -146,6 +148,7 @@ public class BatchController : ControllerBase
         });
     }
 
+    [Authorize(Roles = "Manager,Staff")]
     [HttpPut("update-batch/{id}")]
     public IActionResult UpdateBatch(string id, [FromBody] RequestCreateBatchModel model)
     {
@@ -198,6 +201,7 @@ public class BatchController : ControllerBase
     }
 
 
+    [Authorize(Roles = "Manager,Staff")]
     [HttpDelete("delete-batch/{id}")]
     public IActionResult DeleteBatch(string id)
     {
@@ -231,6 +235,7 @@ public class BatchController : ControllerBase
     }
 
 
+    [Authorize(Roles = "Manager,Staff")]
     [HttpPost("add-item-to-batch/{batchId}")]
     public IActionResult AddItemToBatch(string batchId, [FromBody] RequestAddBatchItemModel model)
     {
@@ -286,6 +291,7 @@ public class BatchController : ControllerBase
         });
     }
 
+    [Authorize(Roles = "Manager,Staff")]
     [HttpDelete("remove-item-from-batch/{batchId}/{productItemId}")]
     public IActionResult RemoveItemFromBatch(string batchId, string productItemId)
     {
