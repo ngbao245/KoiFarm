@@ -238,6 +238,68 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [HttpDelete("remove-batch-from-cart/{batchId}")]
+        [Authorize]
+        public IActionResult RemoveBatchFromCart(string batchId)
+        {
+            var userId = User.FindFirst("UserID")?.Value;
+
+            var cart = _unitOfWork.CartRepository.GetSingle(c => c.UserId == userId, c => c.Items);
+            if (cart == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    MessageError = "Cart not found."
+                });
+            }
+
+            var productItems = _unitOfWork.ProductItemRepository.Get(pi => pi.BatchId == batchId).ToList();
+            if (!productItems.Any())
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    MessageError = "No product items found in this batch."
+                });
+            }
+
+            var itemsToRemove = cart.Items.Where(ci => productItems.Any(pi => pi.Id == ci.ProductItemId)).ToList();
+            if (!itemsToRemove.Any())
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    MessageError = "No items in the cart are associated with the specified batch."
+                });
+            }
+
+            foreach (var item in itemsToRemove)
+            {
+                _unitOfWork.CartItemRepository.Delete(item);
+            }
+
+            // Check if the cart is now empty
+            cart.Items = cart.Items.Except(itemsToRemove).ToList();
+            if (!cart.Items.Any())
+            {
+                _unitOfWork.CartRepository.Delete(cart);
+            }
+            else
+            {
+                // Update cart total if the cart is not empty
+                cart.Total = cart.Items.Sum(item => item.Quantity * _unitOfWork.ProductItemRepository.GetById(item.ProductItemId).Price);
+                _unitOfWork.CartRepository.Update(cart);
+            }
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = "Batch removed from cart successfully."
+            });
+        }
+
+
         // Update Cart Item Endpoint
         [HttpPut("update-cart-item/{cartId}/{productItemId}")]
         public IActionResult UpdateCartItem(string cartId, string productItemId, [FromBody] int quantity)
