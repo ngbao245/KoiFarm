@@ -15,5 +15,6 @@ namespace Repository.Model.Batch
         public int Age { get; set; }
         public string Size { get; set; }
         public string ImageUrl { get; set; }
+        public int Quantity{ get; set; }
     }
 }

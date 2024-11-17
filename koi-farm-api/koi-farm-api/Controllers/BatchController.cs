@@ -51,6 +51,7 @@ public class BatchController : ControllerBase
                     Age = item.Age,
                     Size = item.Size,
                     ImageUrl = item.ImageUrl,
+                    Quantity = item.Quantity,
                 }).ToList()
             }).ToList()
         });
@@ -81,7 +82,7 @@ public class BatchController : ControllerBase
             Description = batch.Description,
             Quantity = batch.Quantity,
             ImageUrl = batch.ImageUrl,
-            Items = batch.batchItems.Select(item => new
+            Items = batch.batchItems.Select(item => new BatchItemResponseModel
             {
                 BatchItemId = item.Id,
                 Name = item.Name,
@@ -89,6 +90,7 @@ public class BatchController : ControllerBase
                 Age = item.Age,
                 Size = item.Size,
                 ImageUrl = item.ImageUrl,
+                Quantity = item.Quantity,
             }).ToList()
         };
 
