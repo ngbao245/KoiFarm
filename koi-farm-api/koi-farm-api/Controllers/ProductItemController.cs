@@ -29,6 +29,7 @@ namespace koi_farm_api.Controllers
         {
             var productItems = _unitOfWork.ProductItemRepository
                 .Get(c => !c.IsDeleted && !c.Name.StartsWith("[Consignment]-") && c.BatchId == null)
+                .OrderByDescending(c => c.CreatedTime)
                 .ToList();
 
             if (!productItems.Any())
