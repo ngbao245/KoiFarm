@@ -31,6 +31,7 @@ namespace Repository.Repository
         private GenericRepository<ConsignmentItems> _consignmentItem;
         private GenericRepository<Certificate> _certificate;
         private GenericRepository<ProductCertificate> _productcertificate;
+        private GenericRepository<Batch> _batch;
 
 
         private bool disposed = false;
@@ -242,6 +243,18 @@ namespace Repository.Repository
                     _productcertificate = new GenericRepository<ProductCertificate>(_context);
                 }
                 return _productcertificate;
+            }
+        }
+
+        public GenericRepository<Batch> BatchRepository
+        {
+            get
+            {
+                if (_batch == null)
+                {
+                    _batch = new GenericRepository<Batch>(_context);
+                }
+                return _batch;
             }
         }
 

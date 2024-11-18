@@ -28,7 +28,8 @@ namespace koi_farm_api.Controllers
         public IActionResult GetAllProductItems(int pageIndex = 1, int pageSize = 10, string? searchQuery = null)
         {
             var productItems = _unitOfWork.ProductItemRepository
-                .Get(c => !c.IsDeleted && !c.Name.StartsWith("[Consignment]-"))
+                .Get(c => !c.IsDeleted && !c.Name.StartsWith("[Consignment]-") && c.BatchId == null)
+                .OrderByDescending(c => c.CreatedTime)
                 .ToList();
 
             if (!productItems.Any())
@@ -74,6 +75,31 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [HttpGet("get-all-batch-product-items")]
+        public IActionResult GetAllBatchProductItems()
+        {
+            var productItems = _unitOfWork.ProductItemRepository
+                .Get(c => !c.IsDeleted && !c.Name.StartsWith("[Consignment]-") && c.BatchId != null)
+                .ToList();
+
+            if (!productItems.Any())
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "No product items found."
+                });
+            }
+
+            var responseProductItems = _mapper.Map<List<ResponseBatchProductItemModel>>(productItems);
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = responseProductItems
+            });
+        }
+
         [HttpGet("get-product-item/{id}")]
         public IActionResult GetProductItemById(string id)
         {
@@ -86,7 +112,7 @@ namespace koi_farm_api.Controllers
                 });
             }
 
-            var productItem = _unitOfWork.ProductItemRepository.GetById(id);
+            var productItem = _unitOfWork.ProductItemRepository.Get(c => c.Id == id && c.BatchId == null).FirstOrDefault();
 
             if (productItem == null || productItem.Name.StartsWith("[Consignment]-"))
             {
@@ -106,9 +132,41 @@ namespace koi_farm_api.Controllers
             });
         }
 
+        [HttpGet("get-batch-product-item/{id}")]
+        public IActionResult GetBatchProductItemById(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return BadRequest(new ResponseModel
+                {
+                    StatusCode = 400,
+                    MessageError = "ProductItem ID is required."
+                });
+            }
+
+            var productItem = _unitOfWork.ProductItemRepository.Get(c => c.Id == id && c.BatchId != null).FirstOrDefault();
+
+            if (productItem == null || productItem.Name.StartsWith("[Consignment]-"))
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "ProductItem not found."
+                });
+            }
+
+            var responseProductItem = _mapper.Map<ResponseBatchProductItemModel>(productItem);
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = responseProductItem
+            });
+        }
+
 
         [HttpGet("get-product-item-by-product/{productId}")]
-        public IActionResult GetReviewsByProductItem(string productId)
+        public IActionResult GetProductItemByProduct(string productId)
         {
             var product = _unitOfWork.ProductRepository.GetById(productId);
             if (product == null)
@@ -121,8 +179,8 @@ namespace koi_farm_api.Controllers
             }
 
             var productItems = _unitOfWork.ProductItemRepository
-                .GetAll()
-                .Where(r => r.ProductId == productId && !r.Name.StartsWith("[Consignment]-"));
+                .Get(r => r.ProductId == productId && !r.Name.StartsWith("[Consignment]-") && r.BatchId == null)
+                .ToList();
 
             if (!productItems.Any())
             {
@@ -134,6 +192,41 @@ namespace koi_farm_api.Controllers
             }
 
             var responseProductItems = _mapper.Map<List<ResponseProductItemModel>>(productItems);
+
+            return Ok(new ResponseModel
+            {
+                StatusCode = 200,
+                Data = responseProductItems
+            });
+        }
+
+        [HttpGet("get-product-item-by-batch/{batchId}")]
+        public IActionResult GetProductItemByBatch(string batchId)
+        {
+            var product = _unitOfWork.BatchRepository.GetById(batchId);
+            if (product == null)
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "Product not found."
+                });
+            }
+
+            var productItems = _unitOfWork.ProductItemRepository
+                .Get(r => r.BatchId == batchId && !r.Name.StartsWith("[Consignment]-"))
+                .ToList();
+
+            if (!productItems.Any())
+            {
+                return NotFound(new ResponseModel
+                {
+                    StatusCode = 404,
+                    MessageError = "No product items found for this product."
+                });
+            }
+
+            var responseProductItems = _mapper.Map<List<ResponseBatchProductItemModel>>(productItems);
 
             return Ok(new ResponseModel
             {

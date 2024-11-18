@@ -133,6 +133,10 @@ namespace koi_farm_api.Controllers
                 {
                     order.Status = "Completed";
                 }
+                else
+                {
+                    order.Status = "Pending";
+                }
 
                 var payment = new Payment
                 {
@@ -167,6 +171,22 @@ namespace koi_farm_api.Controllers
             {
                 order.Status = "Failed";
                 _unitOfWork.OrderRepository.Update(order);
+
+                //Send confirmation mail
+                var emailRequest = new SendMailModel
+                {
+                    ReceiveAddress = user.Email,
+                    Title = "Thanh Toán Thất Bại",
+                    Content = $@"
+                    <p>Kính chào {user.Name},</p>
+                    <p>Thanh toán cho Đơn hàng <strong>ID: {orderId}</strong> của quý khách đã thất bại.</p>
+                    <p>Quý khách có thể mua lại hoặc hủy đơn hàng này.</p>
+                    <br>
+                    <p>Trân trọng,</p>
+                    <p>KoiShop</p>"
+                };
+
+                _emailService.SendMail(emailRequest);
             }
 
             var paymentUrl = _configuration["FrontEndPort:PaymentUrl"];

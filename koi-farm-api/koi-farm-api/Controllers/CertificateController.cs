@@ -55,6 +55,53 @@ public class CertificateController : ControllerBase
         });
     }
 
+    [HttpGet("get-certificates-by-productItem/{productItemId}")]
+    public IActionResult GetCertificatesByProductItem(string productItemId)
+    {
+        var productItem = _unitOfWork.ProductItemRepository.Get(
+            p => p.Id == productItemId && !p.IsDeleted
+        ).FirstOrDefault();
+
+        if (productItem == null)
+        {
+            return NotFound(new ResponseModel
+            {
+                StatusCode = 404,
+                MessageError = "Product Item not found"
+            });
+        }
+
+        var productCertificates = _unitOfWork.ProductCertificateRepository.Get(
+            pc => pc.ProductItemId == productItemId && !pc.IsDeleted,
+            includeProperties: pc => pc.certificate
+        ).ToList();
+
+        if (!productCertificates.Any())
+        {
+            return NotFound(new ResponseModel
+            {
+                StatusCode = 404,
+                MessageError = "No certificates found for this product item"
+            });
+        }
+
+        var response = productCertificates.Select(pc => new
+        {
+            CertificateId = pc.CertificateId,
+            CertificateName = pc.certificate.Name,
+            ImageUrl = pc.certificate.ImageUrl,
+            Provider = pc.Provider,
+            CreatedTime = pc.CreatedTime
+        }).ToList();
+
+        return Ok(new ResponseModel
+        {
+            StatusCode = 200,
+            Data = response
+        });
+    }
+
+
     [HttpGet("certificate/{id}")]
     public IActionResult GetCertificateById(string id)
     {
