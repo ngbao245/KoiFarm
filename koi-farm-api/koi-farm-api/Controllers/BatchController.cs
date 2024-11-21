@@ -270,6 +270,15 @@ public class BatchController : ControllerBase
             });
         }
 
+        if (productItem.Type != "Approved")
+        {
+            return BadRequest(new ResponseModel
+            {
+                StatusCode = 400,
+                MessageError = "Invalid productItem type. Must be approved!"
+            });
+        }
+
         if (!string.IsNullOrEmpty(productItem.BatchId))
         {
             return Conflict(new ResponseModel
