@@ -108,26 +108,6 @@ KoiFarm/
 └── Utils/          # Utility classes
 ```
 
-## 🧪 Testing
-
-Open the Test Explorer in Visual Studio and run the tests, or use the CLI:
-```bash
-dotnet test
-```
-
-## 🏗 Build for Production
-
-```bash
-dotnet publish -c Release
-```
-
-## 🔍 Monitoring
-
-The application includes:
-- Health check endpoint at `/health`
-- Basic monitoring at `/metrics`
-- Logging using Serilog
-
 ## 🤝 Contributing
 
 1. Fork the repository
