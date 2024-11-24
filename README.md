@@ -14,6 +14,7 @@ A robust Node.js-based backend service for the Koi Farm e-commerce platform. Thi
 - 📜 Digital certificate generation
 - 🔒 Role-based access control
 - 📱 Media file handling
+- 🌐 Multi-language support
 
 ## 🛠 Technologies
 
@@ -164,10 +165,21 @@ The application includes:
 4. Push to the branch
 5. Open a Pull Request
 
-## 📝 License
+## 👥 Authors
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project was developed by:
+
+- [@nghiantrong](https://github.com/nghiantrong) - Nguyen Trong Nghia
+- [@ngbao245](https://github.com/ngbao245) - Hoang Bao
+  - 👨‍💻 Fresher Developer
+  - 🏫 FPT University
+  - 💻 Tech stack: C#, Java, JavaScript, TypeScript
+- [@bardinGL](https://github.com/Bardingl)
 
 ## 📧 Contact
 
-For any inquiries, please reach out to [your-email@example.com](mailto:your-email@example.com)
+For any inquiries about the project, please reach out to any of our team members:
+
+- Hoang Bao - [Facebook](https://facebook.com/ng.bao245)
+- Trong Nghia - [Facebook](https://www.facebook.com/trongnghia.nguyen.1238)
+- Hung Hao - [Facebook](https://www.facebook.com/hao.nguyenhung.566)
