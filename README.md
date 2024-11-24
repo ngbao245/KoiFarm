@@ -1,111 +1,90 @@
-# 🐟 Koi Farm Backend
+# 🐟 Koi Farm Frontend
 
 ## 🌟 Overview
 
-A robust .NET Core Web API backend service for the Koi Farm e-commerce platform. This RESTful API provides comprehensive functionality for managing koi fish sales, user authentication, order processing, and inventory management.
+A modern React-based frontend application for the Koi Farm e-commerce platform. This web application provides a comprehensive interface for customers to browse, purchase, and manage Koi fish, while offering robust management tools for staff and administrators.
 
 ### Key Features
 
-- 🔐 JWT-based authentication & authorization
-- 🏪 Product management system
-- 🛒 Order processing & management
+- 🏠 Dynamic home page with farm introduction
+- 🐠 Detailed Koi fish information display
+- 🔍 Advanced search functionality
+- 🛒 Shopping cart & order management
 - 💳 VNPAY payment integration
-- 📊 Analytics & reporting
-- 📜 Digital certificate generation
+- ⭐ Rating & feedback system
+- 📊 Admin dashboard & analytics
+- 📱 Responsive design
 - 🔒 Role-based access control
-- 📱 Media file handling
 
 ## 🛠 Technologies
 
-- .NET Core 6.0/7.0
-- Entity Framework Core
-- SQL Server
-- JWT Authentication
-- Swagger/OpenAPI
-- AutoMapper
-- Docker (optional)
+- React 18
+- Vite
+- React Router
+- React Bootstrap
+- Axios
+- React Toastify
+- Cloudinary (for image uploads)
+- FontAwesome
 
 ## 📋 Prerequisites
 
-- Visual Studio 2022 (recommended) or Visual Studio Code
-- .NET 6.0/7.0 SDK
-- SQL Server
-- Docker (optional)
+- Node.js (version 14.0.0 or higher)
+- npm (version 6.0.0 or higher)
+- Modern web browser
 
 ## 🚀 Getting Started
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/your-username/koi-farm-backend.git
+git clone https://github.com/your-username/koi-farm-shop.git
 ```
 
-2. **Open the solution**
-- Open `KoiFarm.sln` in Visual Studio 2022
-- Or open the project folder in Visual Studio Code
-
-3. **Configure connection string**
-Update the `appsettings.json` file:
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=.;Database=KoiFarm;Trusted_Connection=True;MultipleActiveResultSets=true"
-  },
-  "JWT": {
-    "Secret": "your_jwt_secret_key",
-    "ExpiryInHours": 24
-  },
-  "VNPay": {
-    "TmnCode": "your_tmn_code",
-    "HashSecret": "your_hash_secret",
-    "PaymentUrl": "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
-  }
-}
-```
-
-4. **Update Database**
+2. **Navigate to project directory**
 ```bash
-# Using Package Manager Console in Visual Studio
-Update-Database
-
-# Or using .NET CLI
-dotnet ef database update
+cd koi-farm-shop
 ```
 
-5. **Run the Project**
-- Press F5 in Visual Studio to run in debug mode
-- Or use Visual Studio's "Start Without Debugging" (Ctrl+F5)
-- Or via CLI:
+3. **Install dependencies**
 ```bash
-dotnet run
+npm install
 ```
 
-The API will be available at `https://localhost:7000` (or your configured port)
-Swagger documentation will be at `https://localhost:7000/swagger`
-
-## 🐳 Docker Support (Optional)
-
-1. **Build the Docker image**
+4. **Start development server**
 ```bash
-docker build -t koifarm-api .
+npm run dev
 ```
 
-2. **Run the container**
-```bash
-docker run -p 8080:80 koifarm-api
-```
+The application will be available at `http://localhost:5173`
 
 ## 📁 Project Structure
 
 ```
-KoiFarm/
-├── Controllers/    # API Controllers
-├── Models/         # Domain Models
-├── DTOs/           # Data Transfer Objects
-├── Services/       # Business Logic
-├── Repositories/   # Data Access Layer
-├── Configurations/ # App configurations
-├── Middlewares/    # Custom middleware
-└── Utils/          # Utility classes
+src/
+├── components/    # Reusable UI components
+├── pages/         # Page components
+├── services/      # API services
+├── contexts/      # React contexts
+├── layouts/       # Layout components
+├── routes/        # Route configurations
+└── assets/        # Static assets
+```
+
+## 🔧 Available Scripts
+
+- **Development server**
+```bash
+npm run dev
+```
+
+- **Production build**
+```bash
+npm run build
+```
+
+- **Preview production build**
+```bash
+npm run preview
 ```
 
 ## 🤝 Contributing
@@ -122,7 +101,7 @@ This project was developed by:
 
 - [@nghiantrong](https://github.com/nghiantrong) - Nguyen Trong Nghia
 - [@ngbao245](https://github.com/ngbao245) - Hoang Bao
-- [@bardinGL](https://github.com/Bardingl)
+- [@bardinGL](https://github.com/Bardingl) - Hung Hao
 
 ## 📧 Contact
 
