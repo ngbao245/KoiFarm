@@ -14,7 +14,6 @@ A robust Node.js-based backend service for the Koi Farm e-commerce platform. Thi
 - 📜 Digital certificate generation
 - 🔒 Role-based access control
 - 📱 Media file handling
-- 🌐 Multi-language support
 
 ## 🛠 Technologies
 
