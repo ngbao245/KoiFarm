@@ -2,7 +2,7 @@
 
 ## 🌟 Overview
 
-A robust Node.js-based backend service for the Koi Farm e-commerce platform. This RESTful API provides comprehensive functionality for managing koi fish sales, user authentication, order processing, and inventory management.
+A robust .NET Core Web API backend service for the Koi Farm e-commerce platform. This RESTful API provides comprehensive functionality for managing koi fish sales, user authentication, order processing, and inventory management.
 
 ### Key Features
 
@@ -14,26 +14,22 @@ A robust Node.js-based backend service for the Koi Farm e-commerce platform. Thi
 - 📜 Digital certificate generation
 - 🔒 Role-based access control
 - 📱 Media file handling
-- 🌐 Multi-language support
 
 ## 🛠 Technologies
 
-- Node.js
-- Express.js
-- TypeScript
-- MongoDB
-- Redis (for caching)
-- JWT
-- Mongoose
-- Docker
-- Jest (for testing)
+- .NET Core 6.0/7.0
+- Entity Framework Core
+- SQL Server
+- JWT Authentication
+- Swagger/OpenAPI
+- AutoMapper
+- Docker (optional)
 
 ## 📋 Prerequisites
 
-- Node.js (v16.0 or higher)
-- MongoDB (v4.4 or higher)
-- Redis (v6.0 or higher)
-- npm or yarn
+- Visual Studio 2022 (recommended) or Visual Studio Code
+- .NET 6.0/7.0 SDK
+- SQL Server
 - Docker (optional)
 
 ## 🚀 Getting Started
@@ -41,113 +37,88 @@ A robust Node.js-based backend service for the Koi Farm e-commerce platform. Thi
 1. **Clone the repository**
 ```bash
 git clone https://github.com/your-username/koi-farm-backend.git
-cd koi-farm-backend
 ```
 
-2. **Install dependencies**
+2. **Open the solution**
+- Open `KoiFarm.sln` in Visual Studio 2022
+- Or open the project folder in Visual Studio Code
+
+3. **Configure connection string**
+Update the `appsettings.json` file:
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=.;Database=KoiFarm;Trusted_Connection=True;MultipleActiveResultSets=true"
+  },
+  "JWT": {
+    "Secret": "your_jwt_secret_key",
+    "ExpiryInHours": 24
+  },
+  "VNPay": {
+    "TmnCode": "your_tmn_code",
+    "HashSecret": "your_hash_secret",
+    "PaymentUrl": "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
+  }
+}
+```
+
+4. **Update Database**
 ```bash
-npm install
-# or
-yarn install
+# Using Package Manager Console in Visual Studio
+Update-Database
+
+# Or using .NET CLI
+dotnet ef database update
 ```
 
-3. **Configure environment variables**
-Create a `.env` file in the root directory:
-```env
-# Server Configuration
-PORT=5000
-NODE_ENV=development
-
-# Database Configuration
-MONGODB_URI=mongodb://localhost:27017/koi-farm
-REDIS_URL=redis://localhost:6379
-
-# JWT Configuration
-JWT_SECRET=your_jwt_secret_key
-JWT_EXPIRES_IN=24h
-
-# VNPAY Configuration
-VNPAY_TMN_CODE=your_tmn_code
-VNPAY_HASH_SECRET=your_hash_secret
-VNPAY_URL=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-
-# Email Configuration (optional)
-SMTP_HOST=smtp.example.com
-SMTP_PORT=587
-SMTP_USER=your_email@example.com
-SMTP_PASS=your_email_password
-```
-
-4. **Start MongoDB and Redis**
-Ensure MongoDB and Redis services are running on your machine.
-
-5. **Start development server**
+5. **Run the Project**
+- Press F5 in Visual Studio to run in debug mode
+- Or use Visual Studio's "Start Without Debugging" (Ctrl+F5)
+- Or via CLI:
 ```bash
-npm run dev
-# or
-yarn dev
+dotnet run
 ```
 
-The API will be available at `http://localhost:5000`
+The API will be available at `https://localhost:7000` (or your configured port)
+Swagger documentation will be at `https://localhost:7000/swagger`
 
-## 🐳 Docker Setup
+## 🐳 Docker Support (Optional)
 
 1. **Build the Docker image**
 ```bash
-docker-compose build
+docker build -t koifarm-api .
 ```
 
-2. **Start the services**
+2. **Run the container**
 ```bash
-docker-compose up -d
+docker run -p 8080:80 koifarm-api
 ```
-
-## 📝 API Documentation
-
-API documentation is available at `/api-docs` when running the server. We use Swagger UI for API documentation.
 
 ## 📁 Project Structure
 
 ```
-src/
-├── config/        # Configuration files
-├── controllers/   # Request handlers
-├── middleware/    # Custom middleware
-├── models/        # Database models
-├── routes/        # API routes
-├── services/      # Business logic
-├── types/         # TypeScript types
-├── utils/         # Utility functions
-└── validators/    # Request validators
+KoiFarm/
+├── Controllers/    # API Controllers
+├── Models/         # Domain Models
+├── DTOs/           # Data Transfer Objects
+├── Services/       # Business Logic
+├── Repositories/   # Data Access Layer
+├── Configurations/ # App configurations
+├── Middlewares/    # Custom middleware
+└── Utils/          # Utility classes
 ```
 
 ## 🧪 Testing
 
+Open the Test Explorer in Visual Studio and run the tests, or use the CLI:
 ```bash
-# Run tests
-npm run test
-
-# Run tests with coverage
-npm run test:coverage
+dotnet test
 ```
 
 ## 🏗 Build for Production
 
 ```bash
-npm run build
-# or
-yarn build
-```
-
-## 🚀 Production Deployment
-
-1. Build the project
-2. Set environment variables for production
-3. Start the server:
-```bash
-npm run start
-# or
-yarn start
+dotnet publish -c Release
 ```
 
 ## 🔍 Monitoring
@@ -155,7 +126,7 @@ yarn start
 The application includes:
 - Health check endpoint at `/health`
 - Basic monitoring at `/metrics`
-- Error logging and tracking
+- Logging using Serilog
 
 ## 🤝 Contributing
 
@@ -171,9 +142,6 @@ This project was developed by:
 
 - [@nghiantrong](https://github.com/nghiantrong) - Nguyen Trong Nghia
 - [@ngbao245](https://github.com/ngbao245) - Hoang Bao
-  - 👨‍💻 Fresher Developer
-  - 🏫 FPT University
-  - 💻 Tech stack: C#, Java, JavaScript, TypeScript
 - [@bardinGL](https://github.com/Bardingl)
 
 ## 📧 Contact
