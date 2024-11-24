@@ -1,131 +1,117 @@
-# KoiFarm Backend
+# 🐟 Koi Farm Frontend
 
-## English
+## 🌟 Overview
 
-### Overview
+A modern React-based frontend application for the Koi Farm e-commerce platform. This web application provides a user-friendly interface for customers to browse, purchase koi fish, and manage their orders, while also offering administrative capabilities for inventory and order management.
 
-KoiFarm Backend is a server-side application that powers the KoiFarm platform, providing essential APIs and business logic for koi fish management and trading system. Built with .NET 6.0, this backend service implements secure payment processing, real-time notifications, and comprehensive data management for koi fish trading.
+### Key Features
 
-### Features
+- 🔐 Secure user authentication
+- 🏪 Interactive product catalog with advanced filtering
+- 🛒 Shopping cart and checkout system
+- 💳 Integrated VNPAY payment gateway
+- 📱 Responsive design for all devices
+- 🔍 Real-time search functionality
+- 📊 Admin dashboard for inventory management
+- 📜 Certificate verification system
+- 🌐 Multi-language support (English/Vietnamese)
 
-- User authentication and authorization with JWT
-- Koi fish inventory management
-- Order processing and tracking
-- VNPay payment integration
-- Email notifications
-- Certificate management for koi fish
-- Review system
-- Blog management
-- Data analytics and reporting
+## 🛠 Technologies
 
-### Technology Stack
+- React 18
+- TypeScript
+- Redux Toolkit
+- Material-UI (MUI)
+- Axios
+- React Router
+- i18next
+- Styled Components
+- Vite
 
-- .NET 6.0
-- Entity Framework Core 6.0
-- SQL Server
-- Docker
-- JWT Authentication
-- SMTP Email Service
-- Swagger/OpenAPI
-- AutoMapper
+## 📋 Prerequisites
 
-### Prerequisites
+- Node.js (v16.0 or higher)
+- npm or yarn
+- Modern web browser
+- Backend API service running
 
-- .NET 6.0 SDK
-- SQL Server
-- Docker (optional)
-- Visual Studio 2022 or VS Code
+## 🚀 Getting Started
 
-### Getting Started
-
-1. Clone the repository
-2. Update database connection string in appsettings.json
-3. Run database migrations
-4. Run the application
-
-### API Documentation
-
-Access the Swagger documentation at: `https://localhost:7006/swagger`
-
-### Docker Support
-
-Build the Docker image:
-
-```
-Run the container:
+1. **Clone the repository**
+```bash
+git clone https://github.com/your-username/koi-farm-frontend.git
+cd koi-farm-frontend
 ```
 
-## Vietnamese
+2. **Install dependencies**
+```bash
+npm install
+# or
+yarn install
+```
 
-### Tổng quan
+3. **Configure environment variables**
+Create a `.env` file in the root directory:
+```env
+VITE_API_URL=http://localhost:5000/api
+VITE_VNPAY_URL=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+```
 
-KoiFarm Backend là ứng dụng phía máy chủ hỗ trợ nền tảng KoiFarm, cung cấp các API thiết yếu và logic nghiệp vụ cho hệ thống quản lý và giao dịch cá Koi. Được xây dựng bằng .NET 6.0, dịch vụ backend này triển khai xử lý thanh toán an toàn, thông báo thời gian thực và quản lý dữ liệu toàn diện cho việc giao dịch cá Koi.
+4. **Start development server**
+```bash
+npm run dev
+# or
+yarn dev
+```
 
-### Tính năng
+The application will be available at `http://localhost:5173`
 
-- Xác thực và phân quyền người dùng với JWT
-- Quản lý kho cá Koi
-- Xử lý và theo dõi đơn hàng
-- Tích hợp thanh toán VNPay
-- Thông báo qua email
-- Quản lý chứng chỉ cho cá Koi
-- Hệ thống đánh giá
-- Quản lý blog
-- Phân tích và báo cáo dữ liệu
-
-### Công nghệ sử dụng
-
-- .NET 6.0
-- Entity Framework Core 6.0
-- SQL Server
-- Docker
-- JWT Authentication
-- Dịch vụ Email SMTP
-- Swagger/OpenAPI
-- AutoMapper
-
-### Yêu cầu hệ thống
-
-- .NET 6.0 SDK
-- SQL Server
-- Docker (tùy chọn)
-- Visual Studio 2022 hoặc VS Code
-
-### Hướng dẫn cài đặt
-
-1. Clone dự án
+## 🏗 Build for Production
 
 ```bash
-git clone https://github.com/yourusername/koi-farm-backend.git
+npm run build
+# or
+yarn build
 ```
 
-2. Cập nhật chuỗi kết nối database trong appsettings.json
-3. Chạy migration database
+## 📁 Project Structure
 
-```bash
-dotnet ef database update
+```
+src/
+├── assets/        # Static assets (images, fonts)
+├── components/    # Reusable UI components
+├── features/      # Feature-based modules
+├── hooks/         # Custom React hooks
+├── layouts/       # Page layouts
+├── pages/         # Route pages
+├── services/      # API services
+├── store/         # Redux store configuration
+├── types/         # TypeScript type definitions
+└── utils/         # Utility functions
 ```
 
-4. Chạy ứng dụng
+## 🔗 API Integration
 
-```bash
-dotnet run
-```
+This frontend application connects to the Koi Farm API backend. Ensure the backend service is running and the `VITE_API_URL` environment variable is correctly configured.
 
-### Tài liệu API
+## 🌐 Deployment
 
-Truy cập tài liệu Swagger tại: `https://localhost:7006/swagger`
+1. Build the project
+2. Deploy the contents of the `dist` folder to your web server
+3. Configure your web server to handle client-side routing
 
-### Hỗ trợ Docker
+## 🤝 Contributing
 
-Xây dựng Docker image:
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
 
-```bash
-docker build -t koi-farm-api .
-```
+## 📝 License
 
-Chạy container:
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-```bash
-docker run -p 7006:80 koi-farm-api
+## 📧 Contact
 
+For any inquiries, please reach out to [your-email@example.com](mailto:your-email@example.com)
