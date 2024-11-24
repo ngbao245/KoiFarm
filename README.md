@@ -120,9 +120,9 @@ KoiFarm/
 
 This project was developed by:
 
-- [@nghiantrong](https://github.com/nghiantrong) - Nguyen Trong Nghia
 - [@ngbao245](https://github.com/ngbao245) - Hoang Bao
-- [@bardinGL](https://github.com/Bardingl)
+- [@nghiantrong](https://github.com/nghiantrong) - Trong Nghia
+- [@bardinGL](https://github.com/Bardingl) - Hung Hao
 
 ## 📧 Contact
 
